@@ -34,11 +34,11 @@ standardData <- function(rawData){
     ### Clean all responses for leading and trailing spaces
     cleanDF <- sapply(cleanDF, function(x) gsub("^\\s+|\\s+$", "", x))
     
-    ### Set all "NR" to NA
-    # cleanDF <- sapply(cleanDF, function(x) gsub("^NR$", "d", x))
+    ### Remove all newline characters
+    cleanDF <- as.data.frame(sapply(as.data.frame(cleanDF), function(x) gsub("[\r\n]", "", x)))
     
     ### Remove all newline characters from titles so we can match
-    cleanDF[,"title.extracted"] <- gsub("[\r\n]", "", cleanDF[,"title.extracted"])
+    # cleanDF[,"title.extracted"] <- gsub("[\r\n]", "", cleanDF[,"title.extracted"])
     
     ### Remove all commmas from numbers
     cleanDF <- sapply(as.data.frame(cleanDF), function(x) gsub('(?<=\\d),(?=\\d)', "", x, perl = TRUE))
