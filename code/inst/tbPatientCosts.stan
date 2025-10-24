@@ -19,6 +19,8 @@ data {
                          // medical continuation TB treatment costs
   real ie_contntx[N];    // indicator of whether cost includes indirect
                          // continuation treatment costs
+  ///// COVARIATES ////////////////////////////////////////////////////////////
+  int drtb[N];           // whether a study was exclusively drtb
   vector<lower=0>[N] se; // study reported dispersion estimate 
 }
 
@@ -38,7 +40,9 @@ parameters {
   real<lower=0> coef_dnme_contntx;
   real<lower=0> coef_ie_contntx;
   // additional variance parameter
-  vector<lower=0>[N] add_var;
+  real<lower=0> add_var;
+  // covariates
+  // real<lower=0> coef_drtb;
 }
 
 // Calculate mu for each n
@@ -57,9 +61,11 @@ transformed parameters {
                 coef_ie_intsvtx * ie_intsvtx[n] + 
                 coef_dme_contntx * dme_contntx[n] +
                 coef_dnme_contntx * dnme_contntx[n] +
-                coef_ie_contntx * ie_contntx[n];
+                coef_ie_contntx * ie_contntx[n]; # + 
+                ////// COVARIATES /////////
+                // coef_drtb * drtb[n];
         // shape parameter
-        inverse_phi_cost[n] = se2[n] + add_var[n]; 
+        inverse_phi_cost[n] = se2[n] + add_var; 
         // rate parameter
         beta_cost[n] = inverse_phi_cost[n] / mu[n];
     }
@@ -73,6 +79,7 @@ model {
     add_var ~ cauchy(0, 25);
     // add_var ~ gamma(1, 10000);
     //inverse_phi_cost ~ exponential(0.001); // prior on inverse dispersion parameter
+    // cost estimate
     cost ~ gamma(inverse_phi_cost, beta_cost);
 }
 
