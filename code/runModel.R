@@ -406,17 +406,31 @@ modelDataMedians <- fullData %>%
 ###############################################################################
     filter(!covidence.id %in% modelDataMeans$covidence.id) 
 
+
 ###############################################################################
 ### Convert the extracted medians to mean estimates
 ###############################################################################
 modelDataMedians$cost <- modelDataMedians$cost * (coeffVar^2+1)^0.5
 
 ###############################################################################
-### Bind the two datasets together and format for stan                      ###
+### Bind the two datasets together and ensure non-duplicative pop.ids       ###
 ###############################################################################
-modelData0 <- rbind(modelDataMeans, 
-                    modelDataMedians %>% 
-              filter(covidence.id !="7866"))[-46,]
+modelDataBind <- rbind(modelDataMeans, 
+                       modelDataMedians) 
+
+tmpBoth <- modelDataBind %>% 
+            group_by(covidence.id) %>% 
+            filter(length(unique(pop.id)) == 1 | # Keep those with only one pop.id
+                       grepl("Total", pop.id, ignore.case = TRUE) | ### Keep pop.id=Total and rid of others
+                       (length(unique(pop.id)) == 2 & ! "Total" %in% unique(pop.id) & pop.id != "LTBI"))
+
+tmp2Both <- modelDataBind %>% 
+            filter((length(unique(pop.id)) > 1) & (! covidence.id %in% tmpBoth$covidence.id)) %>% 
+            filter(!grepl("EP", pop.id))
+
+modelData0 <- rbind(tmpBoth, 
+                    tmp2Both) %>% 
+              filter(covidence.id !="7866")
 
 ###############################################################################
 ### Check data outliers                                                     ###
@@ -430,7 +444,9 @@ covIDs <- modelData0 %>% filter(cost > 25000) %>% select(covidence.id) %>%
 modelData <- modelData0 %>% filter(! covidence.id %in% c("9061", "9301"))
 modelData %>% select(covidence.id) %>% unique() %>% nrow()
 
-# modelData <- modelDataMeans
+###############################################################################
+### Format the data for stan                                                ###
+###############################################################################
 stanModelData <- list(
                         N = length(modelData$cost),
                         cost = modelData$cost + 0.01,
@@ -451,11 +467,15 @@ stanModelData <- list(
 ###############################################################################
 ##### Call the stan model.                                                #####
 ###############################################################################
-totalPreDiag <- stan(file = here("code/inst/tbPatientCosts.stan"),
+totalModel <- stan(file = here("code/inst/tbPatientCosts.stan"),
                      data = stanModelData,
                      iter = 1000, chains = 3,
                      control=list(max_treedepth=14))
-totalPreDiag
+totalModel
+
+###############################################################################
+##### NOT UPDATED FOR ADDITIONAL POPULATION FILTERING SO DO NOT USE       #####
+##### Test for subgroups                                                  #####
 ###############################################################################
 modelDataHB <- modelData %>% filter(whohb == 1)
 modelDataHB %>% select(covidence.id) %>% unique() %>% nrow()
@@ -477,11 +497,11 @@ stanModelDataHB <- list(
     drtb=modelDataHB$drtb
 )
 
-whoHbPreDiag <- stan(file = here("code/inst/tbPatientCosts.stan"), 
+whoHbModel <- stan(file = here("code/inst/tbPatientCosts.stan"), 
                      data = stanModelDataHB, 
                      iter = 1000, chains = 3, 
                      control=list(max_treedepth=14))
-whoHbPreDiag
+whoHbModel
 
 ###############################################################################
 modelDataUrb <- modelData %>% filter(urban == 1)
@@ -505,11 +525,11 @@ stanModelDataUrb <- list(
     drtb=modelDataUrb$drtb
 )
 
-whoUrbPreDiag <- stan(file = here("code/inst/tbPatientCosts.stan"), 
+whoUrbModel <- stan(file = here("code/inst/tbPatientCosts.stan"), 
                      data = stanModelDataUrb, 
                      iter = 1000, chains = 3, 
                      control=list(max_treedepth=14))
-whoUrbPreDiag
+whoUrbModel
 
 ###############################################################################
 modelDataPub <- modelData %>% filter(public == 1)
@@ -533,11 +553,11 @@ stanModelDataPub <- list(
     drtb=modelDataPub$drtb
 )
 
-whoPubPreDiag <- stan(file = here("code/inst/tbPatientCosts.stan"), 
+whoPubModel <- stan(file = here("code/inst/tbPatientCosts.stan"), 
                       data = stanModelDataPub, 
                       iter = 1000, chains = 3, 
                       control=list(max_treedepth=14))
-whoPubPreDiag
+whoPubModel
 
 #### Empirical ################################################################
 
