@@ -1,7 +1,7 @@
 ### This function separates the data extraction strings into
 ### line specific data using regex. 
 
-
+line_data <- function(cleanData, saveFile=FALSE){
 ##############################################################################|
 #############################  LOAD PACKAGES  #################################
 ##############################################################################|
@@ -16,12 +16,13 @@ library(ggpubr)
 ##############################################################################|
 ################ SEPARATE INTO DESCRIPTIVE AND DATA ###########################
 ##############################################################################|
+# cleanData <- readRDS(here("data/fullDataClean.rds"))[["clean data"]]
 
-dataDesc <- stndData[,1:(which(colnames(stndData)=="n.participants")-1)]
-dataAll <- stndData[,(which(colnames(stndData)=="n.participants")):which(colnames(stndData)=="additional.comments")] ### Need to fix 
-dataStudyQuality <- stndData[,(which(colnames(stndData)=="additional.comments")+1):ncol(stndData)] ### Need to fix 
+dataDesc <- cleanData[,1:(which(colnames(cleanData)=="n.participants")-1)]
+dataAll <- cleanData[,(which(colnames(cleanData)=="n.participants")):which(colnames(cleanData)=="additional.comments")] ### Need to fix 
+dataStudyQuality <- cleanData[,(which(colnames(cleanData)=="additional.comments")+1):ncol(cleanData)] ### Need to fix 
 
-# rm(stndData)
+# rm(cleanData)
 ##############################################################################|
 ################        EXTRACT THE DATA FROM FIELDS       ####################
 ##############################################################################|
@@ -38,6 +39,24 @@ dataStudyQuality <- stndData[,(which(colnames(stndData)=="additional.comments")+
 ### data. 
 allData <- list()
 
+### Create a dataframe to hold the stat data: 
+rowStatData <- data.frame(pop.id = NA,
+                          participant.age.mean=NA, 
+                          participant.age.sd=NA, 
+                          participant.age.median=NA, 
+                          participant.age.iqr=NA,
+                          participant.age.range=NA,
+                          participant.hhs.mean=NA, 
+                          participant.hhs.sd=NA, 
+                          participant.hhs.median=NA, 
+                          participant.hhs.iqr=NA, 
+                          participant.hhs.range=NA,
+                          participant.delay.mean=NA, 
+                          participant.delay.sd=NA, 
+                          participant.delay.median=NA, 
+                          participant.delay.iqr=NA,
+                          participant.delay.range=NA)
+
 ### Loop through the dataframe rows. 
 for (index in 1:nrow(dataAll)){
     ### Find the non-missings
@@ -45,61 +64,88 @@ for (index in 1:nrow(dataAll)){
                 ### These stat columns need to be treated specially so 
                 ### remove for now. 
                 select(!contains(c(".stat", "comments"))) 
-    ### Create a dataframe to hold the study specific disaggregated data
+    # tmpDataStats <- dataAll[index, grep("=", dataAll[index,])] %>% 
+    #     select(contains(c(".stat")))
+    ## Create a dataframe to hold the study specific disaggregated data
     rowData <- data.frame()
     nameRow <- dataDesc[index, "covidence.id"]
     print(nameRow)
-    
+
     for (col in 1:ncol(tmpData0)){
         nameColumn <- colnames(tmpData0)[col]
         print(nameColumn)
-        info <- unlist(strsplit(as.vector(unlist(strsplit(x = tmpData0[,col], split = ";"))), "=")) 
+        info <- unlist(strsplit(x = tmpData0[,col], split = "[;\\s=]+"))
         ### Remove the spaces
         info <-  sapply(info, function(x) gsub("^\\s+|\\s+$", "", x))
 
-        ## Check if info has any colons
-        # if(sum(grepl(":", info)) > 0){
-        #     subInfo <- unlist(strsplit(unlist(strsplit(x = info, split = ":")), " "))
-        # }
-        
         ### Calculate the number of unique populations
         numbData <- length(info) / 2
-        
+
         ### dataframe to hold that specific column's data by population
         tmpDF <- data.frame()
-        
+
         for (dt in 1:numbData){
             tmpDF[dt,1] <- info[((dt*2)-1)]
             tmpDF[dt,2] <- as.numeric(info[(dt*2)])
         }
-        
-        colnames(tmpDF) <- c("pop.id", 
+
+        colnames(tmpDF) <- c("pop.id",
                              nameColumn)
-        
-        ### Join to the study specific dataframe. 
+
+        ### Join to the study specific dataframe.
         if (col == 1){
             rowData <- tmpDF
         } else {
             rowData <- full_join(rowData, tmpDF, by=c("pop.id"))
         }
 
-        #### if we have "Mean or Median" without an identifier, it should 
+        #### if we have "Mean or Median" without an identifier, it should
         #### always map to the first identifier, so let's consolidate
-        
+
         # # CHECK IF MEAN ROW EXISTS
         # if(length(which(rowData$pop.id == "Mean")) > 0){
         #     which(!is.na(rowData["Mean",]))
-        # }  
-        
-        ##need to remove tmpData because each study is different
-        # rm(tmpDF)
-        # tmpDF
-        
+        # }
+
+
     }
         ### Add the covidence id for later join and save to the list.
         rowData$covidence.id <- nameRow
         allData[[index]] <- rowData
+        
+    #/////////////////////////////////////////////////////////////////////////#
+    #/////////////////////////////////////////////////////////////////////////#
+    # for (col2 in 1:ncol(tmpDataStats)){
+    #     nameColumn2 <- gsub(".stat", "", colnames(tmpDataStats)[col2])
+    #     print(nameColumn2)
+    # 
+    #     info2 <- unlist(strsplit(x = tmpDataStats[,col2], split = "[;\\s:\\s=\\s(]+"))
+    #     ### Remove the spaces
+    #     info2 <-  unlist(as.vector(strsplit(sapply(info2, function(x) gsub("^\\s+|\\s+$|^\\(|\\)$", "", x)), split = "\\(")))
+    #     names(info2) <- NULL
+    #     # tmpDF2 <- data.frame()
+    #     
+    #     numbData2 <- length(grep("\\:", tmpDataStats[,col2]))
+    #     ### If there is a colon, then they've listed a population label, if not, we know 
+    #     ### it's the pop.id used above. 
+    #     if(!grepl(":", tmpDataStats[,col2])){
+    #         rowStatData[,"pop.id"] = "Total"
+    #         rowStatData[,grep(paste0(nameColumn2,".", info2[1]), colnames(rowStatData), ignore.case = TRUE)] <- info2[2]
+    #         rowStatData[,grep(paste0(nameColumn2,".", info2[3]), colnames(rowStatData), ignore.case = TRUE)] <- info2[4]
+    #     } else {
+    #         rowStatData[,"pop.id"] = info[1]
+    #         rowStatData[,grep(paste0(nameColumn2,".", info2[2]), colnames(rowStatData), ignore.case = TRUE)] <- info2[3]
+    #         rowStatData[,grep(paste0(nameColumn2,".", info2[4]), colnames(rowStatData), ignore.case = TRUE)] <- info2[5]
+    #         }
+    #     } 
+        
+        # colnames(tmpDF) <- c("pop.id", 
+        #                      nameColumn)
+    # }
 }
+
+
+
 
 
 ### make empty dataframe 
@@ -132,3 +178,16 @@ popData <- subset(popData, select= -c(covidence.id))
 colnames(popData)[1:2] <- c("covidence.id", "pop.id")
 
 rm(newDF); rm(newDF2); rm(newDF3)
+
+lineData <- list("descriptive" = dataDesc, 
+                 "data" = popData, 
+                 "quality" = dataStudyQuality) 
+
+### Save line data to RDS file 
+if (saveFile == TRUE){
+    saveRDS(lineData, here("data/fullLineData.rds"), version=2)
+}
+
+return(lineData)
+
+}
