@@ -20,7 +20,9 @@ data {
   real ie_contntx[N];    // indicator of whether cost includes indirect
                          // continuation treatment costs
   ///// COVARIATES ////////////////////////////////////////////////////////////
-  int drtb[N];           // whether a study was exclusively drtb
+  // int drtb[N];           // whether a study was exclusively drtb
+  // int urban[N];          // whether a study was exclusively urban
+  //real pcGDP[N];          // whether a study was exclusively urban
   vector<lower=0>[N] se; // study reported dispersion estimate 
 }
 
@@ -39,17 +41,19 @@ parameters {
   real<lower=0> coef_dme_contntx;
   real<lower=0> coef_dnme_contntx;
   real<lower=0> coef_ie_contntx;
-  // additional variance parameter
-  real<lower=0> add_var;
   // covariates
-  // real<lower=0> coef_drtb;
+  // real coef_drtb;
+  // real coef_urban;
+  // real coef_pcGDP;
+  // additional variance parameter
+  vector<lower=0>[N] add_var;
 }
 
 // Calculate mu for each n
 transformed parameters {
     vector<lower=0>[N] mu;
     vector[N] beta_cost; 
-    vector<lower=0>[N] inverse_phi_cost;
+    vector<lower=0>[N] alpha_cost;
 
     for (n in 1:N){
         // systematic component of the estimate 
@@ -63,11 +67,13 @@ transformed parameters {
                 coef_dnme_contntx * dnme_contntx[n] +
                 coef_ie_contntx * ie_contntx[n]; # + 
                 ////// COVARIATES /////////
-                // coef_drtb * drtb[n];
+                // exp(coef_drtb * drtb[n]);
+                // exp(coef_urban * urban[n]);
+                // exp(coef_pcGDP * pcGDP[n]);
         // shape parameter
-        inverse_phi_cost[n] = se2[n] + add_var; 
+        alpha_cost[n] = se2[n] + add_var[n]; 
         // rate parameter
-        beta_cost[n] = inverse_phi_cost[n] / mu[n];
+        beta_cost[n] = alpha_cost[n] / mu[n];
     }
 }
 
@@ -76,17 +82,17 @@ transformed parameters {
 model {
     // Priors for dispersion parameter 
     // add_var ~ exponential(1);
-    add_var ~ cauchy(0, 25);
-    // add_var ~ gamma(1, 10000);
+     //add_var ~ cauchy(0, 25);
+    add_var ~ gamma(10, 100);
     //inverse_phi_cost ~ exponential(0.001); // prior on inverse dispersion parameter
     // cost estimate
-    cost ~ gamma(inverse_phi_cost, beta_cost);
+    cost ~ gamma(alpha_cost, beta_cost);
 }
 
 generated quantities {
     vector[N] y_rep;
     for(n in 1:N){
         //posterior draws to get posterior predictive checks
-        y_rep[n] <- gamma_rng(inverse_phi_cost[n], beta_cost[n]); 
+        y_rep[n] <- gamma_rng(alpha_cost[n], beta_cost[n]); 
     }
 }

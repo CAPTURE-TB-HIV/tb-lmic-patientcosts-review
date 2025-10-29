@@ -13,12 +13,14 @@ dataList <- readRDS(here("data/finalData.rds"))
 dataInds <- readRDS(here("data/dataIndicators.rds"))
 
 fullData <- dataList$data %>% left_join(dataInds)
+
+externalCovariates <- readRDS(here("data/covariates.rds"))
 ###############################################################################
 ##### Format the model data to be fed into the stan model.                #####
 ###############################################################################
 modelDataMeans<- fullData %>% 
     select(covidence.id, 
-           pop.id,
+           pop.id, n.participants,
            drtb, whohb, urban, public, 
            ### MEANS
            ### total tb care costs
@@ -157,7 +159,8 @@ modelDataMeans<- fullData %>%
     ##########################################################################################
     ### Assign standard deviations ###########################################################
     ##########################################################################################
-    mutate(se = case_when(category=="de.tbcare.mean" ~ de.tbcare.sd, 
+    mutate(n.participants = as.numeric(n.participants), 
+           sd = case_when(category=="de.tbcare.mean" ~ de.tbcare.sd, 
                           category=="dme.tbcare.total.mean" ~ dme.tbcare.total.sd, 
                           category=="dmne.tbcare.total.mean" ~ dmne.tbcare.total.sd, 
                           category=="ie.tbcare.lostincome.total.mean" ~ ie.tbcare.lostincome.total.sd, 
@@ -177,6 +180,26 @@ modelDataMeans<- fullData %>%
                           category=="dme.cont.tx.total.mean" ~ dme.cont.tx.total.sd, 
                           category=="dmne.cont.tx.total.mean" ~ dmne.cont.tx.total.sd, 
                           category=="ie.cont.tx.lostincome.total.mean" ~ ie.cont.tx.lostincome.total.sd), 
+           se = case_when(category=="de.tbcare.mean" ~ de.tbcare.sd / sqrt(n.participants), 
+                          category=="dme.tbcare.total.mean" ~ dme.tbcare.total.sd / sqrt(n.participants), 
+                          category=="dmne.tbcare.total.mean" ~ dmne.tbcare.total.sd / sqrt(n.participants), 
+                          category=="ie.tbcare.lostincome.total.mean" ~ ie.tbcare.lostincome.total.sd / sqrt(n.participants), 
+                          category=="de.prediag.mean" ~ de.prediag.sd / sqrt(n.participants), 
+                          category=="dme.prediag.total.mean" ~ dme.prediag.total.sd / sqrt(n.participants), 
+                          category=="dmne.prediag.total.mean" ~ dmne.prediag.total.sd / sqrt(n.participants), 
+                          category=="ie.prediag.lostincome.total.mean" ~ ie.prediag.lostincome.total.sd / sqrt(n.participants),
+                          category=="de.postdiag.mean" ~ de.postdiag.sd / sqrt(n.participants), 
+                          category=="dme.postdiag.total.mean" ~ dme.postdiag.total.sd / sqrt(n.participants), 
+                          category=="dmne.postdiag.total.mean" ~ dmne.postdiag.total.sd / sqrt(n.participants), 
+                          category=="ie.postdiag.lostincome.total.mean" ~ ie.postdiag.lostincome.total.sd / sqrt(n.participants),
+                          category=="de.intens.tx.mean" ~ de.intens.tx.sd / sqrt(n.participants), 
+                          category=="dme.intens.tx.total.mean" ~ dme.intens.tx.total.sd / sqrt(n.participants), 
+                          category=="dmne.intens.tx.total.mean" ~ dmne.intens.tx.total.sd / sqrt(n.participants), 
+                          category=="ie.intens.tx.lostincome.total.mean" ~ ie.intens.tx.lostincome.total.sd / sqrt(n.participants),
+                          category=="de.cont.tx.mean" ~ de.cont.tx.sd / sqrt(n.participants), 
+                          category=="dme.cont.tx.total.mean" ~ dme.cont.tx.total.sd / sqrt(n.participants), 
+                          category=="dmne.cont.tx.total.mean" ~ dmne.cont.tx.total.sd / sqrt(n.participants), 
+                          category=="ie.cont.tx.lostincome.total.mean" ~ ie.cont.tx.lostincome.total.sd) / sqrt(n.participants), 
            ##########################################################################################
            ### Assign cost category indicators ######################################################
            ##########################################################################################
@@ -208,7 +231,7 @@ modelDataMeans<- fullData %>%
            ##########################################################################################
            drtb = ifelse(pop.id == "DRTB" | drtb == 1, 1, 0),
            cost = as.numeric(cost)) %>%
-    dplyr::select(covidence.id, pop.id, cost, se, 
+    dplyr::select(covidence.id, pop.id, cost, sd, se, 
                   dme.prediag, dnme.prediag, ie.prediag, 
                   dme.intsvtx, dnme.intsvtx, ie.intsvtx, 
                   dme.contntx, dnme.contntx, ie.contntx, 
@@ -216,18 +239,20 @@ modelDataMeans<- fullData %>%
                   #### Covariates ####
                   drtb, whohb, urban, public) 
 
-###############################################################################
+##############################################################################|
 ### Estimate gamma shape parameter for the conversion from means to medians ###
-###############################################################################
-coeffVar <- median(modelDataMeans$se / modelDataMeans$cost, na.rm = TRUE)
+##############################################################################|
+coeffVar <- median(modelDataMeans$sd / modelDataMeans$cost, na.rm = TRUE)
 
-modelDataMeans <- modelDataMeans %>% mutate(se = 0) %>% na.omit()
+modelDataMeans <- modelDataMeans %>% select (!sd) %>% mutate(se = 0) %>% na.omit()
+# modelDataMeans <- modelDataMeans %>% na.omit()
 
-###############################################################################
+##############################################################################|
 ### Medians  ###
-###############################################################################
+##############################################################################|
 modelDataMedians <- fullData %>%  
     select(covidence.id, pop.id, drtb, whohb, urban, public,
+           n.participants,
            ### MEDIANS
            ### total tb care costs 
            de.tbcare.median, 
@@ -255,9 +280,9 @@ modelDataMedians <- fullData %>%
            dmne.cont.tx.total.median, 
            ie.cont.tx.lostincome.total.median
     ) %>% 
-    ##########################################################################################
+    #########################################################################################|
     ### Arithmetic if we are missing some calculable values ##################################
-    ##########################################################################################
+    #########################################################################################|
     ###  if we have total tb care and either pre-diag or post-diag costs
     mutate(dme.postdiag.total.median = ifelse(!is.na(dme.tbcare.total.median) & 
                                                 !is.na(dme.prediag.total.median) &
@@ -432,9 +457,9 @@ modelData0 <- rbind(tmpBoth,
                     tmp2Both) %>% 
               filter(covidence.id !="7866")
 
-###############################################################################
+##############################################################################|
 ### Check data outliers                                                     ###
-###############################################################################
+##############################################################################|
 covIDs <- modelData0 %>% filter(cost > 25000) %>% select(covidence.id) %>%
     unique() %>% unlist() %>% as.vector(); covIDs
 # 
@@ -443,6 +468,16 @@ covIDs <- modelData0 %>% filter(cost > 25000) %>% select(covidence.id) %>%
 
 modelData <- modelData0 %>% filter(! covidence.id %in% c("9061", "9301"))
 modelData %>% select(covidence.id) %>% unique() %>% nrow()
+
+##############################################################################|
+### Add study country into the model data                                   ###
+##############################################################################|
+
+modelData <- modelData %>% left_join(dataList$descriptive %>% 
+                           select(covidence.id, study.country)) %>% 
+                           ungroup() %>%
+                           group_by(study.country) %>%
+                           mutate(country.id = cur_group_id())
 
 ###############################################################################
 ### Format the data for stan                                                ###
@@ -461,17 +496,51 @@ stanModelData <- list(
                         dme_contntx = modelData$dme.contntx, 
                         dnme_contntx =  modelData$dnme.contntx, 
                         ie_contntx =  modelData$ie.contntx, 
-                        drtb=modelData$drtb
+                        N_country = max(modelData$country.id),
+                        country_id = modelData$country.id
                     )
 
 ###############################################################################
 ##### Call the stan model.                                                #####
 ###############################################################################
-totalModel <- stan(file = here("code/inst/tbPatientCosts.stan"),
+totalModel <- stan(file = here("code/inst/tbPatientCostsPooling.stan"),
                      data = stanModelData,
                      iter = 1000, chains = 3,
                      control=list(max_treedepth=14))
-totalModel
+# totalModel
+
+
+###############################################################################
+### Test only means                                                         ###
+###############################################################################
+modelDataMeansOnly <- modelData %>% filter(mean == 1)
+stanModelMeansOnlyData <- list(
+    N = length(modelDataMeansOnly$cost),
+    cost = modelDataMeansOnly$cost + 0.01,
+    # se = rep(0, length(modelDataMeansOnly$cost)),
+    se = as.numeric(modelDataMeansOnly$se)+ 0.01,
+    dme_prediag = modelDataMeansOnly$dme.prediag, 
+    dnme_prediag =  modelDataMeansOnly$dnme.prediag, 
+    ie_prediag =  modelDataMeansOnly$ie.prediag, 
+    dme_intsvtx = modelDataMeansOnly$dme.intsvtx, 
+    dnme_intsvtx =  modelDataMeansOnly$dnme.intsvtx, 
+    ie_intsvtx =  modelDataMeansOnly$ie.intsvtx,
+    dme_contntx = modelDataMeansOnly$dme.contntx, 
+    dnme_contntx =  modelDataMeansOnly$dnme.contntx, 
+    ie_contntx =  modelDataMeansOnly$ie.contntx, 
+    drtb=modelDataMeansOnly$drtb,
+    urban=modelDataMeansOnly$urban, 
+    pcGDP = modelDataMeansOnly$pcGDP
+)
+
+###############################################################################
+##### Call the stan model.                                                #####
+###############################################################################
+totalModelMeansOnly <- stan(file = here("code/inst/tbPatientCosts.stan"),
+                   data = stanModelMeansOnlyData,
+                   iter = 1000, chains = 3,
+                   control=list(max_treedepth=14))
+totalModelMeansOnly
 
 ###############################################################################
 ##### NOT UPDATED FOR ADDITIONAL POPULATION FILTERING SO DO NOT USE       #####
