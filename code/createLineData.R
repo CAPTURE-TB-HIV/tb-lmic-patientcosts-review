@@ -71,10 +71,11 @@ for (index in 1:nrow(dataAll)){
     nameRow <- dataDesc[index, "covidence.id"]
     print(nameRow)
 
+    
     for (col in 1:ncol(tmpData0)){
         nameColumn <- colnames(tmpData0)[col]
         print(nameColumn)
-        info <- unlist(strsplit(x = tmpData0[,col], split = "[;\\s=]+"))
+        info <- unlist(strsplit(x = tmpData0[,col], split = "[;=]+"))
         ### Remove the spaces
         info <-  sapply(info, function(x) gsub("^\\s+|\\s+$", "", x))
 
