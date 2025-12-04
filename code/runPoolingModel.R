@@ -466,7 +466,7 @@ covIDs <- modelData0 %>% filter(cost > 25000) %>% select(covidence.id) %>%
 # dataDesc %>% filter(covidence.id %in% covIDs)    
 # View(modelData0 %>% filter(covidence.id %in% covIDs)) 
 
-modelData <- modelData0 %>% filter(! covidence.id %in% c("9061", "9301"))
+modelData <- modelData0 %>% filter(! covidence.id %in% c("9061", "9301", "7443"))
 modelData %>% select(covidence.id) %>% unique() %>% nrow()
 
 ##############################################################################|
@@ -475,6 +475,8 @@ modelData %>% select(covidence.id) %>% unique() %>% nrow()
 
 modelData <- modelData %>% left_join(dataList$descriptive %>% 
                            select(covidence.id, study.country)) %>% 
+                           mutate(study.country=ifelse(study.country == "Vietnam", 
+                                                       "Viet Nam", study.country)) %>%
                            ungroup() %>%
                            group_by(study.country) %>%
                            mutate(country.id = cur_group_id())
@@ -503,44 +505,26 @@ stanModelData <- list(
 ###############################################################################
 ##### Call the stan model.                                                #####
 ###############################################################################
-totalModel <- stan(file = here("code/inst/tbPatientCostsPooling.stan"),
-                     data = stanModelData,
-                     iter = 1000, chains = 3,
-                     control=list(max_treedepth=14))
+totalModel <- stan(file = "code/inst/tbPatientCostsPooling.stan",
+                       data = stanModelData,
+                       iter = 1200, chains = 3,
+                       warmup=500,
+                       control=list(max_treedepth=14))
 # totalModel
 
+# exp(summary(totalModel)[[1]][1:9,"50%"])
+# exp(summary(totalModel)[[1]][1:9,"2.5%"])
+# exp(summary(totalModel)[[1]][1:9,"97.5%"])
 
-###############################################################################
-### Test only means                                                         ###
-###############################################################################
-modelDataMeansOnly <- modelData %>% filter(mean == 1)
-stanModelMeansOnlyData <- list(
-    N = length(modelDataMeansOnly$cost),
-    cost = modelDataMeansOnly$cost + 0.01,
-    # se = rep(0, length(modelDataMeansOnly$cost)),
-    se = as.numeric(modelDataMeansOnly$se)+ 0.01,
-    dme_prediag = modelDataMeansOnly$dme.prediag, 
-    dnme_prediag =  modelDataMeansOnly$dnme.prediag, 
-    ie_prediag =  modelDataMeansOnly$ie.prediag, 
-    dme_intsvtx = modelDataMeansOnly$dme.intsvtx, 
-    dnme_intsvtx =  modelDataMeansOnly$dnme.intsvtx, 
-    ie_intsvtx =  modelDataMeansOnly$ie.intsvtx,
-    dme_contntx = modelDataMeansOnly$dme.contntx, 
-    dnme_contntx =  modelDataMeansOnly$dnme.contntx, 
-    ie_contntx =  modelDataMeansOnly$ie.contntx, 
-    drtb=modelDataMeansOnly$drtb,
-    urban=modelDataMeansOnly$urban, 
-    pcGDP = modelDataMeansOnly$pcGDP
-)
 
 ###############################################################################
 ##### Call the stan model.                                                #####
 ###############################################################################
-totalModelMeansOnly <- stan(file = here("code/inst/tbPatientCosts.stan"),
-                   data = stanModelMeansOnlyData,
+totalModelYear <- stan(file = here("code/inst/tbPatientCostsPoolingYear.stan"),
+                   data = stanModelData,
                    iter = 1000, chains = 3,
                    control=list(max_treedepth=14))
-totalModelMeansOnly
+totalModel
 
 ###############################################################################
 ##### NOT UPDATED FOR ADDITIONAL POPULATION FILTERING SO DO NOT USE       #####
@@ -563,10 +547,10 @@ stanModelDataHB <- list(
     dme_contntx = modelDataHB$dme.contntx, 
     dnme_contntx =  modelDataHB$dnme.contntx, 
     ie_contntx =  modelDataHB$ie.contntx, 
-    drtb=modelDataHB$drtb
-)
+    N_country = max(modelDataHB$country.id),
+    country_id = modelDataHB$country.id)
 
-whoHbModel <- stan(file = here("code/inst/tbPatientCosts.stan"), 
+whoHbModel <- stan(file = here("code/inst/tbPatientCostsPooling.stan"), 
                      data = stanModelDataHB, 
                      iter = 1000, chains = 3, 
                      control=list(max_treedepth=14))
@@ -628,6 +612,37 @@ whoPubModel <- stan(file = here("code/inst/tbPatientCosts.stan"),
                       control=list(max_treedepth=14))
 whoPubModel
 
+###############################################################################
+### Test only means                                                         ###
+###############################################################################
+modelDataMeansOnly <- modelData %>% filter(mean == 1)
+stanModelMeansOnlyData <- list(
+    N = length(modelDataMeansOnly$cost),
+    cost = modelDataMeansOnly$cost + 0.01,
+    # se = rep(0, length(modelDataMeansOnly$cost)),
+    se = as.numeric(modelDataMeansOnly$se)+ 0.01,
+    dme_prediag = modelDataMeansOnly$dme.prediag, 
+    dnme_prediag =  modelDataMeansOnly$dnme.prediag, 
+    ie_prediag =  modelDataMeansOnly$ie.prediag, 
+    dme_intsvtx = modelDataMeansOnly$dme.intsvtx, 
+    dnme_intsvtx =  modelDataMeansOnly$dnme.intsvtx, 
+    ie_intsvtx =  modelDataMeansOnly$ie.intsvtx,
+    dme_contntx = modelDataMeansOnly$dme.contntx, 
+    dnme_contntx =  modelDataMeansOnly$dnme.contntx, 
+    ie_contntx =  modelDataMeansOnly$ie.contntx, 
+    drtb=modelDataMeansOnly$drtb,
+    urban=modelDataMeansOnly$urban, 
+    pcGDP = modelDataMeansOnly$pcGDP
+)
+
+###############################################################################
+##### Call the stan model.                                                #####
+###############################################################################
+totalModelMeansOnly <- stan(file = here("code/inst/tbPatientCosts.stan"),
+                            data = stanModelMeansOnlyData,
+                            iter = 1000, chains = 3,
+                            control=list(max_treedepth=14))
+totalModelMeansOnly
 #### Empirical ################################################################
 
 
