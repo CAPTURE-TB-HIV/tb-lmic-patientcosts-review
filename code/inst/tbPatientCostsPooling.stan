@@ -107,14 +107,14 @@ transformed parameters {
     for (n in 1:N){
         // systematic component of the estimate 
         mu[n] = (cost_dme_prediag[country_id[n]]  * dme_prediag[n] +
-                cost_dnme_prediag[country_id[n]] * dnme_prediag[n] +
-                cost_ie_prediag[country_id[n]]   * ie_prediag[n] + 
-                cost_dme_intsvtx[country_id[n]]  * dme_intsvtx[n] +
-                cost_dnme_intsvtx[country_id[n]] * dnme_intsvtx[n] +
-                cost_ie_intsvtx[country_id[n]]   * ie_intsvtx[n] + 
-                cost_dme_contntx[country_id[n]]  * dme_contntx[n] +
-                cost_dnme_contntx[country_id[n]] * dnme_contntx[n] +
-                cost_dnme_contntx[country_id[n]] * ie_contntx[n]); 
+                cost_dnme_prediag[country_id[n]]  * dnme_prediag[n] +
+                cost_ie_prediag[country_id[n]]    * ie_prediag[n] + 
+                cost_dme_intsvtx[country_id[n]]   * dme_intsvtx[n] +
+                cost_dnme_intsvtx[country_id[n]]  * dnme_intsvtx[n] +
+                cost_ie_intsvtx[country_id[n]]    * ie_intsvtx[n] + 
+                cost_dme_contntx[country_id[n]]   * dme_contntx[n] +
+                cost_dnme_contntx[country_id[n]]  * dnme_contntx[n] +
+                cost_ie_contntx[country_id[n]]  * ie_contntx[n]); 
                 
     }
 }
