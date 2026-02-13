@@ -12,16 +12,21 @@ library(rstan)
 dataList <- readRDS(here("data/finalData.rds"))
 dataInds <- readRDS(here("data/dataIndicators.rds"))
 
-fullData <- dataList$data %>% left_join(dataInds)
-
+fullData <- dataList$data %>% 
+            left_join(dataInds) %>% 
+            ### Add in study end year
+            left_join(dataList$descriptive %>% select(covidence.id, study.end.year))
+            
 externalCovariates <- readRDS(here("data/covariates.rds"))
 ###############################################################################
 ##### Format the model data to be fed into the stan model.                #####
 ###############################################################################
 modelDataMeans<- fullData %>% 
     select(covidence.id, 
+           study.end.year,
            pop.id, n.participants,
-           drtb, whohb, urban, public, 
+           drtb, dstb, drtb.desc,
+           whohb, urban, public, 
            ### MEANS
            ### total tb care costs
            de.tbcare.mean,
@@ -76,10 +81,24 @@ modelDataMeans<- fullData %>%
            ie.cont.tx.lostincome.total.sd
     ) %>% 
     ##########################################################################################
+    ### Filter pop.ids we aren't interested in  ##############################################
+    ##########################################################################################
+    filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
+                           "Adult6H", "Adult3HP", "Child6H", "Child3HP")) %>% 
+    ##########################################################################################
+    ### Create a DR-TB indicator  ############################################################
+    ##########################################################################################
+    mutate(
+           drtb.ind = ifelse(pop.id == "DRTB" | drtb == 1, 1, 0),
+           dstb.ind = ifelse(pop.id == "DSTB" | 
+                            dstb == 1 | 
+                            grepl("all DS-TB|all DSTB|DSTB only|DS-TB only", drtb.desc), 1, 0),
+
+    ##########################################################################################
     ### Arithmetic if we are missing some calculable values ##################################
     ##########################################################################################
     ###  if we have total tb care and either pre-diag or post-diag costs
-    mutate(dme.postdiag.total.mean = ifelse(!is.na(dme.tbcare.total.mean) & 
+            dme.postdiag.total.mean = ifelse(!is.na(dme.tbcare.total.mean) & 
                                          !is.na(dme.prediag.total.mean) &
                                          is.na(dme.postdiag.total.mean),
                                      dme.tbcare.total.mean - dme.prediag.total.mean, 
@@ -229,15 +248,20 @@ modelDataMeans<- fullData %>%
            ##########################################################################################
            ### Covariates from the data #############################################################
            ##########################################################################################
-           drtb = ifelse(pop.id == "DRTB" | drtb == 1, 1, 0),
            cost = as.numeric(cost)) %>%
-    dplyr::select(covidence.id, pop.id, cost, sd, se, 
+           ### Filter to only those that report DRTB or DSTB costs ##################################
+           filter(xor(drtb.ind==1, dstb.ind==1)) %>%
+    dplyr::select(covidence.id, pop.id,
+                  study.end.year,
+                  n.participants, cost, sd, se, 
                   dme.prediag, dnme.prediag, ie.prediag, 
                   dme.intsvtx, dnme.intsvtx, ie.intsvtx, 
                   dme.contntx, dnme.contntx, ie.contntx, 
                   mean, median, 
                   #### Covariates ####
-                  drtb, whohb, urban, public) 
+                  drtb.ind, dstb.ind,
+                  drtb, dstb,
+                  whohb, urban, public) 
 
 ##############################################################################|
 ### Estimate gamma shape parameter for the conversion from means to medians ###
@@ -251,7 +275,11 @@ modelDataMeans <- modelDataMeans %>% select (!sd) %>% mutate(se = 0) %>% na.omit
 ### Medians  ###
 ##############################################################################|
 modelDataMedians <- fullData %>%  
-    select(covidence.id, pop.id, drtb, whohb, urban, public,
+    select(covidence.id, 
+           study.end.year,
+           pop.id, 
+           drtb, dstb, drtb.desc, 
+           whohb, urban, public,
            n.participants,
            ### MEDIANS
            ### total tb care costs 
@@ -280,27 +308,41 @@ modelDataMedians <- fullData %>%
            dmne.cont.tx.total.median, 
            ie.cont.tx.lostincome.total.median
     ) %>% 
+    ##########################################################################################
+    ### Filter pop.ids we aren't interested in  ##############################################
+    ##########################################################################################
+    filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
+                           "Adult6H", "Adult3HP", "Child6H", "Child3HP")) %>% 
+    
+    ##########################################################################################
+    ### Create a DR-TB indicator  ############################################################
+    ##########################################################################################
+    mutate(
+            drtb.ind = ifelse(pop.id == "DRTB" | drtb == 1, 1, 0),
+            dstb.ind = ifelse(pop.id == "DSTB" | 
+                                  dstb == 1 | 
+                                  grepl("all DS-TB|all DSTB|DSTB only|DS-TB only", drtb.desc), 1, 0),
     #########################################################################################|
     ### Arithmetic if we are missing some calculable values ##################################
     #########################################################################################|
     ###  if we have total tb care and either pre-diag or post-diag costs
-    mutate(dme.postdiag.total.median = ifelse(!is.na(dme.tbcare.total.median) & 
+            dme.postdiag.total.median = ifelse(!is.na(dme.tbcare.total.median) & 
                                                 !is.na(dme.prediag.total.median) &
                                                 is.na(dme.postdiag.total.median),
                                             dme.tbcare.total.median - dme.prediag.total.median, 
                                             dme.postdiag.total.median),
-           dmne.postdiag.total.median = ifelse(!is.na(dmne.tbcare.total.median) & 
+            dmne.postdiag.total.median = ifelse(!is.na(dmne.tbcare.total.median) & 
                                                  !is.na(dmne.prediag.total.median) &
                                                  is.na(dmne.postdiag.total.median),
                                              dmne.tbcare.total.median - dmne.prediag.total.median, 
                                              dmne.postdiag.total.median), 
-           ie.postdiag.lostincome.total.median = ifelse(!is.na(ie.tbcare.lostincome.total.median) & 
+            ie.postdiag.lostincome.total.median = ifelse(!is.na(ie.tbcare.lostincome.total.median) & 
                                                           !is.na(ie.prediag.lostincome.total.median) &
                                                           is.na(ie.postdiag.lostincome.total.median),
                                                       ie.tbcare.lostincome.total.median - ie.prediag.lostincome.total.median, 
                                                       ie.postdiag.lostincome.total.median),
-           ### If we have direct expenditure totals and direct medical or direct non-medical
-           dmne.tbcare.total.median = ifelse(!is.na(de.tbcare.median) & 
+            ### If we have direct expenditure totals and direct medical or direct non-medical
+            dmne.tbcare.total.median = ifelse(!is.na(de.tbcare.median) & 
                                                !is.na(dme.tbcare.total.median) &
                                                is.na(dmne.tbcare.total.median),
                                            de.tbcare.median - dme.tbcare.total.median, 
@@ -417,15 +459,20 @@ modelDataMedians <- fullData %>%
            ##########################################################################################
            ### Covariates from the data #############################################################
            ##########################################################################################
-           drtb = ifelse(pop.id == "DRTB" | drtb == 1, 1, 0),
            cost = as.numeric(cost)) %>%
-    dplyr::select(covidence.id, pop.id, cost, se, 
+           ### Filter to only those that report DRTB or DSTB costs ##################################
+           filter(xor(drtb.ind==1, dstb.ind==1)) %>%
+    dplyr::select(covidence.id, pop.id, 
+                  study.end.year,
+                  n.participants, cost, se,
                   dme.prediag, dnme.prediag, ie.prediag, 
                   dme.intsvtx, dnme.intsvtx, ie.intsvtx, 
                   dme.contntx, dnme.contntx, ie.contntx, 
-                  mean, median,
+                  mean, median, 
                   #### Covariates ####
-                  drtb, whohb, urban, public) %>% na.omit() %>% 
+                  drtb.ind, dstb.ind,
+                  drtb, dstb,
+                  whohb, urban, public) %>% na.omit() %>% 
 ###############################################################################
 ### Remove any of the medians that have the mean estimates
 ###############################################################################
@@ -446,12 +493,13 @@ modelDataBind <- rbind(modelDataMeans,
 tmpBoth <- modelDataBind %>% 
             group_by(covidence.id) %>% 
             filter(length(unique(pop.id)) == 1 | # Keep those with only one pop.id
-                       grepl("Total", pop.id, ignore.case = TRUE) | ### Keep pop.id=Total and rid of others
+                       grepl("Total", pop.id, ignore.case = TRUE) | ### Keep pop.id=Total 
+                       grepl("DSTB", pop.id, ignore.case = TRUE) |
+                       grepl("DRTB", pop.id, ignore.case = TRUE) |
                        (length(unique(pop.id)) == 2 & ! "Total" %in% unique(pop.id) & pop.id != "LTBI"))
 
 tmp2Both <- modelDataBind %>% 
-            filter((length(unique(pop.id)) > 1) & (! covidence.id %in% tmpBoth$covidence.id)) %>% 
-            filter(!grepl("EP", pop.id))
+            filter((length(unique(pop.id)) > 1) & (! covidence.id %in% tmpBoth$covidence.id)) 
 
 modelData0 <- rbind(tmpBoth, 
                     tmp2Both) %>% 
@@ -470,6 +518,12 @@ modelData <- modelData0 %>% filter(! covidence.id %in% c("9061", "9301", "7443")
 modelData %>% select(covidence.id) %>% unique() %>% nrow()
 
 ##############################################################################|
+### Center the study.end.year variable                                ###
+##############################################################################|
+meanStudyYr <- floor(mean(modelData$study.end.year, na.rm=TRUE))
+modelData <- modelData %>% 
+              mutate(year_z = study.end.year - meanStudyYr)
+##############################################################################|
 ### Add study country into the model data                                   ###
 ##############################################################################|
 
@@ -479,8 +533,12 @@ modelData <- modelData %>% left_join(dataList$descriptive %>%
                                                        "Viet Nam", study.country)) %>%
                            ungroup() %>%
                            group_by(study.country) %>%
-                           mutate(country.id = cur_group_id())
+                           mutate(country.id = cur_group_id()) 
 
+##############################################################################|
+### Add country level covariates into the model data                        ###
+##############################################################################|
+modelData <- left_join(modelData, externalCovariates)
 ###############################################################################
 ### Format the data for stan                                                ###
 ###############################################################################
@@ -499,17 +557,27 @@ stanModelData <- list(
                         dnme_contntx =  modelData$dnme.contntx, 
                         ie_contntx =  modelData$ie.contntx, 
                         N_country = max(modelData$country.id),
-                        country_id = modelData$country.id
+                        country_id = modelData$country.id, 
+                        ### Internal covariate
+                        drtb_ind= modelData$drtb.ind,
+                        survey_year = modelData$year_z,
+                        ### External covariates
+                        median_income = log(modelData$dailyMedianIncome)
+                        # median_income = log((modelData %>% 
+                        #                      select(country.id, dailyMedianIncome) %>% 
+                        #                      distinct() %>% 
+                        #                      arrange(country.id))$dailyMedianIncome)
                     )
 
 ###############################################################################
 ##### Call the stan model.                                                #####
 ###############################################################################
-totalModel <- stan(file = "code/inst/tbPatientCostsPooling.stan",
-                       data = stanModelData,
-                       iter = 1200, chains = 3,
-                       warmup=500,
-                       control=list(max_treedepth=14))
+
+totalModel <- stan(file = "code/inst/tbPatientCosts.stan",
+                   data = stanModelData,
+                   iter = 1000, chains = 3,
+                   warmup=500,
+                   control=list(max_treedepth=14))
 # totalModel
 
 # exp(summary(totalModel)[[1]][1:9,"50%"])
@@ -520,11 +588,11 @@ totalModel <- stan(file = "code/inst/tbPatientCostsPooling.stan",
 ###############################################################################
 ##### Call the stan model.                                                #####
 ###############################################################################
-totalModelYear <- stan(file = here("code/inst/tbPatientCostsPoolingYear.stan"),
-                   data = stanModelData,
-                   iter = 1000, chains = 3,
-                   control=list(max_treedepth=14))
-totalModel
+# totalModelYear <- stan(file = here("code/inst/tbPatientCostsPoolingYear.stan"),
+#                    data = stanModelData,
+#                    iter = 1000, chains = 3,
+#                    control=list(max_treedepth=14))
+# totalModel
 
 ###############################################################################
 ##### NOT UPDATED FOR ADDITIONAL POPULATION FILTERING SO DO NOT USE       #####
@@ -550,7 +618,7 @@ stanModelDataHB <- list(
     N_country = max(modelDataHB$country.id),
     country_id = modelDataHB$country.id)
 
-whoHbModel <- stan(file = here("code/inst/tbPatientCostsPooling.stan"), 
+whoHbModel <- stan(file = here("code/inst/tbPatientCosts.stan"), 
                      data = stanModelDataHB, 
                      iter = 1000, chains = 3, 
                      control=list(max_treedepth=14))
