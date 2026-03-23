@@ -25,6 +25,14 @@ clean_data <- function(rawData, saveFile = FALSE){
     
     ### Create new variables 
     ### Separate convidence intervals, etc. 
+    
+    ### Separate survey years 
+    
+    ### First add in survey years for AndersondeCuevas 2016
+    ### the years were found in a separate protocol publication
+    
+    stndData <- stndData %>% mutate(study.years = ifelse(!is.na(first.author.surname) & first.author.surname == "Anderson de Cuevas",
+                                                         "2008-2009", study.years))
     stndData$study.start.year <- NA
     stndData$study.end.year <- NA
     
