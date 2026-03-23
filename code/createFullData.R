@@ -66,6 +66,7 @@ costData <- lineDataList$data %>%
                    contains("ie.")) %>%
             left_join(econData) %>% 
             select(! contains("report"))
+# sum(is.na(costData))
 
 ### Expand the econData to match the rows 
 econData <- costData %>% select(covidence.id) %>% left_join(econData)
@@ -73,6 +74,8 @@ econData <- costData %>% select(covidence.id) %>% left_join(econData)
 updatedCosts <- costData[,c(-(which(colnames(costData) %in% c("pop.id", colnames(econData)))))]
 updatedCosts <- as.data.frame(sapply( updatedCosts, as.numeric )) *
                 econData[,"fromUSD"] * econData[,"inflate"] * econData[,"toUSD"]
+
+# sum(is.na(updatedCosts))
 
 updatedCosts <- cbind(lineDataList$data %>% select(!colnames(updatedCosts)),
                 updatedCosts)

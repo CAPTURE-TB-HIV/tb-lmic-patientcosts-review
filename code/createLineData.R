@@ -18,9 +18,9 @@ library(ggpubr)
 ##############################################################################|
 # cleanData <- readRDS(here("data/fullDataClean.rds"))[["clean data"]]
 
-dataDesc <- cleanData[,1:(which(colnames(cleanData)=="n.participants")-1)]
+dataDesc <- cleanData[,c(1:(which(colnames(cleanData)=="n.participants")-1), ncol(cleanData)-0:1)]
 dataAll <- cleanData[,(which(colnames(cleanData)=="n.participants")):which(colnames(cleanData)=="additional.comments")] ### Need to fix 
-dataStudyQuality <- cleanData[,(which(colnames(cleanData)=="additional.comments")+1):ncol(cleanData)] ### Need to fix 
+dataStudyQuality <- cleanData[,(which(colnames(cleanData)=="additional.comments")+1):(ncol(cleanData)-2)] ### Need to fix 
 
 # rm(cleanData)
 ##############################################################################|
