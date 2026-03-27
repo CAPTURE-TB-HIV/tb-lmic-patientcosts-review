@@ -33,6 +33,12 @@ clean_data <- function(rawData, saveFile = FALSE){
     
     stndData <- stndData %>% mutate(study.years = ifelse(!is.na(first.author.surname) & first.author.surname == "Anderson de Cuevas",
                                                          "2008-2009", study.years))
+    
+    ### Add in study years for two other publications that we found via author outreach 
+    ### Sarin 2018 
+    stndData <- stndData %>% mutate(study.years = ifelse(!is.na(first.author.surname) & first.author.surname == "Sarin",
+                                                         "2016-2017", study.years))
+    
     stndData$study.start.year <- NA
     stndData$study.end.year <- NA
     
