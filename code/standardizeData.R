@@ -29,6 +29,19 @@ standardData <- function(rawData){
     
     colnames(cleanDF) <- dict[,"Short.column.name"]
     
+    ### Remove the columns that Covidence inserted for each stratification
+    ### These are marked with the column name "REMOVE"
+    cleanDF <- cleanDF[,-grep("REMOVE",colnames(cleanDF))]
+    
+    
+    ### Add in the WHO patient cost surveys  ### 
+    whoSurveyData <- read.csv(here("data/WHO-patient-cost surveys.csv")) %>% 
+        mutate(n.sites = as.character(n.sites), 
+               study.years = as.character(study.years),
+               currency.year = as.character(currency.year))
+    
+    cleanDF <- bind_rows(cleanDF, whoSurveyData)
+    
     ### Clean responses ###
     
     ### Clean all responses for leading and trailing spaces
@@ -68,10 +81,6 @@ standardData <- function(rawData){
     # Which are matches 
     ci.index <- grep("ci\\.", colnames(cleanDF))
     cleanDF[, ci.index] <- sapply(cleanDF[, ci.index], function(x) gsub("–", "-", x, perl = TRUE)) 
-    
-    ### Remove the columns that Covidence inserted for each stratification
-    ### These are marked with the column name "REMOVE"
-    cleanDF <- cleanDF[,-grep("REMOVE",colnames(cleanDF))]
     
     ### Identify erroneously empty fields
     ### These will be empty strings, not "N/A" so "is.na()" won't help
