@@ -6,7 +6,7 @@ library(here)
 
 
 ### Read in the TB patient costs review country year pairs 
-reviewData <- readRDS(here("data/finalData.rds"))[["descriptive"]] %>% 
+reviewData <- readRDS(here("data/reviewData/finalData.rds"))[["descriptive"]] %>% 
               select(study.country,Country.Code, study.end.year)
 
 
@@ -64,7 +64,7 @@ healthSpendData[rowSums(is.na(healthSpendData)) > 0,]
 
 ### Save the dataset 
 # write.csv(healthSpendData, "data/healthAccounts.csv")
-saveRDS(healthSpendData, here("data/healthAccounts.rds"), version =2)
+saveRDS(healthSpendData, here("data/covariateData/healthAccounts.rds"), version =2)
 
 ###############################################################################
 ##### Create the median income estimate using Gross National Income and GINI
@@ -191,4 +191,45 @@ sum(medianIncomeDF$median.income.calc.usd < 1, na.rm = TRUE) / nrow(medianIncome
 
 ### Save the dataset
 # write.csv(medianIncomeDF, "data/medianIncome.csv")
-saveRDS(medianIncomeDF, here("data/medianIncome.rds"), version =2)
+saveRDS(medianIncomeDF, here("data/covariateData/medianIncome.rds"), version =2)
+
+
+##### Check for correlation #### 
+
+allFinCovDF <- full_join(medianIncomeDF %>% mutate(study.end.year = as.character(study.end.year)), healthSpendData) %>% 
+               mutate_at(vars(median.income.calc.usd, median.income.calc.lcu, 
+                              `Current Health Expenditure (CHE) as % Gross Domestic Product (GDP)`,
+                              `Current Health Expenditure (CHE) per Capita in US$`,
+                              `Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`,
+                              `Out-of-Pocket Expenditure (OOPS) per Capita in US$`),
+                              as.numeric)
+                       
+
+ggplot() + geom_point(data=allFinCovDF, 
+                      aes(x=median.income.calc.usd, y=`Current Health Expenditure (CHE) per Capita in US$`)) + 
+    theme_minimal() + xlab("Median Income per Capita in US$")
+
+ggplot() + geom_point(data=allFinCovDF, 
+                      aes(x=median.income.calc.usd, y=`Out-of-Pocket Expenditure (OOPS) per Capita in US$`)) + 
+    theme_minimal() + xlab("Median Income per Capita in US$")
+
+
+ggplot() + geom_point(data=allFinCovDF, 
+                      aes(x=`Current Health Expenditure (CHE) per Capita in US$`,
+                          y=`Out-of-Pocket Expenditure (OOPS) per Capita in US$`)) + 
+    theme_minimal()
+
+##### Check percentages #####
+ggplot() + geom_point(data=allFinCovDF, 
+                      aes(x=median.income.calc.usd, y=`Current Health Expenditure (CHE) as % Gross Domestic Product (GDP)`)) + 
+    theme_minimal() + xlab("Median Income per Capita in US$")
+
+ggplot() + geom_point(data=allFinCovDF, 
+                      aes(x=median.income.calc.usd, y=`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)) + 
+    theme_minimal() + xlab("Median Income per Capita in US$")
+
+
+ggplot() + geom_point(data=allFinCovDF, 
+                      aes(x=`Current Health Expenditure (CHE) as % Gross Domestic Product (GDP)`,
+                          y=`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)) + 
+    theme_minimal()
