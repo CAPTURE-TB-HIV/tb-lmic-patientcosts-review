@@ -29,9 +29,9 @@ source(here("code/createLineData.R"))
 rawData <- readRDS(here("data/fullDataRaw.rds"))
 
 ##### Economic data ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
-toUSDcf   <- readRDS(here("data/toUSDconversionFactors.rds"))
-fromUSDcf <- readRDS(here("data/fromUSDconversionFactors.rds"))
-inflation <- readRDS(here("data/inflationLocalFactors.rds"))
+toUSDcf   <- readRDS(here("data/monetaryConversion/toUSDconversionFactors.rds"))
+fromUSDcf <- readRDS(here("data/monetaryConversion/fromUSDconversionFactors.rds"))
+inflation <- readRDS(here("data/monetaryConversion/inflationLocalFactors.rds"))
 
 ##############################################################################|
 ########################      CLEAN THE DATA      #############################
@@ -63,7 +63,8 @@ costData <- lineDataList$data %>%
                    contains("de."), 
                    contains("dme."), 
                    contains("dmne."), 
-                   contains("ie.")) %>%
+                   contains("ie."),
+                   contains("total.cost")) %>%
             left_join(econData) %>% 
             select(! contains("report"))
 # sum(is.na(costData))
@@ -72,7 +73,7 @@ costData <- lineDataList$data %>%
 econData <- costData %>% select(covidence.id) %>% left_join(econData)
 
 updatedCosts <- costData[,c(-(which(colnames(costData) %in% c("pop.id", colnames(econData)))))]
-updatedCosts <- as.data.frame(sapply( updatedCosts, as.numeric )) *
+updatedCosts <- as.data.frame(sapply( updatedCosts, as.numeric)) *
                 econData[,"fromUSD"] * econData[,"inflate"] * econData[,"toUSD"]
 
 # sum(is.na(updatedCosts))
@@ -82,5 +83,13 @@ updatedCosts <- cbind(lineDataList$data %>% select(!colnames(updatedCosts)),
 
 lineDataUpdated           <- lineDataList
 lineDataUpdated[["data"]] <- updatedCosts
+
+#### Check for induced NAs
+setdiff(
+colnames(cleanData[1,] %>% select(colnames(lineDataUpdated[["data"]])[-2])) [which(!is.na(cleanData[1,] %>% select(colnames(lineDataUpdated[["data"]])[-2])))],
+colnames(lineDataUpdated[["data"]][1,-2]) [which(!is.na(lineDataUpdated[["data"]][1,-2]))]
+)
+#### These are all IQRs which are not being used at the moment so we will 
+#### leave as a future to-do. 
 
 saveRDS(lineDataUpdated, here("data/finalData.rds"), version=2)

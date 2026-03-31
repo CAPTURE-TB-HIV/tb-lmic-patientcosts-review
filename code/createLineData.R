@@ -19,8 +19,16 @@ library(ggpubr)
 # cleanData <- readRDS(here("data/fullDataClean.rds"))[["clean data"]]
 
 dataDesc <- cleanData[,c(1:(which(colnames(cleanData)=="n.participants")-1), ncol(cleanData)-0:1)]
-dataAll <- cleanData[,(which(colnames(cleanData)=="n.participants")):which(colnames(cleanData)=="additional.comments")] ### Need to fix 
-dataStudyQuality <- cleanData[,(which(colnames(cleanData)=="additional.comments")+1):(ncol(cleanData)-2)] ### Need to fix 
+
+### Because the WHO surveys have a different structure, we have to edit these 
+### indices, rearranging a few items. 
+dataIndices <- c((which(colnames(cleanData)=="n.participants")):(which(colnames(cleanData)=="n.participants.hiv.unknown")), 
+                 grep("total.cost", colnames(cleanData)), 
+                 (which(colnames(cleanData)=="report.de")):(which(colnames(cleanData)=="additional.comments")))
+
+dataAll <- cleanData[,dataIndices]
+
+dataStudyQuality <- cleanData[,(which(colnames(cleanData)=="additional.comments")+1):(ncol(cleanData)-5)]
 
 # rm(cleanData)
 ##############################################################################|
@@ -59,6 +67,7 @@ rowStatData <- data.frame(pop.id = NA,
 
 ### Loop through the dataframe rows. 
 for (index in 1:nrow(dataAll)){
+    
     ### Find the non-missings
     tmpData0 <- dataAll[index, grep("=", dataAll[index,])] %>% 
                 ### These stat columns need to be treated specially so 
@@ -146,9 +155,6 @@ for (index in 1:nrow(dataAll)){
 }
 
 
-
-
-
 ### make empty dataframe 
 newDF <- dataAll %>% select(!contains("stat")) 
 newDF$covidence.id <- dataDesc$covidence.id
@@ -157,8 +163,14 @@ newDF$covidence.id <- dataDesc$covidence.id
 ### missing fields. 
 
 newAllData <- data.frame()
+
 for(i in 1:length(allData)){
+    ### We want only those columns that are not in the new line listed dataset 
+    ### which is held in the allData list. 
     newDF2 <- newDF[i,] %>% select(!colnames(allData[[i]])[-c(1, ncol(allData[[i]]))])
+    
+    ### Join the newDF2 and all data list by covidence id 
+    ### This should create a dataframe of size n(pop.id) * 1130
     newDF3 <- full_join(newDF2, allData[[i]], by=c("covidence.id"))
     ### bind the data all together
     newAllData <- rbind(newAllData, newDF3)
