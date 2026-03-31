@@ -19,7 +19,7 @@ standardData <- function(rawData){
     ### Clean the column names ###
     ### For standardization and efficiency, shortened column names will be 
     ### read in from the data/data_dictionary.csv file. 
-    dict <- read.csv(here("data/data_dictionary.csv"))[,1:3]
+    dict <- read.csv(here("data/reviewData/data_dictionary.csv"))[,1:3]
     
     ### Check that the row count of column names equals the column count 
     ### of raw data. 
@@ -138,7 +138,7 @@ standardData <- function(rawData){
         missingDF <- missingDF[order(missingDF$Study.title),]    
         
         ### Save missings dataframe as a csv
-        write.csv(missingDF, here("data/missingDataToCheck.csv"), row.names = FALSE)
+        write.csv(missingDF, here("data/reviewData/missingDataToCheck.csv"), row.names = FALSE)
         
     }
     ### Convert column types to correct format

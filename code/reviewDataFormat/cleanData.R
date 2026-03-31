@@ -17,7 +17,7 @@ clean_data <- function(rawData, saveFile = FALSE){
     # rawData <- readRDS(here("data/fullDataRaw.rds"))
 
     ### Call in the standardizeData function
-    source(here("code/standardizeData.R"))
+    source(here("code/reviewDataFormat/standardizeData.R"))
     stndList <- standardData(rawData)
     stndData <- stndList[["clean data"]]
     ### Create line listed data 
@@ -113,7 +113,7 @@ clean_data <- function(rawData, saveFile = FALSE){
     
     ### Save clean data to RDS file 
     if (saveFile == TRUE){
-        saveRDS(stndList, file = here("data/fullDataClean.rds"))
+        saveRDS(stndList, file = here("data/reviewData/fullDataClean.rds"))
     }
     
     # return(cleanDataSummary)

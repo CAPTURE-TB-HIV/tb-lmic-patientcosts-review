@@ -9,7 +9,7 @@ library(rstan)
 ###############################################################################
 ##### Read in the model data                                              #####
 ###############################################################################
-dataList <- readRDS(here("data/finalData.rds"))
+dataList <- readRDS(here("data/reviewData/finalData.rds"))
 dataInds <- readRDS(here("data/dataIndicators.rds"))
 
 fullData <- dataList$data %>% left_join(dataInds)

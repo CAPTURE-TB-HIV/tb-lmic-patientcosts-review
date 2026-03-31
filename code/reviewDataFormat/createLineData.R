@@ -198,7 +198,7 @@ lineData <- list("descriptive" = dataDesc,
 
 ### Save line data to RDS file 
 if (saveFile == TRUE){
-    saveRDS(lineData, here("data/fullLineData.rds"), version=2)
+    saveRDS(lineData, here("data/reviewData/fullLineData.rds"), version=2)
 }
 
 return(lineData)

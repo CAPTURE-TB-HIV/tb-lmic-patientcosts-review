@@ -19,14 +19,14 @@ library(reshape2)
 #########################    SOURCE OTHER FILES    ############################
 ##############################################################################|
 ##### Data cleaning function 
-source(here("code/cleanData.R")) 
+source(here("code/reviewDataFormat/cleanData.R")) 
 ##### Reformat the multiple populations into separate lines of data
-source(here("code/createLineData.R")) 
+source(here("code/reviewDataFormat/createLineData.R")) 
 
 ##############################################################################|
 #############################    LOAD DATA    #################################
 ##############################################################################|
-rawData <- readRDS(here("data/fullDataRaw.rds"))
+rawData <- readRDS(here("data/reviewData/fullDataRaw.rds"))
 
 ##### Economic data ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
 toUSDcf   <- readRDS(here("data/monetaryConversion/toUSDconversionFactors.rds"))
@@ -92,4 +92,4 @@ colnames(lineDataUpdated[["data"]][1,-2]) [which(!is.na(lineDataUpdated[["data"]
 #### These are all IQRs which are not being used at the moment so we will 
 #### leave as a future to-do. 
 
-saveRDS(lineDataUpdated, here("data/finalData.rds"), version=2)
+saveRDS(lineDataUpdated, here("data/reviewData/finalData.rds"), version=2)
