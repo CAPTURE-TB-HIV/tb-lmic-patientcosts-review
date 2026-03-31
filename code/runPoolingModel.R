@@ -17,7 +17,9 @@ fullData <- dataList$data %>%
             ### Add in study end year
             left_join(dataList$descriptive %>% select(covidence.id, study.end.year))
             
-externalCovariates <- readRDS(here("data/covariates.rds"))
+medianIncome <- readRDS(here("data/covariateData/medianIncome.rds")) %>% distinct()
+oopSpending <- readRDS(here("data/covariateData/healthAccounts.rds")) %>% distinct()
+
 ###############################################################################
 ##### Format the model data to be fed into the stan model.                #####
 ###############################################################################
@@ -526,9 +528,8 @@ modelData <- modelData %>%
 ##############################################################################|
 ### Add study country into the model data                                   ###
 ##############################################################################|
-
 modelData <- modelData %>% left_join(dataList$descriptive %>% 
-                           select(covidence.id, study.country)) %>% 
+                           select(covidence.id, study.country, Country.Code)) %>% 
                            mutate(study.country=ifelse(study.country == "Vietnam", 
                                                        "Viet Nam", study.country)) %>%
                            ungroup() %>%
@@ -538,7 +539,18 @@ modelData <- modelData %>% left_join(dataList$descriptive %>%
 ##############################################################################|
 ### Add country level covariates into the model data                        ###
 ##############################################################################|
-modelData <- left_join(modelData, externalCovariates)
+modelData <- left_join(modelData, 
+                        oopSpending %>% 
+                        mutate(study.end.year = as.numeric(study.end.year)) %>% 
+                        rename(oop.perc.che=`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`) %>%
+                        select(Country.Code, study.end.year, oop.perc.che))
+
+modelData <-left_join(modelData, 
+                       medianIncome %>% 
+                       mutate(study.end.year = as.numeric(study.end.year)) %>% 
+                       select(study.country, study.end.year, median.income.calc.usd)) %>% 
+                       rename(median.income = median.income.calc.usd)
+                       
 ###############################################################################
 ### Format the data for stan                                                ###
 ###############################################################################
@@ -562,11 +574,8 @@ stanModelData <- list(
                         drtb_ind= modelData$drtb.ind,
                         survey_year = modelData$year_z,
                         ### External covariates
-                        median_income = log(modelData$dailyMedianIncome)
-                        # median_income = log((modelData %>% 
-                        #                      select(country.id, dailyMedianIncome) %>% 
-                        #                      distinct() %>% 
-                        #                      arrange(country.id))$dailyMedianIncome)
+                        median_income = log(modelData$median.income), 
+                        oop_perc_che = modelData$oop.perc.che
                     )
 
 ###############################################################################
