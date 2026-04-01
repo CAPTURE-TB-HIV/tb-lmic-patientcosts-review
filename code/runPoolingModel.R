@@ -550,14 +550,15 @@ modelData <-left_join(modelData,
                        medianIncome %>% 
                        mutate(study.end.year = as.numeric(study.end.year)) %>% 
                        select(study.country, study.end.year, median.income.calc.usd)) %>% 
-                       rename(median.income = median.income.calc.usd)
+                       rename(median.income = median.income.calc.usd) %>%
+                       mutate(oop.perc.che = as.numeric(oop.perc.che))
                        
 ###############################################################################
 ### Format the data for stan                                                ###
 ###############################################################################
 stanModelData <- list(
                         N = length(modelData$cost),
-                        cost = modelData$cost + 0.01,
+                        cost = modelData$cost + 1,
                         se = rep(0, length(modelData$cost)),
                         # se = as.numeric(modelData$se)+ 0.01,
                         dme_prediag = modelData$dme.prediag, 
@@ -575,8 +576,8 @@ stanModelData <- list(
                         drtb_ind= modelData$drtb.ind,
                         survey_year = modelData$year_z,
                         ### External covariates
-                        median_income = log(modelData$median.income), 
-                        oop_perc_che = modelData$oop.perc.che
+                        median_income = log(modelData$median.income) - mean(log(modelData$median.income)),
+                        oop_perc_che = modelData$oop.perc.che - mean(modelData$oop.perc.che)
                     )
 
 ###############################################################################
@@ -588,10 +589,25 @@ totalModel <- stan(file = "code/inst/tbPatientCosts.stan",
                    iter = 1000, chains = 3,
                    warmup=500,
                    control=list(max_treedepth=14))
-# totalModel
 
+
+
+### Pooled patient costs as mean median income and oop perc and study year
+exp(summary(totalModel)[[1]][1:9,"mean"])
 # exp(summary(totalModel)[[1]][1:9,"50%"])
 # exp(summary(totalModel)[[1]][1:9,"2.5%"])
 # exp(summary(totalModel)[[1]][1:9,"97.5%"])
+
+### Print the estimated impact of study year 
+costCategories <- paste(c(rep("dme",3), rep("dnme",3), rep("ie",3)), c("prediag", "intsvtx", "contntx"), sep="_")
+yearCoeffs <- paste0("beta_year_", costCategories)
+exp(summary(totalModel)[[1]][yearCoeffs,"mean"])
+
+### Print the estimated impact of drtb
+drtbCoeffs <- paste0("beta_drtb_", costCategories)
+exp(summary(totalModel)[[1]][drtbCoeffs,"mean"])
+
+
+
 
 
