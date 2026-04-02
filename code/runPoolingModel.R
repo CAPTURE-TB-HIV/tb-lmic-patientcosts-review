@@ -581,7 +581,11 @@ stanModelData <- list(
                     )
 
 ###############################################################################
-##### Call the stan model.                                                #####
+##### Call the stan models                                                #####
+###############################################################################
+
+###############################################################################
+### Covariates allowed to vary across  each cost category
 ###############################################################################
 
 totalModel <- stan(file = "code/inst/tbPatientCosts.stan",
@@ -591,7 +595,6 @@ totalModel <- stan(file = "code/inst/tbPatientCosts.stan",
                    control=list(max_treedepth=14))
 
 
-
 ### Pooled patient costs as mean median income and oop perc and study year
 exp(summary(totalModel)[[1]][1:9,"mean"])
 # exp(summary(totalModel)[[1]][1:9,"50%"])
@@ -599,7 +602,8 @@ exp(summary(totalModel)[[1]][1:9,"mean"])
 # exp(summary(totalModel)[[1]][1:9,"97.5%"])
 
 ### Print the estimated impact of study year 
-costCategories <- paste(c(rep("dme",3), rep("dnme",3), rep("ie",3)), c("prediag", "intsvtx", "contntx"), sep="_")
+costCategories <- paste(c(rep("dme",3), rep("dnme",3), rep("ie",3)), 
+                        c("prediag", "intsvtx", "contntx"), sep="_")
 yearCoeffs <- paste0("beta_year_", costCategories)
 exp(summary(totalModel)[[1]][yearCoeffs,"mean"])
 
@@ -607,6 +611,28 @@ exp(summary(totalModel)[[1]][yearCoeffs,"mean"])
 drtbCoeffs <- paste0("beta_drtb_", costCategories)
 exp(summary(totalModel)[[1]][drtbCoeffs,"mean"])
 
+###############################################################################
+### Covariates have the same effect across cost category
+###############################################################################
+
+simpCovMod <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
+                   data = stanModelData,
+                   iter = 1000, chains = 3,
+                   warmup=500,
+                   control=list(max_treedepth=14))
+
+
+### Pooled patient costs as mean median income and oop perc and study year
+exp(summary(simpCovMod)[[1]][1:9,"mean"])
+# exp(summary(totalModel)[[1]][1:9,"50%"])
+# exp(summary(totalModel)[[1]][1:9,"2.5%"])
+# exp(summary(totalModel)[[1]][1:9,"97.5%"])
+
+### Print the estimated impact of study year 
+exp(summary(simpCovMod)[[1]]["beta_year","mean"])
+
+### Print the estimated impact of drtb
+exp(summary(simpCovMod)[[1]]["beta_drtb","mean"])
 
 
 
