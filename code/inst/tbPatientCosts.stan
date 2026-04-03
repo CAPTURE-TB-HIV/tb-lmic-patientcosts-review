@@ -279,9 +279,11 @@ model {
 }
 
 generated quantities {
-    //  vector[N] y_rep;
-    //  for(n in 1:N){
-        // // posterior draws to get posterior predictive checks
-        //      y_rep[n] <- gamma_rng(shape_cost[n], rate_cost[n]);
-        //  }
+  // Add log_likelihood for model comparison
+  vector[N] log_lik;
+  for (n in 1:N) {
+    vector[1] cost_n = [cost[n]]';
+    vector[1] mu_n = [mu[n]]';
+    log_lik[n] = alt_gamma_lpdf(cost_n | tau, mu_n);
+  }
 }
