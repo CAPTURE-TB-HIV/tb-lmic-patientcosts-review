@@ -5,6 +5,7 @@ library(here)
 library(dplyr)
 library(tidyr)
 library(rstan)
+library(loo)
 
 ###############################################################################
 ##### Read in the model data                                              #####
@@ -621,7 +622,6 @@ simpCovMod <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
                    warmup=500,
                    control=list(max_treedepth=14))
 
-
 ### Pooled patient costs as mean median income and oop perc and study year
 exp(summary(simpCovMod)[[1]][1:9,"mean"])
 # exp(summary(totalModel)[[1]][1:9,"50%"])
@@ -634,6 +634,22 @@ exp(summary(simpCovMod)[[1]]["beta_year","mean"])
 ### Print the estimated impact of drtb
 exp(summary(simpCovMod)[[1]]["beta_drtb","mean"])
 
+###############################################################################
+### Compare with LOO and WAIC 
+###############################################################################
+### First check that pointwise log likelihood approximates that stan outputs
+### for the total log likelihood 
+
+logLiks <- paste0("log_lik[", 1:nrow(modelData), "]")
+sum(summary(totalModel)[[1]][logLiks,"mean"])
+summary(totalModel)[[1]]["lp__","mean"]
+
+sum(summary(simpCovMod)[[1]][logLiks,"mean"])
+summary(simpCovMod)[[1]]["lp__","mean"]
 
 
+looTotal <- rstan::loo(totalModel)
+looSimp <- rstan::loo(simpCovMod)
+
+loo_compare(looTotal, looSimp)
 
