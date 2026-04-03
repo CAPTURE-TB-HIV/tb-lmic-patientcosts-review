@@ -613,6 +613,19 @@ drtbCoeffs <- paste0("beta_drtb_", costCategories)
 exp(summary(totalModel)[[1]][drtbCoeffs,"mean"])
 
 ###############################################################################
+### Covariates have the a common effect and a random effect across cost category
+###############################################################################
+
+reCovModel <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
+                   data = stanModelData,
+                   iter = 1000, chains = 3,
+                   warmup=500,
+                   control=list(max_treedepth=14))
+
+exp(summary(reCovModel)[[1]][1:9,"mean"])
+
+
+###############################################################################
 ### Covariates have the same effect across cost category
 ###############################################################################
 
@@ -649,7 +662,7 @@ summary(simpCovMod)[[1]]["lp__","mean"]
 
 
 looTotal <- rstan::loo(totalModel)
+looReCov <- rstan::loo(reCovModel)
 looSimp <- rstan::loo(simpCovMod)
 
-loo_compare(looTotal, looSimp)
-
+loo_compare(looTotal, looReCov, looSimp)
