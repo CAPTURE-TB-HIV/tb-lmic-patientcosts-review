@@ -97,31 +97,40 @@ transformed parameters {
 // Calculate mean cost estimate 
 ///////////////////////////////////////////////////////////////////////////
 for (n in 1:N){
-        mu[n] =  (exp(beta_dme_prediag + randeff_country[country_id[n]]) *
+        mu[n] =  (exp(beta_dme_prediag + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  dme_prediag[n]   +
                  
-                 exp(beta_dnme_prediag + randeff_country[country_id[n]]) *
+                 exp(beta_dnme_prediag +  
+                     (randeff_country[country_id[n]] * tau_randeff_country)) *
                  dnme_prediag[n] +
                  
-                 exp(beta_ie_prediag + randeff_country[country_id[n]]) *
+                 exp(beta_ie_prediag + 
+                     (randeff_country[country_id[n]] * tau_randeff_country)) *
                  ie_prediag[n]   + 
                  
-                 exp(beta_dme_intsvtx + randeff_country[country_id[n]]) *
+                 exp(beta_dme_intsvtx + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  dme_intsvtx[n]  +
                  
-                 exp(beta_dnme_intsvtx + randeff_country[country_id[n]]) *
+                 exp(beta_dnme_intsvtx + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  dnme_intsvtx[n] +
                  
-                 exp(beta_ie_intsvtx + randeff_country[country_id[n]]) *
+                 exp(beta_ie_intsvtx + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  ie_intsvtx[n]   + 
                  
-                 exp(beta_dme_contntx + randeff_country[country_id[n]]) *
+                 exp(beta_dme_contntx + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  dme_contntx[n]  +
                  
-                 exp(beta_dnme_contntx + randeff_country[country_id[n]]) *
+                 exp(beta_dnme_contntx + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  dnme_contntx[n] +
                  
-                 exp(beta_ie_contntx + randeff_country[country_id[n]]) *
+                 exp(beta_ie_contntx + 
+                      (randeff_country[country_id[n]] * tau_randeff_country)) *
                  ie_contntx[n]) * 
                  
                  // Covariates 
@@ -160,7 +169,7 @@ model {
     beta_oop_perc_che  ~ normal(0, 10);
     // 
     // Priors for random slopes  
-    randeff_country ~ normal(0, tau_randeff_country);
+    randeff_country ~ normal(0, 1);
     
     // Priors for dispersion of random effect
     tau_randeff_country  ~ normal(0, 10); //default prior should be student t (CHECK!!!)
