@@ -43,6 +43,9 @@ data {
     // external covariates
     real median_income[N];  // log-scale, mean-centered daily median income formatted in covariates.R
     real oop_perc_che[N];   // mean-centered out of pocket expenses as a perc of current health expenditure
+    real uhc_index[N]; // mean-centered index of health care quality
+    
+    // dispersion
     vector<lower=0>[N] se;  // study reported dispersion estimate 
     // real<lower=0> tau;
 }
@@ -81,6 +84,9 @@ parameters {
     
     // OOP as perc of current health expenditures
     real beta_oop_perc_che;
+    
+    //UHC index 
+    real beta_uhc; 
     
     // Additional variance parameter
     real<lower=0> tau;
@@ -137,7 +143,8 @@ for (n in 1:N){
                  exp(beta_drtb * drtb_ind[n]) * 
                  exp(beta_year * survey_year[n]) * 
                  exp(beta_med_income * median_income[n]) * 
-                 exp(beta_oop_perc_che * oop_perc_che[n]);     
+                 exp(beta_oop_perc_che * oop_perc_che[n]) * 
+                 exp(beta_uhc * uhc_index[n]);     
     }
 }
 
@@ -167,7 +174,10 @@ model {
     
     // OOP as perc of CHE
     beta_oop_perc_che  ~ normal(0, 10);
-    // 
+    
+    // UHC index 
+    beta_uhc ~ normal(0, 10); 
+    
     // Priors for random slopes  
     randeff_country ~ normal(0, 1);
     

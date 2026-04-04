@@ -17,9 +17,14 @@ fullData <- dataList$data %>%
             left_join(dataInds) %>% 
             ### Add in study end year
             left_join(dataList$descriptive %>% select(covidence.id, study.end.year))
+
+###############################################################################
+##### Read in the covariate data                                          #####
+###############################################################################
             
 medianIncome <- readRDS(here("data/covariateData/medianIncome.rds")) %>% distinct()
 oopSpending <- readRDS(here("data/covariateData/healthAccounts.rds")) %>% distinct()
+uhcIndex <- readRDS(here("data/covariateData/uhcIndex.rds")) %>% distinct()
 
 ###############################################################################
 ##### Format the model data to be fed into the stan model.                #####
@@ -553,6 +558,11 @@ modelData <-left_join(modelData,
                        select(study.country, study.end.year, median.income.calc.usd)) %>% 
                        rename(median.income = median.income.calc.usd) %>%
                        mutate(oop.perc.che = as.numeric(oop.perc.che))
+
+modelData <-left_join(modelData, 
+                      uhcIndex %>% 
+                          mutate(study.end.year = as.numeric(study.end.year)) %>% 
+                          select(Country.Code, study.end.year, UHCindex))
                        
 ###############################################################################
 ### Format the data for stan                                                ###
@@ -578,7 +588,8 @@ stanModelData <- list(
                         survey_year = modelData$year_z,
                         ### External covariates
                         median_income = log(modelData$median.income) - mean(log(modelData$median.income)),
-                        oop_perc_che = modelData$oop.perc.che - mean(modelData$oop.perc.che)
+                        oop_perc_che = modelData$oop.perc.che - mean(modelData$oop.perc.che), 
+                        uhc_index = modelData$UHCindex - mean(modelData$UHCindex)
                     )
 
 ###############################################################################
@@ -628,8 +639,7 @@ exp(summary(reCovModel)[[1]][1:9,"mean"])
 ###############################################################################
 ### Covariates have the same effect across cost category
 ###############################################################################
-
-simpCovMod <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
+simpCovUnitMod <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
                    data = stanModelData,
                    iter = 1000, chains = 3,
                    warmup=500,
