@@ -234,7 +234,7 @@ for (n in 1:N){
                  exp(beta_dme_contntx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dme_contntx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_dnme_contntx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_oop_perc_che_dme_contntx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
                      (beta_uhc_dme_contntx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dme_contntx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_dme_contntx * tau_year + beta_year_overall)  * survey_year[n]) *
