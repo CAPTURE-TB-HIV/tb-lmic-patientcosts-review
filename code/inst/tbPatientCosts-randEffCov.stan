@@ -47,6 +47,9 @@ data {
     
     // dispersion
     vector<lower=0>[N] se;  // study reported dispersion estimate 
+    
+    int prior_sigma; /// for normal priors below
+
 }
 
 transformed data {
@@ -75,7 +78,7 @@ parameters {
     // We are going to use a random effect setup 
     // Each covariate will have an overall effect plus the
     // nine effects for each of the cost categories: 
-    // 10 covariates in total. 
+    // prior_sigma covariates in total. 
     
     // DR-TB multiplier coefficients 
     real beta_drtb_overall; 
@@ -180,8 +183,8 @@ for (n in 1:N){
         mu[n] =  exp(beta_dme_prediag + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dme_prediag * tau_med_income + beta_med_income_overall) * median_income[n] + 
-                     (beta_oop_perc_che_dme_prediag * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_dme_prediag * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_dme_prediag + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_dme_prediag  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dme_prediag * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_dme_prediag * tau_year + beta_year_overall)  * survey_year[n]) *
                  dme_prediag[n]  +
@@ -189,8 +192,8 @@ for (n in 1:N){
                  exp(beta_dnme_prediag + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dnme_prediag * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_dnme_prediag * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_dnme_prediag * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_dnme_prediag + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_dnme_prediag  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dnme_prediag * tau_drtb + beta_drtb_overall)  * drtb_ind[n]) *
                  exp((beta_year_dnme_prediag * tau_year + beta_year_overall)  * survey_year[n]) *
                  dnme_prediag[n] +
@@ -198,8 +201,8 @@ for (n in 1:N){
                  exp(beta_ie_prediag + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_ie_prediag * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_ie_prediag * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_ie_prediag * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_ie_prediag + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_ie_prediag  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_ie_prediag * tau_drtb + beta_drtb_overall)  * drtb_ind[n]) *
                  exp((beta_year_ie_prediag * tau_year + beta_year_overall)  * survey_year[n]) *
                  ie_prediag[n]  +
@@ -207,8 +210,8 @@ for (n in 1:N){
                  exp(beta_dme_intsvtx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dme_intsvtx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_dme_intsvtx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_dme_intsvtx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_dme_intsvtx + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_dme_intsvtx  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dme_intsvtx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_dme_intsvtx * tau_year + beta_year_overall)  * survey_year[n]) *
                  dme_intsvtx[n]  +
@@ -216,8 +219,8 @@ for (n in 1:N){
                  exp(beta_dnme_intsvtx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dnme_intsvtx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_dnme_intsvtx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_dnme_intsvtx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_dnme_intsvtx + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_dnme_intsvtx  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dnme_intsvtx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_dnme_intsvtx * tau_year + beta_year_overall)  * survey_year[n]) *
                  dnme_intsvtx[n] +
@@ -225,8 +228,8 @@ for (n in 1:N){
                  exp(beta_ie_intsvtx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_ie_intsvtx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_ie_intsvtx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_ie_intsvtx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_ie_intsvtx + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_ie_intsvtx  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_ie_intsvtx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_ie_intsvtx * tau_year + beta_year_overall)  * survey_year[n]) *
                  ie_intsvtx[n]   +
@@ -234,8 +237,8 @@ for (n in 1:N){
                  exp(beta_dme_contntx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dme_contntx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_dme_contntx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_dme_contntx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_dme_contntx + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_dme_contntx  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dme_contntx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_dme_contntx * tau_year + beta_year_overall)  * survey_year[n]) *
                  dme_contntx[n]  +
@@ -243,8 +246,8 @@ for (n in 1:N){
                  exp(beta_dnme_contntx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_dnme_contntx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_dnme_contntx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_dnme_contntx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_dnme_contntx + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_dnme_contntx  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_dnme_contntx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_dnme_contntx * tau_year + beta_year_overall)  * survey_year[n]) *
                  dnme_contntx[n] +
@@ -252,8 +255,8 @@ for (n in 1:N){
                  exp(beta_ie_contntx + 
                      (randeff_country[country_id[n]] * tau_randeff_country) +
                      (beta_med_income_ie_contntx * tau_med_income + beta_med_income_overall) * median_income[n] +
-                     (beta_oop_perc_che_ie_contntx * tau_oop_perc_che + beta_oop_perc_che_overall) * oop_perc_che[n] + 
-                     (beta_uhc_ie_contntx * tau_uhc + beta_uhc_overall) * uhc_index[n]) *
+                     (beta_oop_perc_che_ie_contntx + beta_oop_perc_che_overall) * oop_perc_che[n] + 
+                     (beta_uhc_ie_contntx  + beta_uhc_overall) * uhc_index[n]) *
                  exp((beta_drtb_ie_contntx * tau_drtb + beta_drtb_overall) * drtb_ind[n]) *
                  exp((beta_year_ie_contntx * tau_year + beta_year_overall)  * survey_year[n]) *
                  ie_contntx[n];
@@ -263,19 +266,19 @@ for (n in 1:N){
 // The model to be estimated.
 model {
     // Priors for fixed effects  
-    beta_dme_prediag  ~ normal(0, 10);
-    beta_dnme_prediag ~ normal(0, 10);
-    beta_ie_prediag   ~ normal(0, 10);
-    beta_dme_intsvtx  ~ normal(0, 10);
-    beta_dnme_intsvtx ~ normal(0, 10);
-    beta_ie_intsvtx   ~ normal(0, 10);
-    beta_dme_contntx  ~ normal(0, 10);
-    beta_dnme_contntx ~ normal(0, 10);
-    beta_ie_contntx   ~ normal(0, 10);
+    beta_dme_prediag  ~ normal(0, prior_sigma);
+    beta_dnme_prediag ~ normal(0, prior_sigma);
+    beta_ie_prediag   ~ normal(0, prior_sigma);
+    beta_dme_intsvtx  ~ normal(0, prior_sigma);
+    beta_dnme_intsvtx ~ normal(0, prior_sigma);
+    beta_ie_intsvtx   ~ normal(0, prior_sigma);
+    beta_dme_contntx  ~ normal(0, prior_sigma);
+    beta_dnme_contntx ~ normal(0, prior_sigma);
+    beta_ie_contntx   ~ normal(0, prior_sigma);
     
     // Priors for internal covariates
     // DR TB indicator
-    beta_drtb_overall ~ normal(0,10);
+    beta_drtb_overall ~ normal(0,prior_sigma);
     beta_drtb_dme_prediag  ~ normal(0, 1);
     beta_drtb_dnme_prediag ~ normal(0, 1);
     beta_drtb_ie_prediag   ~ normal(0, 1);
@@ -287,7 +290,7 @@ model {
     beta_drtb_ie_contntx   ~ normal(0, 1);
     // 
     // Mean centered study-end year
-    beta_year_overall ~ normal(0,10);
+    beta_year_overall ~ normal(0, prior_sigma);
     beta_year_dme_prediag  ~ normal(0, 1);
     beta_year_dnme_prediag ~ normal(0, 1);
     beta_year_ie_prediag   ~ normal(0, 1);
@@ -300,7 +303,7 @@ model {
 
     // Priors for external covariate fixed effects 
     // Median income 
-    beta_med_income_overall ~ normal(0,10);
+    beta_med_income_overall ~ normal(0, prior_sigma);
     beta_med_income_dme_prediag  ~ normal(0, 1);
     beta_med_income_dnme_prediag ~ normal(0, 1);
     beta_med_income_ie_prediag   ~ normal(0, 1);
@@ -312,44 +315,44 @@ model {
     beta_med_income_ie_contntx   ~ normal(0, 1);
     
     // OOP as perc of CHE
-    beta_oop_perc_che_overall  ~ normal(0, 10);
-    beta_oop_perc_che_dme_prediag  ~ normal(0, 1);
-    beta_oop_perc_che_dnme_prediag ~ normal(0, 1);
-    beta_oop_perc_che_ie_prediag   ~ normal(0, 1);
-    beta_oop_perc_che_dme_intsvtx  ~ normal(0, 1);
-    beta_oop_perc_che_dnme_intsvtx ~ normal(0, 1);
-    beta_oop_perc_che_ie_intsvtx   ~ normal(0, 1);
-    beta_oop_perc_che_dme_contntx  ~ normal(0, 1);
-    beta_oop_perc_che_dnme_contntx ~ normal(0, 1);
-    beta_oop_perc_che_ie_contntx   ~ normal(0, 1);
+    beta_oop_perc_che_overall  ~ normal(0, prior_sigma);
+    beta_oop_perc_che_dme_prediag  ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_dnme_prediag ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_ie_prediag   ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_dme_intsvtx  ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_dnme_intsvtx ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_ie_intsvtx   ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_dme_contntx  ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_dnme_contntx ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che_ie_contntx   ~ normal(0, tau_oop_perc_che);
     
     // UHC
-    beta_uhc_overall ~ normal(0,10);
-    beta_uhc_dme_prediag  ~ normal(0, 1);
-    beta_uhc_dnme_prediag ~ normal(0, 1);
-    beta_uhc_ie_prediag   ~ normal(0, 1);
-    beta_uhc_dme_intsvtx  ~ normal(0, 1);
-    beta_uhc_dnme_intsvtx ~ normal(0, 1);
-    beta_uhc_ie_intsvtx   ~ normal(0, 1);
-    beta_uhc_dme_contntx  ~ normal(0, 1);
-    beta_uhc_dnme_contntx ~ normal(0, 1);
-    beta_uhc_ie_contntx   ~ normal(0, 1);
+    beta_uhc_overall ~ normal(0, prior_sigma);
+    beta_uhc_dme_prediag  ~ normal(0, tau_uhc);
+    beta_uhc_dnme_prediag ~ normal(0, tau_uhc);
+    beta_uhc_ie_prediag   ~ normal(0, tau_uhc);
+    beta_uhc_dme_intsvtx  ~ normal(0, tau_uhc);
+    beta_uhc_dnme_intsvtx ~ normal(0, tau_uhc);
+    beta_uhc_ie_intsvtx   ~ normal(0, tau_uhc);
+    beta_uhc_dme_contntx  ~ normal(0, tau_uhc);
+    beta_uhc_dnme_contntx ~ normal(0, tau_uhc);
+    beta_uhc_ie_contntx   ~ normal(0, tau_uhc);
     
     // Priors for the covariate random effects 
-    tau_drtb ~ normal(0, 10);
-    tau_year ~ normal(0, 10);
-    tau_med_income ~ normal(0, 10);
-    tau_oop_perc_che  ~ normal(0, 10);
-    tau_uhc ~ normal(0, 10); 
+    tau_drtb ~ normal(0, prior_sigma);
+    tau_year ~ normal(0, prior_sigma);
+    tau_med_income ~ normal(0, prior_sigma);
+    tau_oop_perc_che  ~ normal(0, prior_sigma);
+    tau_uhc ~ normal(0, prior_sigma); 
     
     // Priors for random slopes  
     randeff_country ~ normal(0, 1);
     
     // Prior for dispersion of random effect
-    tau_randeff_country  ~ normal(0, 10); //default prior should be student t (CHECK!!!)
+    tau_randeff_country  ~ normal(0, prior_sigma); //default prior should be student t (CHECK!!!)
     
     // Priors for dispersion parameter  %% half-normal probably better
-    tau ~ normal(0, 10); //default prior sh/could be student t (CHECK!!!)
+    tau ~ normal(0, prior_sigma); //default prior sh/could be student t (CHECK!!!)
     
     // cost estimate
     cost ~ alt_gamma(tau, mu);
