@@ -47,7 +47,7 @@ dataIndicator <- dataDesc %>%
                   drtb = ifelse(grepl("DSTB|DS-TB|sensitive", study.exclusion), 
                                   1, 0), 
            ### Exclusively drug sensitive population
-                  dstb = ifelse(grepl("resistant", study.exclusion), 
+                  dstb = ifelse(grepl("resistant", study.exclusion) | covidence.id == 7814, 
                          1, 0), 
            ### Free TB treatment available
            
