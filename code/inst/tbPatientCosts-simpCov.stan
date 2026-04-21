@@ -49,6 +49,9 @@ data {
     // dispersion
     vector<lower=0>[N] se;  // study reported dispersion estimate 
     // real<lower=0> tau;
+    
+    // testing different sigma priors 
+    int prior_sigma; 
 }
 
 transformed data {
@@ -75,31 +78,31 @@ parameters {
     real randeff_country[N_country];
     
     // dispersion of survey-level random effects 
-    real<lower=0> tau_randeff_survey;
+    real<lower=0> sigma_randeff_survey;
 
     // dispersion of country-level random effects 
-    real<lower=0> tau_randeff_country;
+    real<lower=0> sigma_randeff_country;
     
     // Covariates 
     // DR-TB multiplier coefficient
     real beta_drtb;
-    real<lower=0> tau_drtb;    
+    real<lower=0> sigma_drtb;    
 
     // Study end year coefficient
     real beta_year;
-    real<lower=0> tau_year;    
+    real<lower=0> sigma_year;    
     
     // Median income
     real beta_med_income;
-    real<lower=0> tau_med_income;    
+    real<lower=0> sigma_med_income;    
     
     // OOP as perc of current health expenditures
     real beta_oop_perc_che;
-    real<lower=0> tau_oop_perc_che;
+    real<lower=0> sigma_oop_perc_che;
     
     //UHC index 
     real beta_uhc; 
-    real<lower=0> tau_uhc;
+    real<lower=0> sigma_uhc;
 
     // Additional variance parameter
     real<lower=0> tau;
@@ -117,106 +120,106 @@ transformed parameters {
 ///////////////////////////////////////////////////////////////////////////
 for (n in 1:N){
         mu[n] =  (exp(beta_dme_prediag + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  dme_prediag[n]   +
                  
                  exp(beta_dnme_prediag +  
-                     (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                     (randeff_country[country_id[n]] * tau_randeff_country)) *
+                     (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                     (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  dnme_prediag[n] +
                  
                  exp(beta_ie_prediag + 
-                     (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                     (randeff_country[country_id[n]] * tau_randeff_country)) *
+                     (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                     (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  ie_prediag[n]   + 
                  
                  exp(beta_dme_intsvtx + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  dme_intsvtx[n]  +
                  
                  exp(beta_dnme_intsvtx + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  dnme_intsvtx[n] +
                  
                  exp(beta_ie_intsvtx + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  ie_intsvtx[n]   + 
                  
                  exp(beta_dme_contntx + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  dme_contntx[n]  +
                  
                  exp(beta_dnme_contntx + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  dnme_contntx[n] +
                  
                  exp(beta_ie_contntx + 
-                      (randeff_survey[survey_id[n]] * tau_randeff_survey) + 
-                      (randeff_country[country_id[n]] * tau_randeff_country)) *
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
                  ie_contntx[n]) * 
                  
                  // Covariates 
-                 exp(beta_drtb * drtb_ind[n]) * 
-                 exp(beta_year * survey_year[n]) * 
-                 exp(beta_med_income * median_income[n]) * 
-                 exp(beta_oop_perc_che * oop_perc_che[n]) * 
-                 exp(beta_uhc * uhc_index[n]);     
+                 exp(beta_drtb * sigma_drtb * drtb_ind[n]) * 
+                 exp(beta_year * sigma_year * survey_year[n]) * 
+                 exp(beta_med_income * sigma_med_income * median_income[n]) * 
+                 exp(beta_oop_perc_che * sigma_oop_perc_che * oop_perc_che[n]) * 
+                 exp(beta_uhc * sigma_uhc * uhc_index[n]);     
     }
 }
 
 // The model to be estimated.
 model {
     // Priors for fixed effects  
-    beta_dme_prediag  ~ normal(0, 2);
-    beta_dnme_prediag ~ normal(0, 2);
-    beta_ie_prediag   ~ normal(0, 2);
-    beta_dme_intsvtx  ~ normal(0, 2);
-    beta_dnme_intsvtx ~ normal(0, 2);
-    beta_ie_intsvtx   ~ normal(0, 2);
-    beta_dme_contntx  ~ normal(0, 2);
-    beta_dnme_contntx ~ normal(0, 2);
-    beta_ie_contntx   ~ normal(0, 2);
+    beta_dme_prediag  ~ normal(0, 10);
+    beta_dnme_prediag ~ normal(0, 10);
+    beta_ie_prediag   ~ normal(0, 10);
+    beta_dme_intsvtx  ~ normal(0, 10);
+    beta_dnme_intsvtx ~ normal(0, 10);
+    beta_ie_intsvtx   ~ normal(0, 10);
+    beta_dme_contntx  ~ normal(0, 10);
+    beta_dnme_contntx ~ normal(0, 10);
+    beta_ie_contntx   ~ normal(0, 10);
     
     // Priors for internal covariate fixed effects 
     // DR TB indicator
-    beta_drtb ~ normal(0, tau_drtb);
+    beta_drtb ~ normal(0, 1);
     
     // Mean centered study-end year
-    beta_year ~ normal(0, tau_year);
+    beta_year ~ normal(0, 1);
 
     // Priors for external covariate fixed effects 
     // Median income 
-    beta_med_income  ~ normal(0, tau_med_income);
+    beta_med_income  ~ normal(0, 1);
     
     // OOP as perc of CHE
-    beta_oop_perc_che  ~ normal(0, tau_oop_perc_che);
+    beta_oop_perc_che  ~ normal(0, 1);
     
     // UHC index 
-    beta_uhc ~ normal(0, tau_uhc); 
+    beta_uhc ~ normal(0, 1); 
     
     // Priors for random slopes  
     randeff_survey ~ normal(0, 1);
     randeff_country ~ normal(0, 1);
     
     // Priors for covariate sigmas 
-    tau_drtb ~ normal(0, 2);
-    tau_year ~ normal(0, 2);
-    tau_med_income    ~ normal(0, 2);
-    tau_oop_perc_che  ~ normal(0, 2);
-    tau_uhc           ~ normal(0, 2); 
+    sigma_drtb ~ normal(0, prior_sigma);
+    sigma_year ~ normal(0, prior_sigma);
+    sigma_med_income    ~ normal(0, prior_sigma);
+    sigma_oop_perc_che  ~ normal(0, prior_sigma);
+    sigma_uhc           ~ normal(0, prior_sigma); 
     
     // Priors for dispersion of random effects
-    tau_randeff_survey   ~ normal(0, 2); 
-    tau_randeff_country  ~ normal(0, 2); 
+    sigma_randeff_survey   ~ student_t(3, 0, 2.5);  
+    sigma_randeff_country  ~ student_t(3, 0, 2.5); 
     
     // Priors for dispersion parameter
-    tau ~ normal(0, 2); 
+    tau ~ exponential(1); 
     
     // cost estimate
     cost ~ alt_gamma(tau, mu);
