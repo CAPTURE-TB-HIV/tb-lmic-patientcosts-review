@@ -33,9 +33,9 @@ stanModelData <- list(
                         drtb_ind= modelData$drtb.ind,
                         survey_year = modelData$year_z,
                         ### External covariates
-                        median_income = log(modelData$median.income) - mean(log(modelData$median.income)),
-                        oop_perc_che = modelData$oop.perc.che - mean(modelData$oop.perc.che), 
-                        uhc_index = modelData$UHCindex - mean(modelData$UHCindex), 
+                        median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
+                        oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
+                        uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
                         prior_sigma = 2
                     )
 
