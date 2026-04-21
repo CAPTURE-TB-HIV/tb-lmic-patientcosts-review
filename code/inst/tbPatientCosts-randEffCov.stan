@@ -416,6 +416,14 @@ generated quantities {
     vector[N_country_new] drtb_ie_contntx_cost_country;
     vector[N_country_new] dstb_ie_contntx_cost_country;
     
+    vector[N_country_new] drtb_dme_cost_country;
+    vector[N_country_new] drtb_dnme_cost_country;
+    vector[N_country_new] drtb_ie_cost_country;
+
+    vector[N_country_new] dstb_dme_cost_country;
+    vector[N_country_new] dstb_dnme_cost_country;
+    vector[N_country_new] dstb_ie_cost_country;
+    
     vector[N_country_new] drtb_total_cost_country;
     vector[N_country_new] dstb_total_cost_country;
     
@@ -586,24 +594,48 @@ generated quantities {
         // Total costs              
         //// Drug-resistant tuberculosis 
         drtb_total_cost_country[n] = drtb_dme_prediag_cost_country[n] +
-            drtb_dnme_prediag_cost_country[n] + 
-            drtb_ie_prediag_cost_country[n] + 
-            drtb_dme_intsvtx_cost_country[n] +
-            drtb_dnme_intsvtx_cost_country[n] + 
-            drtb_ie_intsvtx_cost_country[n]+ 
-            drtb_dme_contntx_cost_country[n] +
-            drtb_dnme_contntx_cost_country[n] + 
-            drtb_ie_contntx_cost_country[n]; 
+                                    drtb_dnme_prediag_cost_country[n] + 
+                                    drtb_ie_prediag_cost_country[n] + 
+                                    drtb_dme_intsvtx_cost_country[n] +
+                                    drtb_dnme_intsvtx_cost_country[n] + 
+                                    drtb_ie_intsvtx_cost_country[n]+ 
+                                    drtb_dme_contntx_cost_country[n] +
+                                    drtb_dnme_contntx_cost_country[n] + 
+                                    drtb_ie_contntx_cost_country[n]; 
+                                    
+        drtb_dme_cost_country[n] = drtb_dme_prediag_cost_country[n] +
+                                   drtb_dme_intsvtx_cost_country[n] +
+                                   drtb_dme_contntx_cost_country[n]; 
+                                   
+        drtb_dnme_cost_country[n] = drtb_dnme_prediag_cost_country[n] +
+                                   drtb_dnme_intsvtx_cost_country[n] +
+                                   drtb_dnme_contntx_cost_country[n]; 
+        
+        drtb_ie_cost_country[n] = drtb_ie_prediag_cost_country[n] +
+                                   drtb_ie_intsvtx_cost_country[n] +
+                                   drtb_ie_contntx_cost_country[n]; 
         
         //// Drug-sensitive tuberculosis 
         dstb_total_cost_country[n] = dstb_dme_prediag_cost_country[n] +
-            dstb_dnme_prediag_cost_country[n] + 
-            dstb_ie_prediag_cost_country[n] + 
-            dstb_dme_prediag_cost_country[n] +
-            dstb_dnme_prediag_cost_country[n] + 
-            dstb_ie_prediag_cost_country[n]+ 
-            dstb_dme_contntx_cost_country[n] +
-            dstb_dnme_contntx_cost_country[n] + 
-            dstb_ie_contntx_cost_country[n]; 
+                                    dstb_dnme_prediag_cost_country[n] + 
+                                    dstb_ie_prediag_cost_country[n] + 
+                                    dstb_dme_intsvtx_cost_country[n] +
+                                    dstb_dnme_intsvtx_cost_country[n] + 
+                                    dstb_ie_intsvtx_cost_country[n]+ 
+                                    dstb_dme_contntx_cost_country[n] +
+                                    dstb_dnme_contntx_cost_country[n] + 
+                                    dstb_ie_contntx_cost_country[n]; 
+                                    
+        dstb_dme_cost_country[n] = dstb_dme_prediag_cost_country[n] +
+                                   dstb_dme_intsvtx_cost_country[n] +
+                                   dstb_dme_contntx_cost_country[n]; 
+                                   
+        dstb_dnme_cost_country[n] = dstb_dnme_prediag_cost_country[n] +
+                                   dstb_dnme_intsvtx_cost_country[n] +
+                                   dstb_dnme_contntx_cost_country[n]; 
+        
+        dstb_ie_cost_country[n] = dstb_ie_prediag_cost_country[n] +
+                                   dstb_ie_intsvtx_cost_country[n] +
+                                   dstb_ie_contntx_cost_country[n]; 
     }
 }
