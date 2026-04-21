@@ -9,6 +9,15 @@ library(here)
 reviewData <- readRDS(here("data/reviewData/finalData.rds"))[["descriptive"]] %>% 
               select(study.country,Country.Code, study.end.year)
 
+### Read in the country codes 
+countryCodes <- read.csv(here("data/iso3.csv")) %>%
+                transmute(study.country = name, 
+                          country.code = alpha.3)
+
+### Read in LMIC list 
+LMIC <- read.csv(here("data/LMIC2025.csv")) %>% 
+    rename(study.country = country.name) %>%
+    select(! class25)
 
 ### Read in spending data from national health accounts collated by WHO
 ### and accessed through the GHEH. All estimates are in current USD to match
@@ -46,25 +55,39 @@ healthSpendData0 <- read.csv(here("data/covariateData/health-accounts/NHA indica
                  names_prefix = "X") %>% 
     ### Make data wider for the Indicators 
     pivot_wider(id_cols = c(study.country, study.end.year), names_from = Indicators) %>% 
+    left_join(countryCodes) %>%
+    ### Manually add some country codes 
+    mutate(country.code = case_when(grepl("Iran", study.country) ~ countryCodes[grep("Iran", countryCodes$study.country), "country.code"],
+                                     grepl("Tanzania", study.country) ~ countryCodes[grep("Tanzania", countryCodes$study.country), "country.code"],
+                                     grepl("of the Congo", study.country) ~ "COD",
+                                     grepl("Bolivia", study.country) ~ countryCodes[grep("Bolivia", countryCodes$study.country), "country.code"],
+                                     grepl("Venezuela", study.country) ~ countryCodes[grep("Venezuela", countryCodes$study.country), "country.code"],
+                                     grepl("Netherlands", study.country) ~ countryCodes[grep("Netherlands", countryCodes$study.country), "country.code"],
+                                     grepl("Moldova", study.country) ~ countryCodes[grep("Moldova", countryCodes$study.country), "country.code"],
+                                     grepl("Micronesia", study.country) ~ countryCodes[grep("Micronesia", countryCodes$study.country), "country.code"],
+                                     grepl("Korea, Republic of", study.country) ~ "KOR",
+                                     .default = country.code)) 
     ### These data did not have country codes so we have to manually rename some counties
-    mutate(study.country = case_when(grepl("Iran", study.country) ~ "Iran",
-                                     grepl("Tanzania", study.country) ~ "Tanzania",
-                                     grepl("of the Congo", study.country) ~ "DR Congo",
-                                     grepl("Moldova", study.country) ~ "Moldova", 
-                                     grepl("Lao", study.country) ~ "Lao PDR", 
-                                     .default = study.country))
+    # mutate(study.country = case_when(grepl("Iran", study.country) ~ "Iran",
+    #                                  grepl("Tanzania", study.country) ~ "Tanzania",
+    #                                  grepl("of the Congo", study.country) ~ "DR Congo",
+    #                                  grepl("Moldova", study.country) ~ "Moldova", 
+    #                                  grepl("Lao", study.country) ~ "Lao PDR", 
+    #                                  .default = study.country))
+    
 
 ### Join so we can see the availability of the data 
 healthSpendData <- left_join(reviewData %>%
-                                 mutate(study.end.year = as.character(study.end.year)), 
-                             healthSpendData0)
+                             rename(country.code = Country.Code) %>%
+                             mutate(study.end.year = as.character(study.end.year)), 
+                             healthSpendData0, by = c("study.end.year", "country.code")) 
 
 ##### Missingness is better; let's print the missing countries 
 healthSpendData[rowSums(is.na(healthSpendData)) > 0,]
 
 ### Save the dataset 
 # write.csv(healthSpendData, "data/healthAccounts.csv")
-saveRDS(healthSpendData, here("data/covariateData/healthAccounts.rds"), version =2)
+saveRDS(healthSpendData0, here("data/covariateData/healthAccounts.rds"), version =2)
 
 ###############################################################################
 ##### Create the median income estimate using Gross National Income and GINI
@@ -75,25 +98,55 @@ saveRDS(healthSpendData, here("data/covariateData/healthAccounts.rds"), version 
 gniPcUSD <- read.csv(here("data/covariateData/calc-median-income/GNI-PC-USD/API_NY.GNP.PCAP.CD_DS2_en_csv_v2_763.csv")) %>%
     select(Country.Name,
            Country.Code,
-           X2009:X2023) %>%
+           X2000:X2024) %>%
     rename(study.country = Country.Name) %>%
-    
-    pivot_longer(cols = X2009:X2023, names_to = "study.end.year", values_to = "GNI (USD per-capita)") %>%
-    mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) %>%
+    filter(Country.Code %in% LMIC$country.code) %>% 
+    pivot_longer(cols = X2000:X2024, names_to = "study.end.year", values_to = "GNI (USD per-capita)") %>%
+    mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) #%>%
     ## filter to only the countries of interest
-    filter(Country.Code %in% reviewData$Country.Code)
+    # filter(Country.Code %in% reviewData$Country.Code)
+
+#### Interpolate missing GNI 
+#### Using a loop because dplyr had odd behavior and deadlines 
+for (country in unique(gniPcUSD$study.country)){
+    print(country)
+    tmpDF <- gniPcUSD %>% filter(study.country == country)
+    ### Interpolate through the points we have 
+    if(sum(!is.na(tmpDF$`GNI (USD per-capita)`)) > 1){
+        gniPcUSD[which(gniPcUSD$study.country == country), "GNI.USD.interpolated"] <- approx(x=tmpDF$study.end.year[!is.na(tmpDF$`GNI (USD per-capita)`)],
+                                                                                             y=tmpDF$`GNI (USD per-capita)`[!is.na(tmpDF$`GNI (USD per-capita)`)], xout=tmpDF$study.end.year,
+                                                                                             rule = 2, method = "linear")$y
+    } else if(sum(!is.na(tmpDF$`GNI (USD per-capita)`))== 1){
+        gniPcUSD[which(gniPcUSD$study.country == country), "GNI.USD.interpolated"] <- na.omit(tmpDF$`GNI (USD per-capita)`)[1]
+    }
+}
 
 ### Local Currency Units (meta data in the directory)
 gniPcLCU <- read.csv(here("data/covariateData/calc-median-income/GNI-PC-LCU/API_NY.GNP.PCAP.CN_DS2_en_csv_v2_9957.csv")) %>% 
     select(Country.Name, 
            Country.Code,
-           X2009:X2023) %>%
+           X2000:X2024) %>%
     rename(study.country = Country.Name) %>%
-    
-    pivot_longer(cols = X2009:X2023, names_to = "study.end.year", values_to = "GNI (LCU per-capita)") %>%
-    mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) %>%
+    filter(Country.Code %in% LMIC$country.code) %>% 
+    pivot_longer(cols = X2000:X2024, names_to = "study.end.year", values_to = "GNI (LCU per-capita)") %>%
+    mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) #%>%
     ## filter to only the countries of interest 
-    filter(Country.Code %in% reviewData$Country.Code)
+    # filter(Country.Code %in% reviewData$Country.Code)
+
+#### Interpolate missing GNI 
+#### Using a loop because dplyr had odd behavior and deadlines 
+for (country in unique(gniPcLCU$study.country)){
+    print(country)
+    tmpDF <- gniPcLCU %>% filter(study.country == country)
+    ### Interpolate through the points we have 
+    if(sum(!is.na(tmpDF$`GNI (LCU per-capita)`)) > 1){
+        gniPcLCU[which(gniPcLCU$study.country == country), "GNI.LCU.interpolated"] <- approx(x=tmpDF$study.end.year[!is.na(tmpDF$`GNI (LCU per-capita)`)],
+                                                                                      y=tmpDF$`GNI (LCU per-capita)`[!is.na(tmpDF$`GNI (LCU per-capita)`)], xout=tmpDF$study.end.year,
+                                                                                      rule = 2, method = "linear")$y
+    } else if(sum(!is.na(tmpDF$`GNI (LCU per-capita)`))== 1){
+        gniPcLCU[which(gniPcLCU$study.country == country), "GNI.LCU.interpolated"] <- na.omit(tmpDF$`GNI (LCU per-capita)`)[1]
+    }
+}
 
 ### Join the two together 
 gniPcDF <- full_join(gniPcUSD, gniPcLCU)
@@ -103,12 +156,13 @@ gniPcDF <- full_join(gniPcUSD, gniPcLCU)
 giniDF <- read.csv(here("data/covariateData/calc-median-income/GINI.csv")) %>% 
     select(Country.Name, 
            Country.Code,
-           X2009:X2023) %>%
+           X2000:X2024) %>%
+    filter(Country.Code %in% LMIC$country.code) %>% 
     rename(study.country = Country.Name) %>%
-    pivot_longer(cols = X2009:X2023, names_to = "study.end.year", values_to = "GINI index") %>%
-    mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) %>% 
+    pivot_longer(cols = X2000:X2024, names_to = "study.end.year", values_to = "GINI index") %>%
+    mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) #%>% 
     ## filter to only the countries of interest 
-    filter(Country.Code %in% reviewData$Country.Code)
+    # filter(Country.Code %in% reviewData$Country.Code)
 
 #### Interpolate missing GINI 
 #### Using a loop because dplyr had odd behavior and deadlines 
@@ -126,15 +180,12 @@ for (country in unique(giniDF$study.country)){
 }
 
 ### Join into a single dataframe
-medianIncomeDF0 <- left_join(gniPcDF, giniDF, by=c("Country.Code", "study.end.year"))
-
-### Join with the full data 
-medianIncomeDF <- left_join(reviewData, 
-                            medianIncomeDF0, by=c("Country.Code", "study.end.year")) %>%
-    select(study.country, 
-           study.end.year,
-           `GNI (LCU per-capita)`, `GNI (USD per-capita)`,
-           `GINI index`, GINI.interpolated)
+medianIncomeDF0 <- left_join(gniPcDF, giniDF %>% select(!study.country), by=c("Country.Code", "study.end.year")) %>%
+                    select(study.country, Country.Code, 
+                           study.end.year,
+                           `GNI (LCU per-capita)`, GNI.LCU.interpolated, 
+                           `GNI (USD per-capita)`, GNI.USD.interpolated, 
+                           `GINI index`, GINI.interpolated)
 
 ###############################################################################
 ###### Calculate median income using the dataset above
@@ -169,17 +220,27 @@ calc_median_income <- function(gini, #GNI
 
 ###############################################################################
 ##### Apply the function 
-for(i in 1:nrow(medianIncomeDF)){
+for(i in 1:nrow(medianIncomeDF0)){
     
-    if(! is.na(medianIncomeDF[i, "GINI.interpolated"])){
+    if(! is.na(medianIncomeDF0[i, "GINI.interpolated"])){
     ### USD 
-    medianIncomeDF[i,"median.income.calc.usd"] <- calc_median_income(medianIncomeDF$`GINI index`[i]/100, 
-                                                                     medianIncomeDF$`GNI (USD per-capita)`[i])
+    medianIncomeDF0[i,"median.income.calc.usd"] <- calc_median_income(medianIncomeDF0$GINI.interpolated[i]/100, 
+                                                                     medianIncomeDF0$GNI.USD.interpolated[i])
     ### Local currency units
-    medianIncomeDF[i,"median.income.calc.lcu"] <- calc_median_income(medianIncomeDF$`GINI index`[i]/100, 
-                                                                     medianIncomeDF$`GNI (LCU per-capita)`[i])
-}}
+    medianIncomeDF0[i,"median.income.calc.lcu"] <- calc_median_income(medianIncomeDF0$GINI.interpolated[i]/100, 
+                                                                     medianIncomeDF0$GNI.LCU.interpolated[i])
+    }}
 
+### Join with the full data to check for missingness 
+medianIncomeDF <- left_join(reviewData,
+                            medianIncomeDF0 %>% select(!study.country),
+                            by=c("Country.Code", "study.end.year")) %>%
+    rename(country.code = Country.Code) %>% 
+    select(study.country, country.code, 
+           study.end.year,
+           `GNI (LCU per-capita)`, GNI.LCU.interpolated, 
+           `GNI (USD per-capita)`, GNI.USD.interpolated,
+           `GINI index`, GINI.interpolated, median.income.calc.usd, median.income.calc.lcu)
 
 ##### Missingness is better; let's print the missing countries 
 medianIncomeDF[rowSums(is.na(medianIncomeDF)) > 1,]
@@ -192,11 +253,18 @@ sum(medianIncomeDF$median.income.calc.usd < 1, na.rm = TRUE) / nrow(medianIncome
 ### Save the dataset
 # write.csv(medianIncomeDF, "data/medianIncome.csv")
 saveRDS(medianIncomeDF, here("data/covariateData/medianIncome.rds"), version =2)
+saveRDS(medianIncomeDF0, here("data/covariateData/medianIncomePrediction.rds"), version =2)
 
 
 ##### Check for correlation #### 
+###############################################################################
+##### If doing a recheck you can just read in the files saved above: 
+# medianIncomeDF <- readRDS(here("data/covariateData/medianIncome.rds"))
+# healthSpendData<- readRDS(here("data/covariateData/healthAccounts.rds"))
 
-allFinCovDF <- full_join(medianIncomeDF %>% mutate(study.end.year = as.character(study.end.year)), healthSpendData) %>% 
+allFinCovDF <- full_join(medianIncomeDF %>% 
+                             mutate(study.end.year = as.character(study.end.year)) %>% distinct(), 
+                         healthSpendData %>% distinct()) %>% 
                mutate_at(vars(median.income.calc.usd, median.income.calc.lcu, 
                               `Current Health Expenditure (CHE) as % Gross Domestic Product (GDP)`,
                               `Current Health Expenditure (CHE) per Capita in US$`,
@@ -233,3 +301,32 @@ ggplot() + geom_point(data=allFinCovDF,
                       aes(x=`Current Health Expenditure (CHE) as % Gross Domestic Product (GDP)`,
                           y=`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)) + 
     theme_minimal()
+
+
+##### We are also considering a health quality index covariate so let's check for
+##### correlation with that. 
+
+uhcDF0 <- read.csv(here("data/covariateData/WHO-UHC-index.csv")) %>% 
+          select(Location, SpatialDimValueCode, Period, Value) %>%
+          rename(study.country = Location, 
+                 country.code = SpatialDimValueCode,
+                 study.end.year = Period, 
+                 UHCindex = Value) %>% 
+          mutate(study.end.year = as.character(study.end.year))
+
+### Join with other data to check for missingness
+uhcDF <- left_join(allFinCovDF, uhcDF0 %>% select(!study.country))
+
+saveRDS(uhcDF0 %>% select(study.country, country.code, study.end.year, UHCindex), 
+        here("data/covariateData/uhcIndex.rds"),version=2)
+
+ggplot() + geom_point(data=uhcDF, 
+                      aes(x=UHCindex,
+                          y=`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)) + 
+    theme_minimal() + xlab("WHO UHC index")
+
+ggplot() + geom_point(data=uhcDF, 
+                      aes(x=UHCindex,
+                          y=median.income.calc.usd)) + 
+    theme_minimal()  + xlab("WHO UHC index") + 
+    ylab("Median Income per Capita in US$")
