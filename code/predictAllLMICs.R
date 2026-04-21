@@ -7,6 +7,7 @@ library(here)
 library(dplyr)
 library(tidyr)
 library(rstan)
+library(tidybayes)
 
 ##############################################################################|
 ##### Set seed, number of iterations (warmup and total)                   #####
@@ -15,18 +16,17 @@ library(rstan)
 ##############################################################################|
 
 tbPtntCstSeed <- 513
-tbPtntCstIter <- 1000
+tbPtntCstIter <- 4000
 tbPtntCstWarmup <- 500
 
 ###############################################################################
 ##### Read in model and other data setup 
 ###############################################################################
-### Model fit to data from systematic review
+### Best model as defined by the model selection tests
 predModel <- stan_model("code/inst/tbPatientCosts-randEffCov.stan")
-    #readRDS(here("output/modelswithunitnormal5.rds"))[["9covs"]]
 
 ### Data used to fit the model 
-# modelData <- readRDS(here("output/modelswithunitnormal5.rds"))[["Data"]]
+source(here("code/modelDataFormat.R"))
 
 ### All LMICs in 2025
 LMIC <- read.csv(here("data/LMIC2025.csv")) %>% 
@@ -70,12 +70,12 @@ covariates0  <- left_join(covariates00, uhcIndex, by = c("country.code", "study.
 
 ### Mean center study year 
 covariates <- covariates0 %>% 
-    filter(median.income >= min(modelData$median.income) & 
-               median.income <= max(modelData$median.income), 
-           uhc.index >= min(modelData$UHCindex) & 
-               uhc.index <= max(modelData$UHCindex),
-           oop.perc.che >= min(modelData$oop.perc.che) & 
-               oop.perc.che <= max(modelData$oop.perc.che)) %>% 
+    # filter(median.income >= min(modelData$median.income) & 
+    #            median.income <= max(modelData$median.income), 
+    #        uhc.index >= min(modelData$UHCindex) & 
+    #            uhc.index <= max(modelData$UHCindex),
+    #        oop.perc.che >= min(modelData$oop.perc.che) & 
+    #            oop.perc.che <= max(modelData$oop.perc.che)) %>% 
               mutate(pred.year = study.end.year - floor(mean(modelData$study.end.year, na.rm=TRUE))) %>% 
                 group_by(study.country) %>% 
                 na.omit() %>%
@@ -91,22 +91,33 @@ covariates <- covariates0 %>%
 ### Save the countries for which we don't have covariates
 countriesNoCovs <- covariates0 %>% filter(! country.code %in% covariates$country.code) 
 
-# covariatesFilt <- covariates %>% 
-#                   filter(median.income >= min(modelData$median.income) & 
-#                          median.income <= max(modelData$median.income), 
-#                          uhc.index >= min(modelData$UHCindex) & 
+# covariatesFilt <- covariates %>%
+#                   filter(median.income >= min(modelData$median.income) &
+#                          median.income <= max(modelData$median.income),
+#                          uhc.index >= min(modelData$UHCindex) &
 #                          uhc.index <= max(modelData$UHCindex),
-#                          oop.perc.che >= min(modelData$oop.perc.che) & 
+#                          oop.perc.che >= min(modelData$oop.perc.che) &
 #                          oop.perc.che <= max(modelData$oop.perc.che))
 # 
 # countriesCovOutRange <- covariates %>% filter(! country.code %in% covariatesFilt$country.code) 
+
+covariates <- covariates %>% 
+                   mutate(median.income = case_when(median.income < min(modelData$median.income) ~ min(modelData$median.income), 
+                                                    median.income > max(modelData$median.income) ~ max(modelData$median.income),
+                                                    .default = median.income), 
+                          oop.perc.che = case_when(oop.perc.che < min(modelData$oop.perc.che) ~ min(modelData$oop.perc.che), 
+                                                    oop.perc.che > max(modelData$oop.perc.che) ~ max(modelData$oop.perc.che),
+                                                    .default = oop.perc.che), 
+                          uhc.index = case_when(uhc.index < min(modelData$UHCindex) ~ min(modelData$UHCindex), 
+                                                uhc.index > max(modelData$UHCindex) ~ max(modelData$UHCindex),
+                                                .default = uhc.index))
 # 
 
 # covariates <- covariatesFilt
 ### Stan requires a list for data. 
 predictionData <- list(
             N = length(modelData$cost),
-            cost = modelData$cost + 1,
+            cost = modelData$cost + 0.01,
             se = rep(0, length(modelData$cost)),
             se = as.numeric(modelData$se)+ 0.01,
             dme_prediag = modelData$dme.prediag, 
@@ -123,7 +134,7 @@ predictionData <- list(
             N_country = max(modelData$country.id),
             country_id = modelData$country.id, 
             ### Internal covariate
-            drtb_ind= modelData$drtb.ind,
+            drtb_ind= modelData$drtb.wt,
             survey_year = modelData$year_z,
             ### External covariates
             median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
@@ -147,27 +158,32 @@ predictionData <- list(
 
 lmicSamps <- rstan::sampling(
                     predModel, predictionData,
-                    chains = 2, cores = 4,
-                    warmup = tbPtntCstWarmup/4,
+                    chains = 4, cores = 4,
+                    warmup = tbPtntCstWarmup,
                     # warmup = 200,
-                    iter = tbPtntCstIter/4,
+                    iter = tbPtntCstIter,
                     control=list(max_treedepth=14),
                     refresh = 0, seed = tbPtntCstSeed
 )
 
+saveRDS(lmicSamps, here("output/goodModelRun.rds"))
+
 ##############################################################################|
 ##### Some model checks
 ##############################################################################|
+range(summary(lmicSamps)[[1]][, "Rhat"])
+View(summary(lmicSamps)[[1]])
 
 ### Are the random effects mean close to 0 
 indTemp<- grep("randeff_country", rownames(summary(lmicSamps)[[1]]))
-mean(summary(lmicSamps)[[1]][indTemp[1:23],"mean"])
+mean(summary(lmicSamps)[[1]][indTemp[1:34],"mean"])
 
 indTemp<- grep("randeff_survey", rownames(summary(lmicSamps)[[1]]))
 mean(summary(lmicSamps)[[1]][indTemp[-(length(indTemp))],"mean"])
 
 ### check that observed costs are the same when no prediction
-
+sum(exp(summary(lmicSamps)[[1]][c(1,2,4,5,7,8),"mean"]))
+summary(lmicSamps)[[1]]["mu[1]","mean"]
 
 ##############################################################################|
 ### Join the predictions and the data 
@@ -187,11 +203,12 @@ lmicDRTBPred <- left_join(covariates,
                                        ndraws = 1000, seed = tbPtntCstSeed), 
                           join_by(country.id.new))
 
-lmicDRTBPredInReview <- lmicDRTBPred %>% filter(in.review ==1) %>% left_join(modelData)
+lmicDRTBPredInReview <- lmicDRTBPred %>% 
+    filter(in.review ==1) %>% left_join(modelData)
 
-ggplot() + 
-    geom_point(data=lmicDRTBPredInReview, aes(x=median.income, y=uhc.index), size=2) + 
-    theme_minimal(base_size = 20)
+# ggplot() + 
+#     geom_point(data=lmicDRTBPredInReview, aes(x=median.income, y=uhc.index), size=2) + 
+#     theme_minimal(base_size = 20)
 
 
 lmicDRTBCovs <- spread_rvars(lmicSamps, 
@@ -222,7 +239,7 @@ lmicDSTBPred <- left_join(covariates,
                                        dstb_dnme_contntx_cost_country[country.id.new], 
                                        dstb_ie_contntx_cost_country[country.id.new], 
                                        dstb_total_cost_country[country.id.new], 
-                                       ndraws = 250, seed = tbPtntCstSeed), 
+                                       ndraws = 1000, seed = tbPtntCstSeed), 
                           join_by(country.id.new))
 
 lmicDSTBPred_plot <- left_join(covariates, 
@@ -237,7 +254,7 @@ lmicDSTBPred_plot <- left_join(covariates,
                                        # dstb_dnme_contntx_cost_country[country.id.new], 
                                        # dstb_ie_contntx_cost_country[country.id.new], 
                                        dstb_total_cost_country[country.id.new], 
-                                       ndraws = 250, seed = tbPtntCstSeed) %>% 
+                                       ndraws = 1000, seed = tbPtntCstSeed) %>% 
                               group_by(country.id.new) %>% 
                           mean_qi(dstb_total_cost_country), 
                           join_by(country.id.new)) %>% 
@@ -256,77 +273,13 @@ lmicDRTBPred_plot <- left_join(covariates,
                                             # dstb_dnme_contntx_cost_country[country.id.new], 
                                             # dstb_ie_contntx_cost_country[country.id.new], 
                                             drtb_total_cost_country[country.id.new], 
-                                            ndraws = 250, seed = tbPtntCstSeed) %>% 
+                                            ndraws = 1000, seed = tbPtntCstSeed) %>% 
                                    group_by(country.id.new) %>% 
                                    mean_qi(drtb_total_cost_country), 
                                join_by(country.id.new)) %>% 
     # select(country.code, in.review, drtb_total_cost_country, .lower, .upper) %>% 
     mutate(in.review = ifelse(in.review == 0, "No", "Yes"))
 
-lmicDRTBPred_tblst <- left_join(covariates, 
-                               spread_draws(lmicSamps, 
-                                            # dstb_dme_prediag_cost_country[country.id.new], 
-                                            # dstb_dnme_prediag_cost_country[country.id.new], 
-                                            # dstb_ie_prediag_cost_country[country.id.new], 
-                                            # dstb_dme_intsvtx_cost_country[country.id.new], 
-                                            # dstb_dnme_intsvtx_cost_country[country.id.new], 
-                                            # dstb_ie_intsvtx_cost_country[country.id.new], 
-                                            # dstb_dme_contntx_cost_country[country.id.new], 
-                                            drtb_dnme_contntx_cost_country[country.id.new],
-                                            # dstb_ie_contntx_cost_country[country.id.new], 
-                                            # drtb_total_cost_country[country.id.new], 
-                                            ndraws = 250, seed = tbPtntCstSeed) %>% 
-                                   group_by(country.id.new) %>% 
-                                   mean_qi(drtb_dnme_contntx_cost_country), 
-                               join_by(country.id.new)) %>% 
-    # select(country.code, in.review, drtb_total_cost_country, .lower, .upper) %>% 
-    mutate(in.review = ifelse(in.review == 0, "No", "Yes")) 
-
-    ggplot(data=lmicDRTBPred_tblst, 
-           aes(x=drtb_dnme_contntx_cost_country, 
-               y=median.income)) + geom_point()
-    
-    ggplot(data=lmicDRTBPred_tblst, 
-           aes(x=drtb_dnme_contntx_cost_country, 
-               y=oop.perc.che)) + geom_point()
-
-    ggplot(data=lmicDRTBPred_tblst, 
-           aes(x=drtb_dnme_contntx_cost_country, 
-               y=uhc.index)) + geom_point()
-    
-    lmicDRTBPred_tblst <- left_join(covariates, 
-                                    spread_draws(lmicSamps, 
-                                                 # dstb_dme_prediag_cost_country[country.id.new], 
-                                                 # dstb_dnme_prediag_cost_country[country.id.new], 
-                                                 # dstb_ie_prediag_cost_country[country.id.new], 
-                                                 # dstb_dme_intsvtx_cost_country[country.id.new], 
-                                                 # dstb_dnme_intsvtx_cost_country[country.id.new], 
-                                                 # dstb_ie_intsvtx_cost_country[country.id.new], 
-                                                 # dstb_dme_contntx_cost_country[country.id.new], 
-                                                 drtb_dnme_contntx_cost_country[country.id.new],
-                                                 # drtb_ie_contntx_cost_country[country.id.new],
-                                                 drtb_total_cost_country[country.id.new],
-                                                 ndraws = 1000, seed = tbPtntCstSeed) %>% 
-                                        group_by(country.id.new) %>% 
-                                        mutate(perc_dnme_contntx = drtb_dnme_contntx_cost_country/drtb_total_cost_country*100)%>%
-                                        mean_qi(perc_dnme_contntx, drtb_total_cost_country), 
-                                    join_by(country.id.new)) %>% 
-        # select(country.code, in.review, drtb_total_cost_country, .lower, .upper) %>% 
-        mutate(in.review = ifelse(in.review == 0, "No", "Yes")) 
-    
-    ggplot(data=lmicDRTBPred_tblst, 
-           aes(x=drtb_total_cost_country, 
-               y=perc_dnme_contntx)) + geom_point(size=4)  + 
-        theme_minimal(base_size=24)
-    
-    ggplot(data=lmicDRTBPred_tblst, 
-           aes(x=drtb_ie_contntx_cost_country, 
-               y=oop.perc.che)) + geom_point()
-    
-    ggplot(data=lmicDRTBPred_tblst, 
-           aes(x=drtb_ie_contntx_cost_country, 
-               y=uhc.index)) + geom_point()
-    
     
     ggplot(data=lmicDRTBPred_plot, 
            aes(x=drtb_total_cost_country, 
@@ -345,6 +298,104 @@ lmicDRTBPred_tblst <- left_join(covariates,
                y=uhc.index,
                color = oop.perc.che)) + geom_point() + geom_point(size=4)  + 
         theme_minimal(base_size=24)
+    
+    
+    
+   allDraws <- spread_draws(lmicSamps, 
+                dstb_dme_prediag_cost_country[country.id.new],
+                dstb_dnme_prediag_cost_country[country.id.new],
+                dstb_ie_prediag_cost_country[country.id.new],
+                dstb_dme_intsvtx_cost_country[country.id.new],
+                dstb_dnme_intsvtx_cost_country[country.id.new],
+                dstb_ie_intsvtx_cost_country[country.id.new],
+                dstb_dme_contntx_cost_country[country.id.new],
+                dstb_dnme_contntx_cost_country[country.id.new],
+                dstb_ie_contntx_cost_country[country.id.new],
+                dstb_total_cost_country[country.id.new], 
+                drtb_dme_prediag_cost_country[country.id.new],
+                drtb_dnme_prediag_cost_country[country.id.new],
+                drtb_ie_prediag_cost_country[country.id.new],
+                drtb_dme_intsvtx_cost_country[country.id.new],
+                drtb_dnme_intsvtx_cost_country[country.id.new],
+                drtb_ie_intsvtx_cost_country[country.id.new],
+                drtb_dme_contntx_cost_country[country.id.new],
+                drtb_dnme_contntx_cost_country[country.id.new],
+                drtb_ie_contntx_cost_country[country.id.new],
+                drtb_total_cost_country[country.id.new], 
+                
+                dstb_dme_cost_country[country.id.new], 
+                dstb_dnme_cost_country[country.id.new], 
+                dstb_ie_cost_country[country.id.new], 
+                
+                drtb_dme_cost_country[country.id.new], 
+                drtb_dnme_cost_country[country.id.new], 
+                drtb_ie_cost_country[country.id.new], 
+                ndraws = 1000, seed = tbPtntCstSeed) %>% 
+        ungroup() %>% 
+       mutate(dstb_dme_prediag_perc = dstb_dme_prediag_cost_country / dstb_total_cost_country *100, 
+              dstb_dnme_prediag_perc = dstb_dnme_prediag_cost_country / dstb_total_cost_country *100,
+              dstb_ie_prediag_perc = dstb_ie_prediag_cost_country / dstb_total_cost_country *100,
+              dstb_dme_intsvtx_perc = dstb_dme_intsvtx_cost_country / dstb_total_cost_country *100, 
+              dstb_dnme_intsvtx_perc = dstb_dnme_intsvtx_cost_country / dstb_total_cost_country *100,
+              dstb_ie_intsvtx_perc = dstb_ie_intsvtx_cost_country / dstb_total_cost_country *100, 
+              dstb_dme_contntx_perc = dstb_dme_contntx_cost_country / dstb_total_cost_country *100, 
+              dstb_dnme_contntx_perc = dstb_dnme_contntx_cost_country / dstb_total_cost_country *100,
+              dstb_ie_contntx_perc = dstb_ie_contntx_cost_country / dstb_total_cost_country *100, 
+              drtb_dme_prediag_perc = drtb_dme_prediag_cost_country / drtb_total_cost_country *100, 
+              drtb_dnme_prediag_perc = drtb_dnme_prediag_cost_country / drtb_total_cost_country *100,
+              drtb_ie_prediag_perc = drtb_ie_prediag_cost_country / drtb_total_cost_country *100,
+              drtb_dme_intsvtx_perc = drtb_dme_intsvtx_cost_country / drtb_total_cost_country *100, 
+              drtb_dnme_intsvtx_perc = drtb_dnme_intsvtx_cost_country / drtb_total_cost_country *100,
+              drtb_ie_intsvtx_perc = drtb_ie_intsvtx_cost_country / drtb_total_cost_country *100, 
+              drtb_dme_contntx_perc = drtb_dme_contntx_cost_country / drtb_total_cost_country *100, 
+              drtb_dnme_contntx_perc = drtb_dnme_contntx_cost_country / drtb_total_cost_country *100,
+              drtb_ie_contntx_perc = drtb_ie_contntx_cost_country / drtb_total_cost_country *100, 
+              
+              ### summarize by cost type 
+              
+              dstb_dme_perc = (dstb_dme_prediag_cost_country+ dstb_dme_intsvtx_cost_country+ 
+                                  dstb_dme_contntx_cost_country) / dstb_total_cost_country * 100,
+              
+              dstb_dme_perc2 = dstb_dme_cost_country / dstb_total_cost_country * 100,
+              
+              dstb_dnme_perc = (dstb_dnme_prediag_cost_country+ dstb_dnme_intsvtx_cost_country+ 
+                                  dstb_dnme_contntx_cost_country) / dstb_total_cost_country * 100,
+              
+              dstb_dnme_perc2 = dstb_dnme_cost_country / dstb_total_cost_country * 100,
+              
+              dstb_ie_perc = (dstb_ie_prediag_cost_country+ dstb_ie_intsvtx_cost_country+ 
+                                  dstb_ie_contntx_cost_country) / dstb_total_cost_country * 100,
+              
+              drtb_dme_perc = (drtb_dme_prediag_cost_country+ drtb_dme_intsvtx_cost_country+ 
+                                  drtb_dme_contntx_cost_country) / drtb_total_cost_country * 100,
+              drtb_dnme_perc = (drtb_dnme_prediag_cost_country+ drtb_dnme_intsvtx_cost_country+ 
+                                   drtb_dnme_contntx_cost_country) / drtb_total_cost_country * 100,
+              drtb_ie_perc = (drtb_ie_prediag_cost_country+ drtb_ie_intsvtx_cost_country+ 
+                                  drtb_ie_contntx_cost_country) / drtb_total_cost_country * 100,
+                              
+              drtbRatioTotal = drtb_total_cost_country/dstb_total_cost_country)
+   
+   
+   allDraws%>%
+       median_qi(
+                 dstb_dme_prediag_perc, dstb_dnme_prediag_perc, dstb_ie_prediag_perc, 
+                 dstb_dme_intsvtx_perc, dstb_dnme_intsvtx_perc, dstb_ie_intsvtx_perc,
+                 dstb_dme_contntx_perc, dstb_dnme_contntx_perc, dstb_ie_contntx_perc)
+   allDraws%>%
+        median_qi(
+                  drtb_dme_prediag_perc, drtb_dnme_prediag_perc, drtb_ie_prediag_perc, 
+                  drtb_dme_intsvtx_perc, drtb_dnme_intsvtx_perc, drtb_ie_intsvtx_perc,
+                  drtb_dme_contntx_perc, drtb_dnme_contntx_perc, drtb_ie_contntx_perc)
+   
+   allDraws%>% median_qi(dstb_total_cost_country, drtb_total_cost_country, drtbRatioTotal)
+   
+   allDraws %>% 
+       mean_qi(dstb_dme_perc, 
+                 dstb_dnme_perc, 
+                 dstb_ie_perc,
+                 drtb_dme_perc, drtb_dnme_perc, drtb_ie_perc) %>% 
+      select(!c(.width, .point, .interval)) %>% round() %>% matrix(ncol=3, byrow = TRUE)
+
 
 ### Format predictions 
 ##############################################################################|
@@ -363,11 +414,11 @@ world_dstb <-  ne_countries() %>%
           rename(country.code = sov_a3) %>% 
           left_join(lmicDSTBPred_plot) 
 
-lmicDSTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(dstb_total_cost_country) %>% range() %>% round()
-lmicDSTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(dstb_total_cost_country) %>% unlist() %>% mean()
+lmicDSTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(dstb_total_cost_country) %>% unlist() %>% quantile() %>% round()
+lmicDSTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(dstb_total_cost_country) %>% unlist() %>% mean() %>% round()
 
-lmicDSTBPred_plot %>% ungroup() %>% select(dstb_total_cost_country) %>% range() %>% round()
-lmicDSTBPred_plot %>% ungroup() %>% select(dstb_total_cost_country) %>% unlist() %>% mean()
+lmicDSTBPred_plot %>% ungroup() %>% select(dstb_total_cost_country) %>% unlist() %>% quantile() %>% round()
+lmicDSTBPred_plot %>% ungroup() %>% select(dstb_total_cost_country) %>% unlist() %>% mean() %>% round()
 
 
 world_drtb <-  ne_countries() %>% 
@@ -376,11 +427,11 @@ world_drtb <-  ne_countries() %>%
     rename(country.code = sov_a3) %>% 
     left_join(lmicDRTBPred_plot)
 
-lmicDRTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(drtb_total_cost_country) %>% range() %>% round()
-lmicDRTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(drtb_total_cost_country) %>% unlist() %>% mean()
+lmicDRTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(drtb_total_cost_country) %>% unlist() %>% quantile() %>% round()
+lmicDRTBPred_plot %>% ungroup() %>% filter(in.review == "Yes") %>% select(drtb_total_cost_country) %>% unlist() %>% mean() %>% round()
 
-lmicDRTBPred_plot %>% ungroup() %>% select(drtb_total_cost_country) %>% range() %>% round()
-lmicDRTBPred_plot %>% ungroup() %>% select(drtb_total_cost_country) %>% unlist() %>% mean()
+lmicDRTBPred_plot %>% ungroup() %>% select(drtb_total_cost_country) %>% unlist() %>% quantile() %>% round()
+lmicDRTBPred_plot %>% ungroup() %>% select(drtb_total_cost_country) %>% unlist() %>% mean() %>% round()
 
 lmicDRTBPred_plot %>% filter(drtb_total_cost_country > 10000) %>% write.csv("~/Desktop/countriesOver10.csv")
 
@@ -393,8 +444,9 @@ dstbCarePlot <- ggplot() +
                                 pattern_fill="darkolivegreen",
                                 pattern_size = 0,
                                 pattern = "circle") + 
-                scale_fill_gradient(low = "darkolivegreen1", 
+                scale_fill_gradient(breaks= c(500,1000,2000,4000), low = "darkolivegreen1", 
                                     high = "darkolivegreen", 
+                                    
                                     na.value = "grey85") +
                 guides(pattern = guide_legend(override.aes = list(fill = c("darkolivegreen1")))) +
                 theme_minimal() + 
@@ -425,5 +477,81 @@ ggsave(plot = drtbCarePlot, filename = here("output/drtbCostMap.png"))
 
 tmp <- left_join(lmicDSTBPred_plot, lmicDRTBPred_plot, by=c("study.country", "country.code", "in.review"))
 
-ggplot(tmp, aes(x=dstb_total_cost_country, y=drtb_total_cost_country)) + geom_point(size=4)  + 
-    theme_minimal(base_size=24)
+### color by incidence rate 
+incRate <- read.csv("~/Downloads/TB_burden_countries_2026-04-13.csv") %>% filter(year == 2024) %>% 
+            select(country, iso3, e_inc_100k) %>% 
+            rename(study.country = country, 
+                   country.code = iso3, 
+                   inc100K = e_inc_100k)
+
+tmp2 <- left_join(tmp, incRate)
+library(scales)
+
+ggplot(tmp2, aes(x=dstb_total_cost_country, 
+                 y=drtb_total_cost_country, 
+                 color=inc100K)) + geom_point(size=4)  + 
+    theme_minimal(base_size=24) + 
+    ylab("Estimated DRTB care cost") + 
+    xlab("Estimated DSTB care cost") + 
+    labs(color = "WHO estimated TB incidence per 100K persons") +
+    theme(legend.position = "bottom") + 
+    scale_x_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    scale_y_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    guides(color = guide_colourbar(barwidth = 30))
+
+ggplot(tmp2, aes(x=dstb_total_cost_country, 
+                 y=drtb_total_cost_country, 
+                 color=median.income)) + geom_point(size=4)  + 
+    theme_minimal(base_size=24) + 
+    ylab("Estimated DRTB care cost") + 
+    xlab("Estimated DSTB care cost") + 
+    labs(color = "Median annual income") +
+    theme(legend.position = "bottom") + 
+    scale_x_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    scale_y_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    # scale_color_gradient(low="darkgreen", high="green1") +  
+    guides(color = guide_colourbar(barwidth = 30)) + 
+    ggtitle("Country-level household costs due to tuberculosis disease")
+
+
+ggplot(tmp2, aes(x=dstb_total_cost_country, 
+                 y=drtb_total_cost_country, 
+                 color=uhc.index)) + geom_point(size=4)  + 
+    # geom_hline(aes(yintercept = median(drtb_total_cost_country))) + 
+    # geom_vline(aes(xintercept = median(dstb_total_cost_country))) + 
+    
+    theme_minimal(base_size=24) + 
+    ylab("Estimated DRTB care cost") + 
+    xlab("Estimated DSTB care cost") + 
+    labs(color = "WHO Universal health\ncare coverage index") +
+    theme(legend.position = "bottom") + 
+    scale_x_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    scale_y_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    # scale_color_gradient(low="darkgreen", high="green1") + 
+    guides(color = guide_colourbar(barwidth = 30)) + 
+    ggtitle("Country-level household costs due to tuberculosis disease")
+
+ggplot(tmp2, aes(x=dstb_total_cost_country, 
+                 y=drtb_total_cost_country, 
+                 color=oop.perc.che)) + geom_point(size=4)  + 
+    theme_minimal(base_size=24) + 
+    ylab("Estimated DRTB care cost") + 
+    xlab("Estimated DSTB care cost") + 
+    labs(color = "Out-of-pocket costs as percentage\nof current health expenditures") +
+    theme(legend.position = "bottom") + 
+    scale_x_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    scale_y_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  labels = label_dollar(scale_cut = cut_short_scale())) +
+    # scale_color_gradient(low="darkgreen", high="green1") +  
+    guides(color = guide_colourbar(barwidth = 30)) + 
+    ggtitle("Country-level household costs due to tuberculosis disease")
+
+
+
