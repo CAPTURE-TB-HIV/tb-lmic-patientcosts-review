@@ -44,11 +44,14 @@ data {
     real median_income[N];  // log-scale, mean-centered daily median income formatted in covariates.R
     real oop_perc_che[N];   // mean-centered out of pocket expenses as a perc of current health expenditure
     real uhc_index[N]; // mean-centered index of health care quality
+    int world_region[N]; // dummy variable for WHO regions 
     
     // dispersion
     vector<lower=0>[N] se;  // study reported dispersion estimate 
     
     int prior_sigma; /// for normal priors below
+    // test higher order betas 
+    // int beta_exp; 
     
 }
 
@@ -172,6 +175,25 @@ parameters {
     
     real<lower=0> sigma_uhc;   
     
+    // World Region
+    real beta_region_overall; 
+    
+    real beta_region_dme_prediag;
+    real beta_region_dnme_prediag;
+    real beta_region_ie_prediag;
+    
+    real beta_region_dme_intsvtx;
+    real beta_region_dnme_intsvtx;
+    real beta_region_ie_intsvtx;
+    
+    real beta_region_dme_contntx;
+    real beta_region_dnme_contntx;
+    real beta_region_ie_contntx;
+    
+    real<lower=0> sigma_region;   
+    
+    
+    
     // Additional variance parameter
     real<lower=0> tau;
 }
@@ -195,6 +217,7 @@ transformed parameters {
                              (beta_uhc_dme_prediag * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_dme_prediag * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_dme_prediag * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_dme_prediag * sigma_region + beta_region_overall)  * world_region[n]) *
                 dme_prediag[n]  +
                 
                 exp(beta_dnme_prediag + 
@@ -205,6 +228,7 @@ transformed parameters {
                         (beta_uhc_dnme_prediag * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_dnme_prediag * sigma_drtb + beta_drtb_overall)  * drtb_ind[n]) *
                 exp((beta_year_dnme_prediag * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_dnme_prediag * sigma_region + beta_region_overall)  * world_region[n]) *
                 dnme_prediag[n] +
                 
                 exp(beta_ie_prediag + 
@@ -215,6 +239,7 @@ transformed parameters {
                         (beta_uhc_ie_prediag * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_ie_prediag * sigma_drtb + beta_drtb_overall)  * drtb_ind[n]) *
                 exp((beta_year_ie_prediag * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_ie_prediag * sigma_region + beta_region_overall)  * world_region[n]) *
                 ie_prediag[n]  +
                 
                 exp(beta_dme_intsvtx + 
@@ -225,6 +250,7 @@ transformed parameters {
                         (beta_uhc_dme_intsvtx * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_dme_intsvtx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_dme_intsvtx * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_dme_intsvtx * sigma_region + beta_region_overall)  * world_region[n]) *
                 dme_intsvtx[n]  +
                 
                 exp(beta_dnme_intsvtx + 
@@ -235,6 +261,7 @@ transformed parameters {
                         (beta_uhc_dnme_intsvtx * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_dnme_intsvtx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_dnme_intsvtx * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_dnme_intsvtx * sigma_region + beta_region_overall)  * world_region[n]) *
                 dnme_intsvtx[n] +
                 
                 exp(beta_ie_intsvtx + 
@@ -245,6 +272,7 @@ transformed parameters {
                         (beta_uhc_ie_intsvtx * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_ie_intsvtx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_ie_intsvtx * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_ie_intsvtx * sigma_region + beta_region_overall)  * world_region[n]) *
                 ie_intsvtx[n]   +
                 
                 exp(beta_dme_contntx + 
@@ -255,6 +283,7 @@ transformed parameters {
                         (beta_uhc_dme_contntx * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_dme_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_dme_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_dme_contntx * sigma_region + beta_region_overall)  * world_region[n]) *
                 dme_contntx[n]  +
                 
                 exp(beta_dnme_contntx + 
@@ -265,6 +294,7 @@ transformed parameters {
                         (beta_uhc_dnme_contntx * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_dnme_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_dnme_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_dnme_contntx * sigma_region + beta_region_overall)  * world_region[n]) *
                 dnme_contntx[n] +
                 
                 exp(beta_ie_contntx + 
@@ -275,6 +305,7 @@ transformed parameters {
                         (beta_uhc_ie_contntx * sigma_uhc + beta_uhc_overall) * uhc_index[n]) *
                 exp((beta_drtb_ie_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 exp((beta_year_ie_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
+                exp((beta_region_ie_contntx * sigma_region + beta_region_overall)  * world_region[n]) *
                 ie_contntx[n];
         }
 }
@@ -354,6 +385,18 @@ model {
     beta_uhc_dnme_contntx ~ normal(0, 1);
     beta_uhc_ie_contntx   ~ normal(0, 1);
     
+    // Region
+    beta_region_overall ~ normal(0, prior_sigma);
+    beta_region_dme_prediag  ~ normal(0, 1);
+    beta_region_dnme_prediag ~ normal(0, 1);
+    beta_region_ie_prediag   ~ normal(0, 1);
+    beta_region_dme_intsvtx  ~ normal(0, 1);
+    beta_region_dnme_intsvtx ~ normal(0, 1);
+    beta_region_ie_intsvtx   ~ normal(0, 1);
+    beta_region_dme_contntx  ~ normal(0, 1);
+    beta_region_dnme_contntx ~ normal(0, 1);
+    beta_region_ie_contntx   ~ normal(0, 1);
+    
     // Priors for random slopes  
     randeff_survey ~ normal(0, 1);
     randeff_country ~ normal(0, 1);
@@ -364,6 +407,7 @@ model {
     sigma_med_income ~ normal(0, prior_sigma);
     sigma_oop_perc_che  ~ normal(0, prior_sigma);
     sigma_uhc ~ normal(0, prior_sigma); 
+    sigma_region ~ normal(0, prior_sigma); 
     
     // Priors for dispersion of random effects
     sigma_randeff_survey   ~ student_t(3, 0, 2.5); 

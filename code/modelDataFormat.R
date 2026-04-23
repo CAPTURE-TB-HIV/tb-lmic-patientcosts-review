@@ -59,13 +59,27 @@ tmpDRWgts <- fullData %>%
 
 #### Add in the four above 
 tmpDRWgts <- bind_rows(tmpDRWgts, 
+                       fullData %>% filter(covidence.id %in% c(9612, 7516, 7420, 7322, 9061, 
+                                                               9035, 8975, 9388)) %>% 
+                                    mutate(n.participants.drtb = as.numeric(n.participants.drtb), 
+                                           n.participants.dstb = as.numeric(n.participants.dstb),
+                                            drtb.wt = case_when(covidence.id == 9612 ~ 1, 
+                                                                covidence.id == 7516 ~ 0,
+                                                                covidence.id == 7420 ~ 0, 
+                                                                covidence.id == 7322 ~ 1,
+                                                                covidence.id == 9061 ~ 0,
+                                                                covidence.id == 9035 ~ 0,
+                                                                covidence.id == 8975 ~ 0,
+                                                                covidence.id == 9388 ~ 0,
+                                                        )),
                        fullData %>% filter(covidence.id %in% c(7814, 9516, 8793, 7760)) %>% 
                            mutate(n.participants.drtb = as.numeric(n.participants.drtb), 
                                   n.participants.dstb = as.numeric(n.participants.dstb),
                                   drtb.wt = case_when(covidence.id == 7814 ~ 0, 
                                                       covidence.id == 9516 ~ 0,
                                                       covidence.id == 8793 ~ 1, 
-                                                      covidence.id == 7760 ~ 1)))
+                                                      covidence.id == 7760 ~ 1
+                                )))
 
 ###############################################################################
 ##### Format the model data to be fed into the stan model.                #####
@@ -134,9 +148,12 @@ modelDataMeans<- tmpDRWgts %>%
 ### Filter pop.ids we aren't interested in  ##############################################
 ##########################################################################################
 filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
-                       "Adult6H", "Adult3HP", "Child6H", "Child3HP")) %>% 
+                       "Adult6H", "Adult3HP", "Child6H", "Child3HP"),
+       ! (pop.id == "Total" & covidence.id == 9422),
+       ! (pop.id == "DSTB" & covidence.id == 9061),
+       ! (pop.id == "PCF" & covidence.id == 9430)) %>% 
     mutate(pop.id = ifelse(covidence.id %in% c(9516, 9422) & pop.id == "PTB", "Total", pop.id),
-           pop.id = ifelse(covidence.id %in% c(7814, 8092, 9430) & pop.id == "PCF", "Total", pop.id),
+           # pop.id = ifelse(covidence.id %in% c(7814, 8092, 9430) & pop.id == "PCF", "Total", pop.id),
            pop.id = ifelse(covidence.id == 8887, "Total", pop.id),
            pop.id = ifelse(covidence.id == 8979, "Total", pop.id), #HIVp 
            ! is.na(drtb.wt)) %>%
@@ -368,9 +385,11 @@ modelDataMedians <- tmpDRWgts %>%
 ### Filter pop.ids we aren't interested in  ##############################################
 ##########################################################################################
 filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
-                       "Adult6H", "Adult3HP", "Child6H", "Child3HP")) %>% 
+                       "Adult6H", "Adult3HP", "Child6H", "Child3HP"),
+       ! (pop.id == "Total" & covidence.id == 9422),
+       ! (pop.id == "PCF" & covidence.id == 9430)) %>% 
     mutate(pop.id = ifelse(covidence.id %in% c(9516, 9422) & pop.id == "PTB", "Total", pop.id),
-           pop.id = ifelse(covidence.id %in% c(7814, 8092, 9430) & pop.id == "PCF", "Total", pop.id),
+           # pop.id = ifelse(covidence.id %in% c(7814, 8092, 9430) & pop.id == "PCF", "Total", pop.id),
            pop.id = ifelse(covidence.id == 8887, "Total", pop.id),
            pop.id = ifelse(covidence.id == 8979, "Total", pop.id) #HIVp 
     ) %>%
@@ -418,7 +437,22 @@ mutate(
                                         de.postdiag.median - dme.postdiag.total.median, 
                                         dmne.postdiag.total.median)
 ) %>%
-    ##########################################################################################
+    ### Study 7866 has total direct costs, but they did not account for any 
+    ### accomodation costs so we don't trust the implied DNME so we're going to 
+    ### manually remove these totals (they should not have been extracted.)
+    mutate(de.prediag.median = ifelse(covidence.id == 7866, 
+                                      NA, de.prediag.median), 
+           de.tbcare.median = ifelse(covidence.id == 7866, 
+                                      NA, de.tbcare.median), 
+           de.intens.tx.median = ifelse(covidence.id == 7866,
+                                        NA, de.intens.tx.median),
+           dmne.tbcare.total.median = ifelse(covidence.id == 7866, 
+                                             NA, dmne.tbcare.total.median), 
+    #### Study 9612 accidentally had costs removed so readd them 
+            dme.postdiag.total.median = ifelse(covidence.id == 9612, 
+                                                2696, dmne.tbcare.total.median),
+           ) %>% 
+##########################################################################################
 ### Drop duplicates from the data ########################################################
 ##########################################################################################
 mutate(de.postdiag.median = ifelse(!is.na(de.intens.tx.median) & !is.na(de.cont.tx.median), 
@@ -585,8 +619,12 @@ modelDataBind <- bind_rows(modelDataBind %>%
 
 tmpBoth <- modelDataBind %>% 
     group_by(covidence.id) %>% 
-    filter((length(unique(pop.id)) == 3 & !grepl("Total", pop.id)) |
-            length(unique(pop.id)) < 3) 
+    filter( 
+            length(unique(pop.id)) < 3 | 
+            ("DSTB" %in% unique(pop.id) & "DRTB" %in% unique(pop.id) & !grepl("Total", pop.id)) |
+            (!"DSTB" %in% unique(pop.id) & !"DRTB" %in% unique(pop.id) & !grepl("Male|Female|First", pop.id))
+           ) 
+
 
 # tmp2Both <- modelDataBind %>% 
 #     filter((length(unique(pop.id)) > 1) & (! covidence.id %in% tmpBoth$covidence.id)) 
@@ -658,3 +696,18 @@ modelData <-left_join(modelData,
                           mutate(study.end.year = as.numeric(study.end.year)) %>% 
                           select(country.code, study.end.year, UHCindex), 
                       by = c("study.end.year", "country.code"))
+
+##############################################################################|
+### Add WHO region into the dataset                                         ###
+##############################################################################|
+
+modelData <- left_join(modelData, 
+                       read.csv(here("data/who-regions.csv")) %>%
+             mutate(who.region = gsub(" \\(WHO\\)", "", World.regions.according.to.WHO)) %>% 
+             select(Code, who.region) %>% 
+             rename(country.code = Code),
+    by="country.code") %>%
+    mutate(region.code = as.factor(who.region))
+    
+    
+    
