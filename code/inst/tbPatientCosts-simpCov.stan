@@ -52,6 +52,9 @@ data {
     
     // testing different sigma priors 
     int prior_sigma; 
+    
+    // test higher order betas 
+    int beta_exp; 
 }
 
 transformed data {

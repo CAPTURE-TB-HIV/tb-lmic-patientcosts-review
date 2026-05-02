@@ -23,7 +23,7 @@ tbPtntCstWarmup <- 500
 ##### Read in model and other data setup 
 ###############################################################################
 ### Best model as defined by the model selection tests
-predModel <- stan_model("code/inst/tbPatientCosts-randEffCov.stan")
+predModel <- stan_model("code/inst/tbPatientCosts-predictive.stan")
 
 ### Data used to fit the model 
 source(here("code/modelDataFormat.R"))
@@ -222,7 +222,7 @@ lmicDRTBCovs <- spread_rvars(lmicSamps,
                              beta_drtb_dme_contntx, 
                              beta_drtb_dnme_contntx, 
                              beta_drtb_ie_contntx,
-                                       ndraws = 1000, seed = tbPtntCstSeed) %>% View()
+                             ndraws = 1000, seed = tbPtntCstSeed) %>% View()
 
 lmicREs <- spread_rvars(lmicSamps, randeff_country, 
                              ndraws = 1000, seed = tbPtntCstSeed) %>% View()

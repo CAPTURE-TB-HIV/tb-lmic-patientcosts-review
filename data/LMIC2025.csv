@@ -1,0 +1,133 @@
+﻿country.code,country.name,class25
+AFG,Afghanistan,L
+ALB,Albania,UM
+DZA,Algeria,UM
+AGO,Angola,LM
+ARG,Argentina,UM
+ARM,Armenia,UM
+AZE,Azerbaijan,UM
+BGD,Bangladesh,LM
+BLR,Belarus,UM
+BLZ,Belize,UM
+BEN,Benin,LM
+BTN,Bhutan,LM
+BOL,Bolivia,LM
+BIH,Bosnia and Herzegovina,UM
+BWA,Botswana,UM
+BRA,Brazil,UM
+BFA,Burkina Faso,L
+BDI,Burundi,L
+CPV,Cabo Verde,LM
+KHM,Cambodia,LM
+CMR,Cameroon,LM
+CAF,Central African Republic,L
+TCD,Chad,L
+CHN,China,UM
+COL,Colombia,UM
+COM,Comoros,LM
+COD,"Congo, Dem. Rep.",L
+COG,"Congo, Rep.",LM
+CRI,Costa Rica,UM
+CIV,Côte d'Ivoire,LM
+CUB,Cuba,UM
+DJI,Djibouti,LM
+DMA,Dominica,UM
+DOM,Dominican Republic,UM
+ECU,Ecuador,UM
+EGY,"Egypt, Arab Rep.",LM
+SLV,El Salvador,UM
+GNQ,Equatorial Guinea,UM
+ERI,Eritrea,L
+SWZ,Eswatini,LM
+ETH,Ethiopia,L
+FJI,Fiji,UM
+GAB,Gabon,UM
+GMB,"Gambia, The",L
+GEO,Georgia,UM
+GHA,Ghana,LM
+GRD,Grenada,UM
+GTM,Guatemala,UM
+GIN,Guinea,LM
+GNB,Guinea-Bissau,L
+HTI,Haiti,LM
+HND,Honduras,LM
+IND,India,LM
+IDN,Indonesia,UM
+IRN,"Iran, Islamic Rep.",UM
+IRQ,Iraq,UM
+JAM,Jamaica,UM
+JOR,Jordan,LM
+KAZ,Kazakhstan,UM
+KEN,Kenya,LM
+KIR,Kiribati,LM
+PRK,"Korea, Dem. Rep.",L
+XKX,Kosovo,UM
+KGZ,Kyrgyz Republic,LM
+LAO,Lao PDR,LM
+LBN,Lebanon,LM
+LSO,Lesotho,LM
+LBR,Liberia,L
+LBY,Libya,UM
+MDG,Madagascar,L
+MWI,Malawi,L
+MYS,Malaysia,UM
+MDV,Maldives,UM
+MLI,Mali,L
+MHL,Marshall Islands,UM
+MRT,Mauritania,LM
+MUS,Mauritius,UM
+MEX,Mexico,UM
+FSM,"Micronesia, Fed. Sts.",LM
+MDA,Moldova,UM
+MNG,Mongolia,UM
+MNE,Montenegro,UM
+MAR,Morocco,LM
+MOZ,Mozambique,L
+MMR,Myanmar,LM
+NAM,Namibia,UM
+NPL,Nepal,LM
+NIC,Nicaragua,LM
+NER,Niger,L
+NGA,Nigeria,LM
+MKD,North Macedonia,UM
+PAK,Pakistan,LM
+PNG,Papua New Guinea,LM
+PRY,Paraguay,UM
+PER,Peru,UM
+PHL,Philippines,LM
+RWA,Rwanda,L
+WSM,Samoa,LM
+STP,São Tomé and Príncipe,LM
+SEN,Senegal,LM
+SRB,Serbia,UM
+SLE,Sierra Leone,L
+SLB,Solomon Islands,LM
+SOM,"Somalia, Fed. Rep.",L
+ZAF,South Africa,UM
+SSD,South Sudan,L
+LKA,Sri Lanka,LM
+LCA,St. Lucia,UM
+VCT,St. Vincent and the Grenadines,UM
+SDN,Sudan,L
+SUR,Suriname,UM
+SYR,Syrian Arab Republic,L
+TJK,Tajikistan,LM
+TZA,Tanzania,LM
+THA,Thailand,UM
+TLS,Timor-Leste,LM
+TGO,Togo,L
+TON,Tonga,UM
+TUN,Tunisia,LM
+TUR,Türkiye,UM
+TKM,Turkmenistan,UM
+TUV,Tuvalu,UM
+UGA,Uganda,L
+UKR,Ukraine,UM
+UZB,Uzbekistan,LM
+VUT,Vanuatu,LM
+VEN,"Venezuela, RB",
+VNM,Viet Nam,LM
+PSE,West Bank and Gaza,LM
+YEM,"Yemen, Rep.",L
+ZMB,Zambia,LM
+ZWE,Zimbabwe,LM

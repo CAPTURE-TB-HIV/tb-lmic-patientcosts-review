@@ -1,0 +1,211 @@
+---
+title: "Out-of-pocket direct and indirect costs among persons with tuberculosis in low- and middle-income countries: a systematic review and meta-analysis"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+classoption: landscape
+geometry: margin=.5cm
+header-includes:
+  - \pagenumbering{gobble}
+---
+
+ABOUT THIS SCRIPT
+
+This script reads in the clean dataset from data folder, converts and inflates currencies to 2023 USD, and then runs fits a Bayesian generalized multivariate multilevel model on the various reported patient costs.
+
+```{r, echo = FALSE,  warning = FALSE, message=FALSE}
+##############################################################################|
+##### LOAD IN NECESSARY PACKAGES ##############################################
+library(dplyr)
+library(forcats)
+library(tidyr)
+library(reshape2)
+library(here)
+library(magrittr)
+library(DT)
+library(metafor)
+library(meta)
+library(brms)
+library(scales)
+library(tidybayes)
+library(ggplot2)
+library(priceR)
+
+# expit <- function (x) {exp(x)/(1 + exp(x))}
+
+myPal <- c("black", "violet")
+
+##############################################################################|
+##### LOAD IN CLEAN LINE LISTED DATASET #######################################
+dataList <- readRDS(here("data/tempCleanData.rds"))
+
+```
+
+We would like to update all currencies to 2024 USD. Because inflation occurs at different rates per country, we will convert to local currency, then inflate to 2024, then convert to USD. 
+
+### Convert to local currencies 
+
+```{r, echo = FALSE,  warning = FALSE, message=FALSE}
+### Read in conversion factors
+cnvsFctrFromUSD <- readRDS(here("data/fromUSDconversionFactors.rds"))
+cnvsFctrFromUSD <- cbind(dataList[["descriptive"]]$covidence.id,
+                  cnvsFctrFromUSD)
+colnames(cnvsFctrFromUSD)[1] <- "covidence.id"
+cnvsFctrFromUSD <- as.data.frame(cnvsFctrFromUSD)
+### Apply to all costs reported 
+costs0 <- cbind(dataList[["data"]]$covidence.id,
+                   (dataList[["data"]] %>% select(starts_with(c("de", "dme", "dmne", "ie"))))[,-1])
+
+colnames(costs0)[1] <- "covidence.id"
+
+costs <- left_join(costs0, cnvsFctrFromUSD)
+
+costLocal <- costs[,c(-1,-992)]
+
+for(i in 1:nrow(costLocal)){
+    costLocal[i,] <- as.numeric(unlist(costs[i,c(-1,-992)])) * as.numeric(costs[i,992])
+}
+
+# plot(costLocal$de.prediag.median, col="green")
+# points(costs$de.prediag.median, col="darkgreen")
+```
+
+### Inflate local currencies 2024
+
+```{r, echo = FALSE,  warning = FALSE, message=FALSE}
+### Read in inflation factors
+infltnFctr <- readRDS(here("data/inflationLocalFactors.rds"))
+infltnFctr <- cbind(dataList[["descriptive"]]$covidence.id,
+                  infltnFctr)
+colnames(infltnFctr)[1] <- "covidence.id"
+infltnFctr <- as.data.frame(infltnFctr)
+
+costs <- left_join(costs, infltnFctr)
+
+### Apply to all reported costs 
+costLocalInflate <- costLocal
+for(i in 1:nrow(costLocal)){
+    costLocalInflate[i,] <- as.numeric(unlist(costLocal[i,]))*as.numeric(costs[i,"infltnFctr"])
+}
+
+# plot(costLocalInflate$de.prediag.median, col="green")
+# points(costLocal$de.prediag.median, col="darkgreen")
+
+```
+
+### Convert from 2024 local currencies to 2024 USD
+
+```{r, echo = FALSE,  warning = FALSE, message=FALSE}
+### Read in conversion factors and format 
+cnvsFctrToUSD <- readRDS(here("data/toUSDconversionFactors.rds"))
+cnvsFctrToUSD <- cbind(dataList[["descriptive"]]$covidence.id,
+                  cnvsFctrToUSD)
+colnames(cnvsFctrToUSD)[1] <- "covidence.id"
+cnvsFctrToUSD <- as.data.frame(cnvsFctrToUSD)
+
+
+### Apply to all costs reported 
+costs <- left_join(costs, cnvsFctrToUSD)
+
+costsUSD24 <- costLocalInflate
+
+for(i in 1:nrow(costLocalInflate)){
+    costsUSD24[i,] <- as.numeric(unlist(costLocalInflate[i,])) * as.numeric(costs[i,"cnvsFctrToUSD"])
+}
+
+
+# plot(costLocalInflate$de.prediag.median, col="green")
+# points(costsUSD24$de.prediag.median, col="darkgreen")
+
+### Add in the covidence id and study countries back in 
+costsUSD24 <- cbind(costs[,1], costsUSD24); colnames(costsUSD24)[1] <- "covidence.id"
+costsUSD24 <- left_join(costsUSD24, dataList[["descriptive"]])
+```
+
+### Create plots of the collected currencies 
+```{r, echo=FALSE, warning = FALSE, message=FALSE, fig.height = 20, fig.width = 28}
+ggplot(data = costsUSD24 %>% filter(as.numeric(dme.tbcare.total.mean) < 50000)) + 
+    geom_point(aes(x=covidence.id, y=as.numeric(dme.tbcare.total.mean)), color = "springgreen2", size=3) + 
+    geom_point(aes(x=covidence.id, y=as.numeric(dme.tbcare.total.median)), color = "springgreen4", size=3) + 
+    theme_minimal(base_size = 30) + coord_flip()
+
+ggplot(data = costsUSD24 %>% filter(as.numeric(dme.tbcare.total.mean) < 50000)) + 
+    geom_point(aes(x=study.country, y=as.numeric(dme.tbcare.total.mean, group=study.country)), color = "springgreen2", size=3) + 
+    geom_point(aes(x=study.country, y=as.numeric(dme.tbcare.total.median, group=study.country)), color = "springgreen4", size=3) + 
+    # facet_grid(rows = vars(study.country)) +
+    theme_minimal(base_size = 30) + coord_flip()
+# 
+# ggplot(data = costsUSD24 %>% filter(as.numeric(dme.tbcare.total.mean) < 50000)) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(dme.tbcare.total.mean), color=study.country), size=7) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(dme.tbcare.total.median), color=study.country), size=7) + 
+#     # facet_grid(rows = vars(study.country)) +
+#     theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+#     ggtitle("Reported direct medical cost of total TB care") + 
+#     theme(legend.position = "inside",
+#       legend.position.inside = c(0.92,0.15)) 
+
+ggplot(data = costsUSD24) + 
+    geom_point(aes(x=publication.year, y=as.numeric(dme.tbcare.total.mean), color=study.country), size=7) + 
+    geom_point(aes(x=publication.year, y=as.numeric(dme.tbcare.total.median), color=study.country), size=7) + 
+    # facet_grid(rows = vars(study.country)) +
+    theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+    ggtitle("Reported direct medical cost of total TB care") + 
+    scale_y_log10(labels = scales::dollar_format()) +
+    expand_limits(y=1) +
+    theme(legend.position = "inside",
+          legend.background = element_rect(fill="white"),
+          legend.position.inside = c(0.80,0.25)) 
+
+# ggplot(data = costsUSD24 %>% filter(as.numeric(dme.tbcare.total.mean) < 50000)) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(dme.tbcare.total.mean), color=covidence.id), size=7) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(dme.tbcare.total.median), color=covidence.id), size=7) + 
+#     facet_grid(rows = vars(study.country)) +
+#     theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+#     ggtitle("Reported direct medical cost of total TB care") + 
+#     theme(legend.position = "inside",
+#       legend.position.inside = c(0.92,0.15)) 
+
+# ggplot(data = costsUSD24 %>% filter(as.numeric(dmne.tbcare.total.mean) < 50000)) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(dmne.tbcare.total.mean), color=study.country), size=5) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(dmne.tbcare.total.median), color=study.country), size=5) + 
+#     # facet_grid(rows = vars(study.country)) +
+#     theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+#     ggtitle("Reported direct non-medical cost of total TB care") + 
+#     theme(legend.position = "inside",
+#       legend.position.inside = c(0.95,0.15)) 
+
+ggplot(data = costsUSD24) + 
+    geom_point(aes(x=publication.year, y=as.numeric(dmne.tbcare.total.mean), color=study.country), size=7) + 
+    geom_point(aes(x=publication.year, y=as.numeric(dmne.tbcare.total.median), color=study.country), size=7) + 
+    # facet_grid(rows = vars(study.country)) +
+    theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+    ggtitle("Reported direct non-medical cost of total TB care") + 
+    scale_y_log10(labels = scales::dollar_format()) +
+    expand_limits(y=1) +
+    theme(legend.position = "inside",
+          legend.background = element_rect(fill="white"),
+          legend.position.inside = c(0.80,0.25)) 
+
+# ggplot(data = costsUSD24 %>% filter(as.numeric(ie.tbcare.lostincome.total.mean) < 50000)) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(ie.tbcare.lostincome.total.mean), color=study.country), size=5) + 
+#     geom_point(aes(x=publication.year, y=as.numeric(ie.tbcare.lostincome.total.median), color=study.country), size=5) + 
+#     # facet_grid(rows = vars(study.country)) +
+#     theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+#     ggtitle("Reported indirect cost of total TB care") + 
+#     theme(legend.position = "inside",
+#       legend.position.inside = c(0.95,0.2)) 
+
+ggplot(data = costsUSD24) + 
+    geom_point(aes(x=publication.year, y=as.numeric(ie.tbcare.lostincome.total.mean), color=study.country), size=7) + 
+    geom_point(aes(x=publication.year, y=as.numeric(ie.tbcare.lostincome.total.median), color=study.country), size=7) + 
+    # facet_grid(rows = vars(study.country)) +
+    theme_minimal(base_size = 30) + coord_flip() + ylab("USD 2024") +
+    ggtitle("Reported indirect cost of total TB care") + 
+    scale_y_log10(labels = scales::dollar_format()) +
+    expand_limits(y=1) +
+    theme(legend.position = "inside",
+          legend.background = element_rect(fill="white"),
+          legend.position.inside = c(0.2,0.25)) 
+```
+
+
+

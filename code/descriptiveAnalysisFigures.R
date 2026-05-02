@@ -23,6 +23,8 @@ library(ggplot2)
 library(gt)
 library(maps)
 library(ggpubr)
+    library(geosphere)
+
 
 ### Setup palette 
 myPal <- c( "#44AA99", "#882255", "#332288", "#117733", "#6699CC", "#CC6677",
@@ -43,14 +45,15 @@ myPal <- c( "#44AA99", "#882255", "#332288", "#117733", "#6699CC", "#CC6677",
 # cleanDF0 <- cleanDF0 %>% left_join(figID[,c("covidence.id", "figure.id")], by = "covidence.id") %>% 
 #             mutate(figure.id.yr = paste(figure.id, study.start.year))
 
-cleanDF <- readRDS("data/fullDataRaw.rds")
+cleanDF <- dataList[["descriptive"]]
+# readRDS("data/fullDataRaw.rds")
 
 
 ##############################################################################|
 ##### Read in the World Bank Region data ######################################
 ##############################################################################|
 regionWHO <- read.csv("data/who-regions.csv")[,c(1,4)] %>% 
-             rename(Study.country = Entity)
+             rename(study.country = Entity)
 
 ### Rename some countries to match the WHO CSV.
 ### For labeling these will remain as extracted. 
@@ -76,29 +79,63 @@ pdf(file = filename, width = 11.5, height = 8.5)
 
 ### COUNTRY 
 ### Count the county instances
-nCountry <- cleanDF %>% 
+nCountry0 <- cleanDF %>% 
             count(Study.country) %>% 
-            left_join(regionWHO) 
+            left_join(regionWHO %>% rename(Study.country=study.country)) 
+
+###
+WHOSurveys <- data.frame(Study.country = c("Burkina Faso",
+                                           "Democratic Republic of the Congo",
+                                           "Fiji",
+                                           "Ghana", 
+                                           "Indonesia", 
+                                           "Mali", 
+                                           "Mongolia",
+                                           "Myanmar", 
+                                           "Nigeria", 
+                                           "Papua New Guinea", 
+                                           "Philippines", 
+                                           "Solomon Islands", 
+                                           "Uganda", 
+                                           "Vietnam"
+                                           ), 
+                         n1 = c(1,2,rep(1, 12))) %>% 
+    left_join(regionWHO %>% rename(Study.country=study.country)) 
+
+nCountry <- full_join(nCountry0, WHOSurveys) %>% 
+            filter(Study.country != "Democratic Republic of Congo") %>%
+            group_by(Study.country) %>%
+            mutate(n = sum(n, n1, na.rm = TRUE)) %>%
+            select(!n1)
 
 ### Setup a world map 
 world_map <- map_data("world")
 world_map <- subset(world_map, region != "Antarctica")
 
-### Make a heat map of prevalence studies by country 
+centroids <- world_map %>% 
+    group_by(region) %>% 
+    group_modify(~ data.frame(centroid(cbind(.x$long, .x$lat)))) %>% 
+    rename(Study.country = region)
 
+nCountriesGeo <- left_join(nCountry, centroids)
+### Make a heat map of prevalence studies by country 
+# filename <- here(paste0("~/Desktop/countriesPatientCosts.pdf"))
+# pdf(file = filename, width = 13, height = 8.5)
 print(
 ggplot(nCountry) +
     geom_map(
         dat = world_map, map = world_map, aes(map_id = region),
-        fill = "lightgrey", color = "black", size = 0.25) +
+        fill = "grey95", color = "black", size = 0.25) +
     geom_map(map = world_map, aes(map_id = Study.country, fill = n)) +
-    scale_fill_gradient(low = "#fff7bc", high = "#cc4c02",
-                        name = "Number of prevalence surveys") +
+    scale_fill_gradient(low = "darkolivegreen1", high = "darkolivegreen",
+                        name = "Number of patient costs surveys") +
     expand_limits(x = world_map$long, y = world_map$lat) + 
-    theme_void() + theme(legend.position = "inside",
-                            legend.position.inside = c(.2,.2)) + 
-    ggtitle ("Number of prevalence surveys by country")
+    theme_void(base_size = 18) + theme(legend.position = "inside",
+                            legend.position.inside = c(.15,.2)) + 
+    with(nCountriesGeo, annotate(geom="text", x = lon, y=lat, label = n, size = 5)) +
+    ggtitle ("Number of patient cost surveys by country")
 )
+# dev.off()
 ### Bar plot of countries by total survey count
 nCountry <- nCountry %>% arrange(n) %>% 
             mutate(Study.country = as.factor(Study.country), levels = Study.country)
@@ -132,6 +169,7 @@ ggplot(nCountry) +
     labs(x = "Survey country", y="Number of prevalence surveys") +
     ggtitle("Number of prevalence surveys by country")
 # )
+
 ##### WHO REGION
 nRegion <- cleanDF %>% 
            count(World.regions.according.to.WHO)
@@ -163,6 +201,21 @@ ggplot(cleanDF, aes(x = Publication.year)) +
     geom_text(aes(label = after_stat(count)), stat = "count", hjust = 1.1, colour = "white") +
     ggtitle("Number of prevalence surveys by publication year")
 )
+
+
+##### PLOTS BY TIME AND GEOGRAPHY ###########################################################
+# print(
+nCountryWHO <- cleanDF %>% 
+    left_join(regionWHO) %>%  
+    group_by(publication.year) %>%
+    count(World.regions.according.to.WHO)  
+
+ggplot(nCountryWHO, aes(x = publication.year, y = World.regions.according.to.WHO,  
+                    fill = n)) + 
+    geom_tile() +
+    theme_minimal()
+# )
+
 
 
 ## some summary statistics 

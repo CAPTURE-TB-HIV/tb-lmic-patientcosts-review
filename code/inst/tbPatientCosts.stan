@@ -51,6 +51,9 @@ data {
     
     int prior_sigma; /// for normal priors below
     
+    // test higher order betas 
+    int beta_exp; 
+    
 }
 
 transformed data {

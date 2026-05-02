@@ -8,6 +8,15 @@ library(rstan)
 ###############################################################################
 source(here("code/modelDataFormat.R"))
                        
+##############################################################################|
+##### Set seed, number of iterations (warmup and total)                   #####
+##### for sampling in model fits.                                         ####|
+##### Needs to be the same in the runPoolingModel.R script.               ####|
+##############################################################################|
+
+tbPtntCstSeed <- 513
+tbPtntCstIter <- 4000
+tbPtntCstWarmup <- 500
 ###############################################################################
 ### Format the data for stan                                                ###
 ###############################################################################
@@ -30,13 +39,15 @@ stanModelData <- list(
                         N_country = max(modelData$country.id),
                         country_id = modelData$country.id, 
                         ### Internal covariate
-                        drtb_ind= modelData$drtb.ind,
+                        drtb_ind= modelData$drtb.wt,
                         survey_year = modelData$year_z,
                         ### External covariates
                         median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
                         oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
                         uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
-                        prior_sigma = 2
+                        prior_sigma = 2,
+                        ### test with world region shut off 
+                        world_region = rep(0, length(modelData$cost))
                     )
 
 ###############################################################################
@@ -50,11 +61,11 @@ stanModelData <- list(
 totalModel <- stan(file = "code/inst/tbPatientCosts.stan",
                    data = stanModelData,
                    iter = tbPtntCstIter/4, chains = 2,
-                   warmup=tbPtntCstWarmup/4,
+                   warmup=tbPtntCstWarmup/2,
                    control=list(max_treedepth=14), 
                    seed = tbPtntCstSeed)
 
-rstan::loo(totalModel)
+looTotal <- rstan::loo(totalModel)
 
 ### Pooled patient costs as mean median income and oop perc and study year
 exp(summary(totalModel)[[1]][1:9,"mean"])
@@ -78,40 +89,42 @@ sum(exp(summary(totalModel)[[1]][1:9,"mean"]))
 ###############################################################################
 reCovModel <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
                    data = stanModelData,
-                   iter = tbPtntCstIter/2, chains = 2,
+                   iter = tbPtntCstIter/4, chains = 2,
                    warmup=tbPtntCstWarmup/2,
                    control=list(max_treedepth=14),
                    seed = tbPtntCstSeed)
 
-sum(exp(summary(reCovModel)[[1]][1:9,"mean"]))
-exp(summary(reCovModel)[[1]][1:9,"mean"])
+looReCov <-rstan::loo(reCovModel) 
 
-rstan::loo(reCovModel) 
-loo_compare(rstan::loo(totalModel), rstan::loo(reCovModel))
-
-reCovModelNoUnit <- reCovModel
-reCovModelUnit <- reCovModel
+# sum(exp(summary(reCovModel)[[1]][1:9,"mean"]))
+# exp(summary(reCovModel)[[1]][1:9,"mean"])
+# 
+# loo_compare(rstan::loo(totalModel), rstan::loo(reCovModel))
+# 
+# reCovModelNoUnit <- reCovModel
+# reCovModelUnit <- reCovModel
 ###############################################################################
 ### Covariates have the same effect across cost category
 ###############################################################################
 simpCovMod <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
                    data = stanModelData,
-                   iter = tbPtntCstIter, chains = 3,
-                   warmup= tbPtntCstWarmup,
+                   iter = tbPtntCstIter/4, chains = 2,
+                   warmup= tbPtntCstWarmup/2,
                    control=list(max_treedepth=14), 
                    seed = tbPtntCstSeed)
 
+looSimp <- loo(simpCovMod)
 ### Pooled patient costs as mean median income and oop perc and study year
-exp(summary(simpCovMod)[[1]][1:9,"mean"])
+# exp(summary(simpCovMod)[[1]][1:9,"mean"])
 # exp(summary(totalModel)[[1]][1:9,"50%"])
 # exp(summary(totalModel)[[1]][1:9,"2.5%"])
 # exp(summary(totalModel)[[1]][1:9,"97.5%"])
 
 ### Print the estimated impact of study year 
-exp(summary(simpCovMod)[[1]]["beta_year","mean"])
+# exp(summary(simpCovMod)[[1]]["beta_year","mean"])
 
 ### Print the estimated impact of drtb
-exp(summary(simpCovMod)[[1]]["beta_drtb","mean"])
+# exp(summary(simpCovMod)[[1]]["beta_drtb","mean"])
 
 ###############################################################################
 ### Compare with LOO
@@ -127,16 +140,77 @@ sum(summary(simpCovMod)[[1]][logLiks,"mean"])
 summary(simpCovMod)[[1]]["lp__","mean"]
 
 
-looTotalN5 <- rstan::loo(totalN5Model)
-looReCov <- rstan::loo(reCovModel)
-looSimpN5 <- rstan::loo(simpCovN5Mod)
+# looTotalN5 <- rstan::loo(totalN5Model)
+# looReCov <- rstan::loo(reCovModel)
+# looSimpN5 <- rstan::loo(simpCovN5Mod)
 
-loo_compare(looTotal, looTotalN5, looReCov, looReCovN5, looSimp, looSimpN5)
+loo_compare(looTotal, looReCov, looSimp)
 
-modelList5 <- list("Data" = modelData, "9covs" = totalN5Model, 
-                   "9covsRE" = reCovN5Model, "1cov" =simpCovN5Mod)
-looList10 <- list(looTotal, looReCov, looSimp)
-saveRDS(modelList5, here("output/modelswithunitnormal5.rds"), version=2)
+# modelList5 <- list("Data" = modelData, "9covs" = totalN5Model, 
+#                    "9covsRE" = reCovN5Model, "1cov" =simpCovN5Mod)
+# looList10 <- list(looTotal, looReCov, looSimp)
+# saveRDS(modelList5, here("output/modelswithunitnormal5.rds"), version=2)
+
+###############################################################################
+##### Check whether squared betas are an improvement 
+###############################################################################
+stanModelDataSqrd <- list(
+    N = length(modelData$cost),
+    cost = modelData$cost + 1,
+    se = rep(0, length(modelData$cost)),
+    # se = as.numeric(modelData$se)+ 0.01,
+    dme_prediag = modelData$dme.prediag, 
+    dnme_prediag =  modelData$dnme.prediag, 
+    ie_prediag =  modelData$ie.prediag, 
+    dme_intsvtx = modelData$dme.intsvtx, 
+    dnme_intsvtx =  modelData$dnme.intsvtx, 
+    ie_intsvtx =  modelData$ie.intsvtx,
+    dme_contntx = modelData$dme.contntx, 
+    dnme_contntx =  modelData$dnme.contntx, 
+    ie_contntx =  modelData$ie.contntx, 
+    N_survey = max(modelData$survey.id),
+    survey_id = modelData$survey.id, 
+    N_country = max(modelData$country.id),
+    country_id = modelData$country.id, 
+    ### Internal covariate
+    drtb_ind= modelData$drtb.wt,
+    survey_year = modelData$year_z,
+    ### External covariates
+    median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
+    oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
+    uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
+    prior_sigma = 2, 
+    beta_exp = 2
+)
+
+totalModelSqrd <- stan(file = "code/inst/tbPatientCosts.stan",
+                   data = stanModelDataSqrd,
+                   iter = tbPtntCstIter/4, chains = 2,
+                   warmup=tbPtntCstWarmup/2,
+                   control=list(max_treedepth=14), 
+                   seed = tbPtntCstSeed)
+
+looTotalSqrd <- rstan::loo(totalModelSqrd)
+
+
+reCovModelSqrd <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
+                       data = stanModelDataSqrd,
+                       iter = tbPtntCstIter/4, chains = 2,
+                       warmup=tbPtntCstWarmup/2,
+                       control=list(max_treedepth=14), 
+                       seed = tbPtntCstSeed)
+
+looReCovSqrd <- rstan::loo(reCovModelSqrd)
+
+
+simpCovModSqrd <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
+                   data = stanModelDataSqrd,
+                   iter = tbPtntCstIter/4, chains = 2,
+                   warmup= tbPtntCstWarmup/2,
+                   control=list(max_treedepth=14), 
+                   seed = tbPtntCstSeed)
+
+looSimpSqrd <- loo(simpCovModSqrd)
 
 
 ###############################################################################
@@ -184,3 +258,40 @@ exp(summary(reModList[[2]])[[1]][1:9,"mean"])
 # listGood <-list(totModList[[2]], totModList[[4]], 
 #                 reModList[[2]], reModList[[4]])
 # saveRDS(listGood, here("output/modelRuns04-09.rds"), version=2)
+
+
+###############################################################################
+##### Do WHO region fixed effects improve model? 
+###############################################################################
+
+regModelData <- stanModelData
+regModelData[["world_region"]] <- as.numeric(modelData$region.code) - 1
+
+reg_reCovModel <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
+                   data = regModelData,
+                   iter = tbPtntCstIter/4, chains = 2,
+                   warmup=tbPtntCstWarmup/2,
+                   control=list(max_treedepth=14),
+                   seed = tbPtntCstSeed)
+
+looRegReCov <-rstan::loo(reg_reCovModel) 
+
+loo_compare(looRegReCov, looReCov)
+
+
+# bayes_R2_res <- function(fit) {
+#     y <- rstanarm::get_y(fit)
+#     ypred <- rstanarm::posterior_epred(fit)
+#     if (family(fit)$family == "binomial" && NCOL(y) == 2) {
+#         trials <- rowSums(y)
+#         y <- y[, 1]
+#         ypred <- ypred %*% diag(trials)
+#     }
+#     e <- -1 * sweep(ypred, 2, y)
+#     var_ypred <- apply(ypred, 1, var)
+#     var_e <- apply(e, 1, var)
+#     var_ypred / (var_ypred + var_e)
+# }
+
+
+# bayes_R2_res(summary(reg_reCovModel)[["summary"]])

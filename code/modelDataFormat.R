@@ -1,3 +1,8 @@
+### This script formats the data to go into the model. 
+### Originally aimed to make this process algorithmic, but in the end, 
+### a number of unique cases has created a mixture of algorithmic first 
+### passes followed by some individual manual tidying. 
+
 ###############################################################################
 ##### Load in the necessary packages 
 ###############################################################################
@@ -79,12 +84,68 @@ tmpDRWgts <- bind_rows(tmpDRWgts,
                                                       covidence.id == 9516 ~ 0,
                                                       covidence.id == 8793 ~ 1, 
                                                       covidence.id == 7760 ~ 1
-                                )))
+                                ))) %>% 
+    mutate(preferredSurvey = 1)
+
+###############################################################################
+##### For the remaining surveys that appear to be a mix of DSTB and DRTB  #####
+##### we will use the national distribution of RR/MDRTB                   #####
+###############################################################################
+
+addSurvs <- read.csv("~/Desktop/addtnlStudies.csv") %>% 
+    select(covidence.id) %>% unlist() %>% as.vector()
+
+notifTmp <-
+    read.csv("~/Downloads/TB_notifications_2026-04-23.csv") %>% 
+          select(country, iso3, year, 
+                 unconf_mdr_tx, conf_mdr_tx, conf_xdr_tx, 
+                 conf_rrmdr_tx, unconf_rrmdr_tx, 
+                 conf_rr_fqr_tx, conf_rr_nfqr_tx, unconf_rr_nfqr_tx, 
+                 conf_rrmdr,
+                 conf_rr_fqr, conf_rr_nfqr,
+                 new_sn, new_sp, new_su, 
+                 newrel_f014, newrel_f15plus, newrel_fu, 
+                 newrel_m014, newrel_m15plus, newrel_mu, 
+                 newrel_sexunk014, newrel_sexunk15plus, 
+                 newrel_sexunkageunk
+                 ) %>% 
+            rowwise() %>% 
+            mutate(total_pre2013 = sum(new_sn, new_sp, new_su, na.rm = TRUE),
+                   total_2013p = sum(newrel_f014, newrel_f15plus, newrel_fu, 
+                                 newrel_m014, newrel_m15plus, newrel_mu, 
+                                 newrel_sexunk014, newrel_sexunk15plus, na.rm = TRUE), 
+                   ### Here we exploit the behavior of the sum function which returns 0 if NA
+                   ### So we know that either total_pre2013 or total_2013p have value 0 so 
+                   ### we can just sum to get the denominator for below. 
+                   denominator = sum(total_pre2013, total_2013p),
+                   rrmdr_frac_pre2013 = sum(unconf_mdr_tx, conf_mdr_tx, conf_xdr_tx, na.rm = TRUE) / 
+                                        denominator, 
+                   rrmdr_frac_2013_2020  = sum(conf_rrmdr_tx, unconf_rrmdr_tx, na.rm=TRUE) / 
+                                        denominator,
+                   rrmdr_frac_2020p  = sum(conf_rr_fqr_tx, conf_rr_nfqr_tx, 
+                                           unconf_rr_nfqr_tx, na.rm =TRUE) / 
+                                        denominator, 
+
+                   ### Similar exploit as above     
+                   drtb.wt = sum(rrmdr_frac_pre2013, rrmdr_frac_2013_2020, rrmdr_frac_2020p, na.rm=TRUE), 
+                   preferredSurvey = 0) %>%
+    rename(study.country = country, 
+           study.end.year = year, 
+           Country.Code = iso3) %>% 
+    right_join(fullData %>%
+               filter(covidence.id %in% addSurvs),
+               by = c("Country.Code", "study.end.year")) %>% 
+    mutate(n.participants.drtb = as.numeric(n.participants.drtb), 
+           n.participants.dstb = as.numeric(n.participants.dstb))
+
+weightedDF <- bind_rows(tmpDRWgts, 
+                        notifTmp)
+
 
 ###############################################################################
 ##### Format the model data to be fed into the stan model.                #####
 ###############################################################################
-modelDataMeans<- tmpDRWgts %>% 
+modelDataMeans<- weightedDF %>% 
     select(covidence.id, 
            study.end.year,
            pop.id, n.participants,
@@ -148,7 +209,8 @@ modelDataMeans<- tmpDRWgts %>%
 ### Filter pop.ids we aren't interested in  ##############################################
 ##########################################################################################
 filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
-                       "Adult6H", "Adult3HP", "Child6H", "Child3HP"),
+                       "Adult6H", "Adult3HP", "Child6H", "Child3HP", 
+                       "LTBI"),
        ! (pop.id == "Total" & covidence.id == 9422),
        ! (pop.id == "DSTB" & covidence.id == 9061),
        ! (pop.id == "PCF" & covidence.id == 9430)) %>% 
@@ -347,7 +409,7 @@ modelDataMeans <- modelDataMeans %>% select (!sd) %>% mutate(se = 0) #%>% na.omi
 ##############################################################################|
 ### Medians  ##################################################################
 ##############################################################################|
-modelDataMedians <- tmpDRWgts %>%  
+modelDataMedians <- weightedDF %>%  
     select(covidence.id, 
            study.end.year,
            pop.id, 
@@ -385,7 +447,8 @@ modelDataMedians <- tmpDRWgts %>%
 ### Filter pop.ids we aren't interested in  ##############################################
 ##########################################################################################
 filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
-                       "Adult6H", "Adult3HP", "Child6H", "Child3HP"),
+                       "Adult6H", "Adult3HP", "Child6H", "Child3HP", 
+                       "LTBI"),
        ! (pop.id == "Total" & covidence.id == 9422),
        ! (pop.id == "PCF" & covidence.id == 9430)) %>% 
     mutate(pop.id = ifelse(covidence.id %in% c(9516, 9422) & pop.id == "PTB", "Total", pop.id),
@@ -596,7 +659,7 @@ modelDataBind <- rbind(modelDataMeans,
 #                   filter(length(unique(pop.id)) > 1,
 #                          ! grepl("^DRTB|DSTB|Total", pop.id)) %>%
                   # write.csv(here("data/reviewData/wgtAverage.csv"))
-
+    
 
 wgtAvPops <- modelDataBind %>% group_by(covidence.id) %>% 
                       filter(length(unique(pop.id)) > 1,
@@ -604,27 +667,43 @@ wgtAvPops <- modelDataBind %>% group_by(covidence.id) %>%
                       select(covidence.id, n.participants) %>% distinct() %>% 
                       reframe(n.participants = sum(as.numeric(n.participants)))
 
-updatedData <- read.csv(here("data/reviewData/wgtAverage.csv")) %>% 
+updatedData0 <- read.csv(here("data/reviewData/wgtAverage.csv")) %>%
                select(! c(X, pop.id, cost, drtb.wt, n.participants)) %>%
                rename(cost = wt.cost, drtb.wt = drtb.wt.new) %>%
                distinct() %>% 
                mutate(pop.id = "wgtTotal", 
-                      covidence.id = as.character(covidence.id)) %>% left_join(wgtAvPops)
+                      covidence.id = as.character(covidence.id)) %>% 
+               left_join(wgtAvPops) %>% 
+               filter(! (pop.id == "wgtTotal" & cost == 0))  ## we zeroed costs for all but one pop.id for each survey
 
 #### Replace with these new weighted data 
 modelDataBind <- bind_rows(modelDataBind %>% 
                                       filter(!covidence.id %in% updatedData$covidence.id) %>% 
                                       mutate(n.participants = as.numeric(n.participants)), 
-                                  updatedData)
+                                  updatedData) %>% 
+    
+    ### remove some replicated rows 
+                  distinct()
 
-tmpBoth <- modelDataBind %>% 
+#### Add special survey 7919 which had DSTB weighted 
+surv7919 <- read.csv("~/Desktop/surv7919.csv") %>% 
+            select(! c(cost, drtb.wt)) %>% 
+            rename(cost = wt.cost, drtb.wt = drtb.wt.new) %>% 
+            mutate(covidence.id = as.character(covidence.id))
+    
+
+modelDataBind_z <- modelDataBind %>% filter(covidence.id != 7919) %>% 
+                   bind_rows(surv7919)
+
+tmpBoth <- modelDataBind_z %>% 
     group_by(covidence.id) %>% 
     filter( 
             length(unique(pop.id)) < 3 | 
             ("DSTB" %in% unique(pop.id) & "DRTB" %in% unique(pop.id) & !grepl("Total", pop.id)) |
-            (!"DSTB" %in% unique(pop.id) & !"DRTB" %in% unique(pop.id) & !grepl("Male|Female|First", pop.id))
-           ) 
-
+            (!"DSTB" %in% unique(pop.id) & !"DRTB" %in% unique(pop.id) & !grepl("Male|Female|First", pop.id)) |
+            ### Sepcial cases added in for expediency 
+            covidence.id == 9612 & pop.id == "DRTB" |
+            covidence.id == 7919 & grepl("DSTB|DRTB", pop.id))
 
 # tmp2Both <- modelDataBind %>% 
 #     filter((length(unique(pop.id)) > 1) & (! covidence.id %in% tmpBoth$covidence.id)) 
@@ -633,26 +712,28 @@ tmpBoth <- modelDataBind %>%
 #                     tmp2Both) %>% 
 #     filter(covidence.id !="7866")
 
-modelData0 <- tmpBoth
+modelData <- tmpBoth
 
 ##############################################################################|
-### Check data outliers                                                     ###
+### Check data outliers and report total included                           ###
 ##############################################################################|
 covIDs <- modelData0 %>% filter(cost > 25000) %>% select(covidence.id) %>%
-    unique() %>% unlist() %>% as.vector(); covIDs
-# 
-# dataDesc %>% filter(covidence.id %in% covIDs)    
-# View(modelData0 %>% filter(covidence.id %in% covIDs)) 
+    unique() %>% unlist() %>% as.vector()
+print(paste("Survey number",covIDs,  "has a cost listed at higher than 25000 USD:"))
 
-modelData <- modelData0 %>% filter(! covidence.id %in% covIDs)
-# modelData <- modelData0 
-modelData %>% select(covidence.id) %>% unique() %>% nrow()
+## Remove for now
+modelData <- modelData0 %>% filter(!covidence.id %in% covIDs)
+
+print(paste("We are including data from",
+modelData %>% select(covidence.id) %>% unique() %>% nrow(), 
+"cost surveys."))
 
 ##############################################################################|
 ### Center the study.end.year variable                                ###
 ##############################################################################|
 meanStudyYr <- floor(mean(modelData$study.end.year, na.rm=TRUE))
 modelData <- modelData %>% mutate(year_z = study.end.year - meanStudyYr)
+
 ##############################################################################|
 ### Add study country into the model data                                   ###
 ##############################################################################|
@@ -710,4 +791,34 @@ modelData <- left_join(modelData,
     mutate(region.code = as.factor(who.region))
     
     
+    length(unique(modelData$covidence.id))
     
+    modelData <- modelData %>% filter(grepl("DSTB|DRTB|Total", pop.id), 
+                     !pop.id %in% c("UrbSlumTotal", "TeaGardHRTotal")) 
+
+length(unique(modelData$covidence.id))
+
+
+#### check the model data 
+
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+           dme.intsvtx = sum(dme.intsvtx),
+           dme.contntx = sum(dme.contntx),
+           dnme.prediag = sum(dnme.prediag),
+           dnme.intsvtx = sum(dnme.intsvtx),
+           dnme.contntx = sum(dnme.contntx),
+           ie.prediag = sum(ie.prediag),
+           ie.intsvtx = sum(ie.intsvtx),
+           ie.contntx = sum(ie.contntx),
+           .by = c("covidence.id", "pop.id")) %>% 
+    filter(dme.prediag > 1) %>% select(covidence.id)
+
+### Fix 8748 which reports total direct costs, but also some but not all 
+### of those costs individually. We will substract the known component costs
+### and leave the remainder for the other components. 
+
+tmpModelData <- modelData %>% 
+                filter(covidence.id == 8748)
+tmpModelData[1,"cost"] <- tmpModelData[1,"cost"] - sum(tmpModelData[c(2,3,5),"cost"])
+View(modelData %>% filter(covidence.id == 8748))
