@@ -216,9 +216,7 @@ filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP",
        ! (pop.id == "PCF" & covidence.id == 9430)) %>% 
     mutate(pop.id = ifelse(covidence.id %in% c(9516, 9422) & pop.id == "PTB", "Total", pop.id),
            # pop.id = ifelse(covidence.id %in% c(7814, 8092, 9430) & pop.id == "PCF", "Total", pop.id),
-           pop.id = ifelse(covidence.id == 8887, "Total", pop.id),
-           pop.id = ifelse(covidence.id == 8979, "Total", pop.id), #HIVp 
-           ! is.na(drtb.wt)) %>%
+           pop.id = ifelse(covidence.id == 8887, "Total", pop.id)) %>%
     ##########################################################################################
 ### Create a DR-TB indicator  ############################################################
 ##########################################################################################
@@ -257,7 +255,31 @@ mutate(
                                          !is.na(dme.prediag.total.mean) &
                                          is.na(dmne.prediag.total.mean),
                                      de.prediag.mean - dme.prediag.total.mean, 
-                                     dmne.prediag.total.mean)
+                                     dmne.prediag.total.mean), 
+    #### If we have direct expenditure total during a specific treatment phase 
+    #### and either direct medical or direct non-medical
+    dmne.intens.tx.total.mean = ifelse(!is.na(de.intens.tx.mean) & 
+                                         !is.na(dme.intens.tx.total.mean) &
+                                         is.na(dmne.intens.tx.total.mean),
+                                     de.intens.tx.mean - dme.intens.tx.total.mean, 
+                                     dmne.intens.tx.total.mean), 
+    dme.intens.tx.total.mean = ifelse(!is.na(de.intens.tx.mean) & 
+                                         !is.na(dmne.intens.tx.total.mean) &
+                                         is.na(dme.intens.tx.total.mean),
+                                     de.intens.tx.mean - dmne.intens.tx.total.mean, 
+                                     dme.intens.tx.total.mean), 
+    
+    dmne.cont.tx.total.mean = ifelse(!is.na(de.cont.tx.mean) & 
+                                         !is.na(dme.cont.tx.total.mean) &
+                                         is.na(dmne.cont.tx.total.mean),
+                                     de.cont.tx.mean - dme.cont.tx.total.mean, 
+                                     dmne.cont.tx.total.mean), 
+    dme.cont.tx.total.mean = ifelse(!is.na(de.cont.tx.mean) & 
+                                        !is.na(dmne.cont.tx.total.mean) &
+                                        is.na(dme.cont.tx.total.mean),
+                                    de.cont.tx.mean - dmne.cont.tx.total.mean, 
+                                    dme.cont.tx.total.mean), 
+    
 ) %>%
     ##########################################################################################
 ### Drop duplicates from the data ########################################################
@@ -443,7 +465,7 @@ modelDataMedians <- weightedDF %>%
            dmne.cont.tx.total.median, 
            ie.cont.tx.lostincome.total.median
     ) %>% 
-    ##########################################################################################
+##########################################################################################
 ### Filter pop.ids we aren't interested in  ##############################################
 ##########################################################################################
 filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP", 
@@ -453,8 +475,7 @@ filter(! pop.id %in% c("EPTB", "EPDRTB", "ACF", "Total6H", "Total3HP",
        ! (pop.id == "PCF" & covidence.id == 9430)) %>% 
     mutate(pop.id = ifelse(covidence.id %in% c(9516, 9422) & pop.id == "PTB", "Total", pop.id),
            # pop.id = ifelse(covidence.id %in% c(7814, 8092, 9430) & pop.id == "PCF", "Total", pop.id),
-           pop.id = ifelse(covidence.id == 8887, "Total", pop.id),
-           pop.id = ifelse(covidence.id == 8979, "Total", pop.id) #HIVp 
+           pop.id = ifelse(covidence.id == 8887, "Total", pop.id) #HIVp 
     ) %>%
     ##########################################################################################
 ### Create a DR-TB indicator  ############################################################
@@ -498,7 +519,30 @@ mutate(
                                             !is.na(dme.postdiag.total.median) &
                                             is.na(dmne.postdiag.total.median),
                                         de.postdiag.median - dme.postdiag.total.median, 
-                                        dmne.postdiag.total.median)
+                                        dmne.postdiag.total.median), 
+    #### If we have direct expenditure total during a specific treatment phase 
+    #### and either direct medical or direct non-medical
+    dmne.intens.tx.total.median = ifelse(!is.na(de.intens.tx.median) & 
+                                           !is.na(dme.intens.tx.total.median) &
+                                           is.na(dmne.intens.tx.total.median),
+                                       de.intens.tx.median - dme.intens.tx.total.median, 
+                                       dmne.intens.tx.total.median), 
+    dme.intens.tx.total.median = ifelse(!is.na(de.intens.tx.median) & 
+                                          !is.na(dmne.intens.tx.total.median) &
+                                          is.na(dme.intens.tx.total.median),
+                                      de.intens.tx.median - dmne.intens.tx.total.median, 
+                                      dme.intens.tx.total.median), 
+    
+    dmne.cont.tx.total.median = ifelse(!is.na(de.cont.tx.median) & 
+                                         !is.na(dme.cont.tx.total.median) &
+                                         is.na(dmne.cont.tx.total.median),
+                                     de.cont.tx.median - dme.cont.tx.total.median, 
+                                     dmne.cont.tx.total.median), 
+    dme.cont.tx.total.median = ifelse(!is.na(de.cont.tx.median) & 
+                                        !is.na(dmne.cont.tx.total.median) &
+                                        is.na(dme.cont.tx.total.median),
+                                    de.cont.tx.median - dmne.cont.tx.total.median, 
+                                    dme.cont.tx.total.median), 
 ) %>%
     ### Study 7866 has total direct costs, but they did not account for any 
     ### accomodation costs so we don't trust the implied DNME so we're going to 
@@ -513,7 +557,7 @@ mutate(
                                              NA, dmne.tbcare.total.median), 
     #### Study 9612 accidentally had costs removed so readd them 
             dme.postdiag.total.median = ifelse(covidence.id == 9612, 
-                                                2696, dmne.tbcare.total.median),
+                                                2696, dme.postdiag.total.median),
            ) %>% 
 ##########################################################################################
 ### Drop duplicates from the data ########################################################
@@ -678,9 +722,9 @@ updatedData0 <- read.csv(here("data/reviewData/wgtAverage.csv")) %>%
 
 #### Replace with these new weighted data 
 modelDataBind <- bind_rows(modelDataBind %>% 
-                                      filter(!covidence.id %in% updatedData$covidence.id) %>% 
+                                      filter(!covidence.id %in% updatedData0$covidence.id) %>% 
                                       mutate(n.participants = as.numeric(n.participants)), 
-                                  updatedData) %>% 
+                                  updatedData0) %>% 
     
     ### remove some replicated rows 
                   distinct()
@@ -717,12 +761,12 @@ modelData <- tmpBoth
 ##############################################################################|
 ### Check data outliers and report total included                           ###
 ##############################################################################|
-covIDs <- modelData0 %>% filter(cost > 25000) %>% select(covidence.id) %>%
+covIDs <- modelData %>% filter(cost > 25000) %>% select(covidence.id) %>%
     unique() %>% unlist() %>% as.vector()
 print(paste("Survey number",covIDs,  "has a cost listed at higher than 25000 USD:"))
 
 ## Remove for now
-modelData <- modelData0 %>% filter(!covidence.id %in% covIDs)
+modelData <- modelData %>% filter(!covidence.id %in% covIDs)
 
 print(paste("We are including data from",
 modelData %>% select(covidence.id) %>% unique() %>% nrow(), 
@@ -743,17 +787,8 @@ modelData <- modelData %>% left_join(dataList$descriptive %>%
     mutate(study.country=ifelse(study.country == "Vietnam", 
                                 "Viet Nam", study.country)) %>%
     ungroup() %>%
-    group_by(study.country) %>%
-    # filter(covidence.id > 4) %>% 
-    mutate(country.id = cur_group_id()) 
+    group_by(study.country)
 
-##############################################################################|
-### Add study level identifier into the model data                          ###
-##############################################################################|
-modelData <- modelData %>%
-    ungroup() %>%
-    group_by(covidence.id) %>%
-    mutate(survey.id = cur_group_id()) 
 
 ##############################################################################|
 ### Add country level covariates into the model data                        ###
@@ -798,9 +833,11 @@ modelData <- left_join(modelData,
 
 length(unique(modelData$covidence.id))
 
+##############################################################################|
+### Manual fixing                                                           ###
+##############################################################################|
 
-#### check the model data 
-
+#### check the dme.prediag model data 
 modelData %>% ungroup() %>% 
     reframe(dme.prediag = sum(dme.prediag),
            dme.intsvtx = sum(dme.intsvtx),
@@ -818,7 +855,183 @@ modelData %>% ungroup() %>%
 ### of those costs individually. We will substract the known component costs
 ### and leave the remainder for the other components. 
 
+# tmpModelData <- modelData %>% 
+#                 filter(covidence.id == 8748); #View(tmpModelData)
+# 
+# tmpModelData[1,"cost"] <- tmpModelData[1,"cost"] - sum(tmpModelData[c(2,3,5),"cost"])
+# 
+# tmpModelData[1,"dme.prediag"] <- tmpModelData[1,"dnme.prediag"] <- 
+# tmpModelData[1,"dnme.intsvtx"] <- tmpModelData[1,"dnme.contntx"] <- 0; #View(tmpModelData)
+# 
+# modelData[which(modelData$covidence.id == 8748),] <- tmpModelData
+
+#View(modelData %>% filter(covidence.id == 8748))
+# rm(tmpModelData)
+
+##############################################################################|
+#### check the dnme.prediag model data 
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+            dme.intsvtx = sum(dme.intsvtx),
+            dme.contntx = sum(dme.contntx),
+            dnme.prediag = sum(dnme.prediag),
+            dnme.intsvtx = sum(dnme.intsvtx),
+            dnme.contntx = sum(dnme.contntx),
+            ie.prediag = sum(ie.prediag),
+            ie.intsvtx = sum(ie.intsvtx),
+            ie.contntx = sum(ie.contntx),
+            .by = c("covidence.id", "pop.id")) %>% 
+    filter(dnme.prediag > 1) %>% select(covidence.id)
+
+### Fix 9628 ##################################################################
 tmpModelData <- modelData %>% 
-                filter(covidence.id == 8748)
-tmpModelData[1,"cost"] <- tmpModelData[1,"cost"] - sum(tmpModelData[c(2,3,5),"cost"])
-View(modelData %>% filter(covidence.id == 8748))
+    filter(covidence.id == 9628); #View(tmpModelData)
+
+## DSTB
+tmpModelData[2,"cost"] <- tmpModelData[2,"cost"] - tmpModelData[3,"cost"]
+## DRTB 
+tmpModelData[5,"cost"] <- tmpModelData[5,"cost"] - tmpModelData[6,"cost"]
+
+# 
+tmpModelData[2, "dnme.prediag"] <- 0
+tmpModelData[5, "dnme.prediag"] <- 0; #View(tmpModelData)
+
+modelData[which(modelData$covidence.id == 9628),] <- tmpModelData
+
+# View(modelData %>% filter(covidence.id == 9628))
+rm(tmpModelData)
+
+##############################################################################|
+#### check the dnme.intsvtx model data 
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+            dme.intsvtx = sum(dme.intsvtx),
+            dme.contntx = sum(dme.contntx),
+            dnme.prediag = sum(dnme.prediag),
+            dnme.intsvtx = sum(dnme.intsvtx),
+            dnme.contntx = sum(dnme.contntx),
+            ie.prediag = sum(ie.prediag),
+            ie.intsvtx = sum(ie.intsvtx),
+            ie.contntx = sum(ie.contntx),
+            .by = c("covidence.id", "pop.id")) %>% 
+    filter(dnme.intsvtx > 1) %>% select(covidence.id)
+
+### Fix 8221 ##################################################################
+# tmpModelData <- modelData %>% 
+#     filter(covidence.id == 8221); #View(tmpModelData)
+# 
+# tmpModelData[4,"cost"] <- tmpModelData[4,"cost"] - sum(tmpModelData[5,"cost"])
+# 
+# tmpModelData[4,"dnme.intsvtx"] <- tmpModelData[4,"dnme.contntx"] <- 0; #View(tmpModelData)
+# 
+# modelData[which(modelData$covidence.id == 8221),] <- tmpModelData
+
+# View(modelData %>% filter(covidence.id == 8221))
+# rm(tmpModelData)
+
+##############################################################################|
+#### check the dnme.contntx model data 
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+            dme.intsvtx = sum(dme.intsvtx),
+            dme.contntx = sum(dme.contntx),
+            dnme.prediag = sum(dnme.prediag),
+            dnme.intsvtx = sum(dnme.intsvtx),
+            dnme.contntx = sum(dnme.contntx),
+            ie.prediag = sum(ie.prediag),
+            ie.intsvtx = sum(ie.intsvtx),
+            ie.contntx = sum(ie.contntx),
+            .by = c("covidence.id", "pop.id")) %>% 
+    filter(dnme.contntx > 1) %>% select(covidence.id)
+
+### None to fix! 
+
+##############################################################################|
+#### check the dme.intsvtx model data 
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+            dme.intsvtx = sum(dme.intsvtx),
+            dme.contntx = sum(dme.contntx),
+            dnme.prediag = sum(dnme.prediag),
+            dnme.intsvtx = sum(dnme.intsvtx),
+            dnme.contntx = sum(dnme.contntx),
+            ie.prediag = sum(ie.prediag),
+            ie.intsvtx = sum(ie.intsvtx),
+            ie.contntx = sum(ie.contntx),
+            .by = c("covidence.id", "pop.id")) %>% 
+    filter(dme.intsvtx > 1) %>% select(covidence.id)
+
+### Fix 7847
+tmpModelData <- modelData %>% 
+    filter(covidence.id == 7847); #View(tmpModelData)
+
+tmpModelData[1,"cost"] <- tmpModelData[1,"cost"] - sum(tmpModelData[2,"cost"])
+
+tmpModelData[1,"dme.intsvtx"] <- tmpModelData[1,"dme.contntx"] <- 0; #View(tmpModelData)
+
+modelData[which(modelData$covidence.id == 7847),] <- tmpModelData
+
+# View(modelData %>% filter(covidence.id == 7847))
+rm(tmpModelData)
+
+##############################################################################|
+#### check the dme.contntx model data 
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+            dme.intsvtx = sum(dme.intsvtx),
+            dme.contntx = sum(dme.contntx),
+            dnme.prediag = sum(dnme.prediag),
+            dnme.intsvtx = sum(dnme.intsvtx),
+            dnme.contntx = sum(dnme.contntx),
+            ie.prediag = sum(ie.prediag),
+            ie.intsvtx = sum(ie.intsvtx),
+            ie.contntx = sum(ie.contntx),
+            .by = c("covidence.id", "pop.id")) %>% 
+    filter(dme.contntx > 1) %>% select(covidence.id)
+
+### None to fix!
+
+#### check the indirect costs model data 
+modelData %>% ungroup() %>% 
+    reframe(dme.prediag = sum(dme.prediag),
+            dme.intsvtx = sum(dme.intsvtx),
+            dme.contntx = sum(dme.contntx),
+            dnme.prediag = sum(dnme.prediag),
+            dnme.intsvtx = sum(dnme.intsvtx),
+            dnme.contntx = sum(dnme.contntx),
+            ie.prediag = sum(ie.prediag),
+            ie.intsvtx = sum(ie.intsvtx),
+            ie.contntx = sum(ie.contntx),
+            .by = c("covidence.id", "pop.id")) %>% 
+    filter(ie.prediag > 1 | ie.intsvtx > 1 | ie.contntx > 1) %>% 
+    select(covidence.id)
+
+### None to fix! 
+
+### Create a variable for representative
+modelData <- modelData %>% 
+                mutate(rprsnt = case_when(covidence.id %in% c(9104, 8263) ~ "Inpatient",
+                                          covidence.id %in% c(9198,8979,7775) ~ "PLWH", 
+                                          .default = "All"))
+
+modelDataRep <- modelData
+
+modelData <- modelData %>% filter(rprsnt == "All")
+
+
+length(unique(modelData$covidence.id))
+
+
+
+##############################################################################|
+### Add study and countrylevel identifier into the model data               ###
+##############################################################################|
+modelData <- modelData %>%
+    ungroup() %>%
+    group_by(covidence.id) %>%
+    mutate(survey.id = cur_group_id()) %>% 
+    ungroup() %>% 
+    group_by(country.code) %>% 
+    mutate(country.id = cur_group_id()) %>% ungroup()
+    
+
