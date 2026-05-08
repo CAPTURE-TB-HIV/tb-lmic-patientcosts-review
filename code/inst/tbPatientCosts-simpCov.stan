@@ -50,11 +50,13 @@ data {
     vector<lower=0>[N] se;  // study reported dispersion estimate 
     // real<lower=0> tau;
     
-    // testing different sigma priors 
-    int prior_sigma; 
+    int prior_sigma; /// for normal priors below
     
     // test higher order betas 
     int beta_exp; 
+    
+    // Indicator to hold data out for country-k fold 
+    int<lower=0,upper=1> holdout[N]; 
 }
 
 transformed data {
@@ -225,7 +227,13 @@ model {
     tau ~ exponential(1); 
     
     // cost estimate
-    cost ~ alt_gamma(tau, mu);
+    // cost ~ alt_gamma(tau, mu);
+    for(n in 1:N){
+    if(holdout[n] == 0){
+        vector[1] cost_n = [cost[n]]';
+        vector[1] mu_n = [mu[n]]';
+        target  += alt_gamma_lpdf(cost_n | tau, mu_n);
+    } }
 }
 
 generated quantities {
