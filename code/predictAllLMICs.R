@@ -102,23 +102,23 @@ countriesNoCovs <- covariates0 %>% filter(! country.code %in% covariates$country
 # countriesCovOutRange <- covariates %>% filter(! country.code %in% covariatesFilt$country.code) 
 
 covariates <- covariates %>% 
-                   mutate(median.income = case_when(median.income < min(modelData$median.income) ~ min(modelData$median.income), 
+                   mutate(median.income.trunc = case_when(median.income < min(modelData$median.income) ~ min(modelData$median.income), 
                                                     median.income > max(modelData$median.income) ~ max(modelData$median.income),
                                                     .default = median.income), 
-                          oop.perc.che = case_when(oop.perc.che < min(modelData$oop.perc.che) ~ min(modelData$oop.perc.che), 
+                          oop.perc.che.trunc = case_when(oop.perc.che < min(modelData$oop.perc.che) ~ min(modelData$oop.perc.che), 
                                                     oop.perc.che > max(modelData$oop.perc.che) ~ max(modelData$oop.perc.che),
                                                     .default = oop.perc.che), 
-                          uhc.index = case_when(uhc.index < min(modelData$UHCindex) ~ min(modelData$UHCindex), 
+                          uhc.index.trunc = case_when(uhc.index < min(modelData$UHCindex) ~ min(modelData$UHCindex), 
                                                 uhc.index > max(modelData$UHCindex) ~ max(modelData$UHCindex),
                                                 .default = uhc.index))
 # 
-
+covariates <- arrange(covariates, country.id.new)
 # covariates <- covariatesFilt
 ### Stan requires a list for data. 
 predictionData <- list(
             N = length(modelData$cost),
             cost = modelData$cost + 0.01,
-            se = rep(0, length(modelData$cost)),
+            # se = rep(0, length(modelData$cost)),
             se = as.numeric(modelData$se)+ 0.01,
             dme_prediag = modelData$dme.prediag, 
             dnme_prediag =  modelData$dnme.prediag, 
@@ -145,9 +145,9 @@ predictionData <- list(
             review_ind = covariates$in.review, 
             in_review_id = covariates$in.review.id, # note that this is different from modelData country.id
             pred_year = unique(covariates$pred.year),
-            median_income_new = ((covariates$median.income - mean(modelData$median.income)) / sd(modelData$median.income)), 
-            oop_perc_che_new = (covariates$oop.perc.che - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
-            uhc_index_new = (covariates$uhc.index - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
+            median_income_new = (covariates$median.income.trunc- mean(modelData$median.income)) / sd(modelData$median.income), 
+            oop_perc_che_new = (covariates$oop.perc.che.trunc - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
+            uhc_index_new = (covariates$uhc.index.trunc - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
             prior_sigma = 2
 )
 
