@@ -395,8 +395,16 @@ generated quantities {
     }
     
     /// Predicted costs for each county 
+    
     vector[N_country_new] drtb_dme_prediag_cost_country;
+    
     vector[N_country_new] dstb_dme_prediag_cost_country;
+    vector[N_country_new] dstb_dme_prediag_cost_country_none; 
+    vector[N_country_new] dstb_dme_prediag_cost_country_year;
+    vector[N_country_new] dstb_dme_prediag_cost_country_uhc;
+    vector[N_country_new] dstb_dme_prediag_cost_country_mi;
+    vector[N_country_new] dstb_dme_prediag_cost_country_oop;
+    
     vector[N_country_new] drtb_dnme_prediag_cost_country;
     vector[N_country_new] dstb_dnme_prediag_cost_country;
     vector[N_country_new] drtb_ie_prediag_cost_country;
@@ -514,42 +522,42 @@ generated quantities {
             exp(beta_dme_prediag + randeff_country_pred +
                 mult_med_income_dme_prediag * median_income_new[n] +
                 mult_oop_perc_che_dme_prediag * oop_perc_che_new[n] +
-                mult_uhc_dme_prediag * uhc_index[n]) *
-            exp(mult_drtb_dme_prediag) *exp(mult_year_dme_prediag  * pred_year);
-        
+                mult_uhc_dme_prediag * uhc_index_new[n]) *
+            exp(mult_drtb_dme_prediag) * exp(mult_year_dme_prediag * pred_year);
+            
         dstb_dme_prediag_cost_country[n] =
             exp(beta_dme_prediag + randeff_country_pred +
                 mult_med_income_dme_prediag * median_income_new[n] +
                 mult_oop_perc_che_dme_prediag * oop_perc_che_new[n] +
-                mult_uhc_dme_prediag * uhc_index[n]) *
-            exp(mult_year_dme_prediag  * pred_year);
+                mult_uhc_dme_prediag * uhc_index_new[n]) *
+            exp(mult_year_dme_prediag * pred_year);
         
         drtb_dnme_prediag_cost_country[n] =
             exp(beta_dnme_prediag + randeff_country_pred +
                 mult_med_income_dnme_prediag * median_income_new[n] +
                 mult_oop_perc_che_dnme_prediag * oop_perc_che_new[n] +
-                mult_uhc_dnme_prediag * uhc_index[n]) *
+                mult_uhc_dnme_prediag * uhc_index_new[n]) *
             exp(mult_drtb_dnme_prediag) *exp(mult_year_dnme_prediag  * pred_year);
         
         dstb_dnme_prediag_cost_country[n] =
             exp(beta_dnme_prediag + randeff_country_pred +
                 mult_med_income_dnme_prediag * median_income_new[n] +
                 mult_oop_perc_che_dnme_prediag * oop_perc_che_new[n] +
-                mult_uhc_dnme_prediag * uhc_index[n]) *
+                mult_uhc_dnme_prediag * uhc_index_new[n]) *
             exp(mult_year_dnme_prediag  * pred_year);
         
         drtb_ie_prediag_cost_country[n] =
             exp(beta_ie_prediag + randeff_country_pred +
                 mult_med_income_ie_prediag * median_income_new[n] +
                 mult_oop_perc_che_ie_prediag * oop_perc_che_new[n] +
-                mult_uhc_ie_prediag * uhc_index[n]) *
+                mult_uhc_ie_prediag * uhc_index_new[n]) *
             exp(mult_drtb_ie_prediag) *exp(mult_year_ie_prediag  * pred_year);
         
         dstb_ie_prediag_cost_country[n] =
             exp(beta_ie_prediag + randeff_country_pred +
                 mult_med_income_ie_prediag * median_income_new[n] +
                 mult_oop_perc_che_ie_prediag * oop_perc_che_new[n] +
-                mult_uhc_ie_prediag * uhc_index[n]) *
+                mult_uhc_ie_prediag * uhc_index_new[n]) *
             exp(mult_year_ie_prediag  * pred_year);
         
         // Direct medical costs in intensive treatment period   
@@ -576,42 +584,42 @@ generated quantities {
             exp(beta_dme_intsvtx + randeff_country_pred +
                 mult_med_income_dme_intsvtx * median_income_new[n] +
                 mult_oop_perc_che_dme_intsvtx * oop_perc_che_new[n] +
-                mult_uhc_dme_intsvtx * uhc_index[n]) *
+                mult_uhc_dme_intsvtx * uhc_index_new[n]) *
             exp(mult_drtb_dme_intsvtx) *exp(mult_year_dme_intsvtx  * pred_year);
         
         dstb_dme_intsvtx_cost_country[n] =
             exp(beta_dme_intsvtx + randeff_country_pred +
                 mult_med_income_dme_intsvtx * median_income_new[n] +
                 mult_oop_perc_che_dme_intsvtx * oop_perc_che_new[n] +
-                mult_uhc_dme_intsvtx * uhc_index[n]) *
+                mult_uhc_dme_intsvtx * uhc_index_new[n]) *
             exp(mult_year_dme_intsvtx  * pred_year);
         
         drtb_dnme_intsvtx_cost_country[n] =
             exp(beta_dnme_intsvtx + randeff_country_pred +
                 mult_med_income_dnme_intsvtx * median_income_new[n] +
                 mult_oop_perc_che_dnme_intsvtx * oop_perc_che_new[n] +
-                mult_uhc_dnme_intsvtx * uhc_index[n]) *
+                mult_uhc_dnme_intsvtx * uhc_index_new[n]) *
             exp(mult_drtb_dnme_intsvtx) *exp(mult_year_dnme_intsvtx  * pred_year);
         
         dstb_dnme_intsvtx_cost_country[n] =
             exp(beta_dnme_intsvtx + randeff_country_pred +
                 mult_med_income_dnme_intsvtx * median_income_new[n] +
                 mult_oop_perc_che_dnme_intsvtx * oop_perc_che_new[n] +
-                mult_uhc_dnme_intsvtx * uhc_index[n]) *
+                mult_uhc_dnme_intsvtx * uhc_index_new[n]) *
             exp(mult_year_dnme_intsvtx  * pred_year);
         
         drtb_ie_intsvtx_cost_country[n] =
             exp(beta_ie_intsvtx + randeff_country_pred +
                 mult_med_income_ie_intsvtx * median_income_new[n] +
                 mult_oop_perc_che_ie_intsvtx * oop_perc_che_new[n] +
-                mult_uhc_ie_intsvtx * uhc_index[n]) *
+                mult_uhc_ie_intsvtx * uhc_index_new[n]) *
             exp(mult_drtb_ie_intsvtx) *exp(mult_year_ie_intsvtx  * pred_year);
         
         dstb_ie_intsvtx_cost_country[n] =
             exp(beta_ie_intsvtx + randeff_country_pred +
                 mult_med_income_ie_intsvtx * median_income_new[n] +
                 mult_oop_perc_che_ie_intsvtx * oop_perc_che_new[n] +
-                mult_uhc_ie_intsvtx * uhc_index[n]) *
+                mult_uhc_ie_intsvtx * uhc_index_new[n]) *
             exp(mult_year_ie_intsvtx  * pred_year);
             
        // Direct medical costs in continuation treatment period   
@@ -638,89 +646,89 @@ generated quantities {
             exp(beta_dme_contntx + randeff_country_pred +
                 mult_med_income_dme_contntx * median_income_new[n] +
                 mult_oop_perc_che_dme_contntx * oop_perc_che_new[n] +
-                mult_uhc_dme_contntx * uhc_index[n]) *
+                mult_uhc_dme_contntx * uhc_index_new[n]) *
             exp(mult_drtb_dme_contntx) *exp(mult_year_dme_contntx  * pred_year);
         
         dstb_dme_contntx_cost_country[n] =
             exp(beta_dme_contntx + randeff_country_pred +
                 mult_med_income_dme_contntx * median_income_new[n] +
                 mult_oop_perc_che_dme_contntx * oop_perc_che_new[n] +
-                mult_uhc_dme_contntx * uhc_index[n]) *
+                mult_uhc_dme_contntx * uhc_index_new[n]) *
             exp(mult_year_dme_contntx  * pred_year);
         
         drtb_dnme_contntx_cost_country[n] =
             exp(beta_dnme_contntx + randeff_country_pred +
                 mult_med_income_dnme_contntx * median_income_new[n] +
                 mult_oop_perc_che_dnme_contntx * oop_perc_che_new[n] +
-                mult_uhc_dnme_contntx * uhc_index[n]) *
+                mult_uhc_dnme_contntx * uhc_index_new[n]) *
             exp(mult_drtb_dnme_contntx) *exp(mult_year_dnme_contntx  * pred_year);
         
         dstb_dnme_contntx_cost_country[n] =
             exp(beta_dnme_contntx + randeff_country_pred +
                 mult_med_income_dnme_contntx * median_income_new[n] +
                 mult_oop_perc_che_dnme_contntx * oop_perc_che_new[n] +
-                mult_uhc_dnme_contntx * uhc_index[n]) *
+                mult_uhc_dnme_contntx * uhc_index_new[n]) *
             exp(mult_year_dnme_contntx  * pred_year);
         
         drtb_ie_contntx_cost_country[n] =
             exp(beta_ie_contntx + randeff_country_pred +
                 mult_med_income_ie_contntx * median_income_new[n] +
                 mult_oop_perc_che_ie_contntx * oop_perc_che_new[n] +
-                mult_uhc_ie_contntx * uhc_index[n]) *
-            exp(mult_drtb_ie_contntx) *exp(mult_year_ie_contntx  * pred_year);
+                mult_uhc_ie_contntx * uhc_index_new[n]) *
+            exp(mult_drtb_ie_contntx) * exp(mult_year_ie_contntx  * pred_year);
         
         dstb_ie_contntx_cost_country[n] =
             exp(beta_ie_contntx + randeff_country_pred +
-                mult_med_income_ie_contntx * median_income_new[n] +
+                mult_med_income_ie_contntx   * median_income_new[n] +
                 mult_oop_perc_che_ie_contntx * oop_perc_che_new[n] +
-                mult_uhc_ie_contntx * uhc_index[n]) *
-            exp(mult_year_ie_contntx  * pred_year);
+                mult_uhc_ie_contntx          * uhc_index_new[n]) *
+            exp(mult_year_ie_contntx         * pred_year);
         
         // Total costs              
         //// Drug-resistant tuberculosis 
         drtb_total_cost_country[n] = drtb_dme_prediag_cost_country[n] +
-                                    drtb_dnme_prediag_cost_country[n] + 
-                                    drtb_ie_prediag_cost_country[n] + 
-                                    drtb_dme_intsvtx_cost_country[n] +
-                                    drtb_dnme_intsvtx_cost_country[n] + 
-                                    drtb_ie_intsvtx_cost_country[n]+ 
-                                    drtb_dme_contntx_cost_country[n] +
-                                    drtb_dnme_contntx_cost_country[n] + 
-                                    drtb_ie_contntx_cost_country[n]; 
+                                     drtb_dnme_prediag_cost_country[n] + 
+                                     drtb_ie_prediag_cost_country[n] + 
+                                     drtb_dme_intsvtx_cost_country[n] +
+                                     drtb_dnme_intsvtx_cost_country[n] + 
+                                     drtb_ie_intsvtx_cost_country[n]+ 
+                                     drtb_dme_contntx_cost_country[n] +
+                                     drtb_dnme_contntx_cost_country[n] + 
+                                     drtb_ie_contntx_cost_country[n]; 
                                     
         drtb_dme_cost_country[n] = drtb_dme_prediag_cost_country[n] +
                                    drtb_dme_intsvtx_cost_country[n] +
                                    drtb_dme_contntx_cost_country[n]; 
                                    
         drtb_dnme_cost_country[n] = drtb_dnme_prediag_cost_country[n] +
-                                   drtb_dnme_intsvtx_cost_country[n] +
-                                   drtb_dnme_contntx_cost_country[n]; 
+                                    drtb_dnme_intsvtx_cost_country[n] +
+                                    drtb_dnme_contntx_cost_country[n]; 
         
         drtb_ie_cost_country[n] = drtb_ie_prediag_cost_country[n] +
-                                   drtb_ie_intsvtx_cost_country[n] +
-                                   drtb_ie_contntx_cost_country[n]; 
+                                  drtb_ie_intsvtx_cost_country[n] +
+                                  drtb_ie_contntx_cost_country[n]; 
         
         //// Drug-sensitive tuberculosis 
         dstb_total_cost_country[n] = dstb_dme_prediag_cost_country[n] +
-                                    dstb_dnme_prediag_cost_country[n] + 
-                                    dstb_ie_prediag_cost_country[n] + 
-                                    dstb_dme_intsvtx_cost_country[n] +
-                                    dstb_dnme_intsvtx_cost_country[n] + 
-                                    dstb_ie_intsvtx_cost_country[n]+ 
-                                    dstb_dme_contntx_cost_country[n] +
-                                    dstb_dnme_contntx_cost_country[n] + 
-                                    dstb_ie_contntx_cost_country[n]; 
+                                     dstb_dnme_prediag_cost_country[n] + 
+                                     dstb_ie_prediag_cost_country[n] + 
+                                     dstb_dme_intsvtx_cost_country[n] +
+                                     dstb_dnme_intsvtx_cost_country[n] + 
+                                     dstb_ie_intsvtx_cost_country[n]+ 
+                                     dstb_dme_contntx_cost_country[n] +
+                                     dstb_dnme_contntx_cost_country[n] + 
+                                     dstb_ie_contntx_cost_country[n]; 
                                     
         dstb_dme_cost_country[n] = dstb_dme_prediag_cost_country[n] +
                                    dstb_dme_intsvtx_cost_country[n] +
                                    dstb_dme_contntx_cost_country[n]; 
                                    
         dstb_dnme_cost_country[n] = dstb_dnme_prediag_cost_country[n] +
-                                   dstb_dnme_intsvtx_cost_country[n] +
-                                   dstb_dnme_contntx_cost_country[n]; 
+                                    dstb_dnme_intsvtx_cost_country[n] +
+                                    dstb_dnme_contntx_cost_country[n]; 
         
         dstb_ie_cost_country[n] = dstb_ie_prediag_cost_country[n] +
-                                   dstb_ie_intsvtx_cost_country[n] +
-                                   dstb_ie_contntx_cost_country[n]; 
+                                  dstb_ie_intsvtx_cost_country[n] +
+                                  dstb_ie_contntx_cost_country[n]; 
     }
 }
