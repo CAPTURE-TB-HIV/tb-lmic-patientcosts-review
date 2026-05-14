@@ -1,0 +1,575 @@
+/// An alternate parameterization of the gamma log prob dist 
+functions {
+    real alt_gamma_lpdf(vector x, real tau, vector mu) {
+        int N = num_elements(x);
+        return (tau - 1) * sum(log(x)) + tau * sum(log(tau) - log(mu)) - N * 
+                lgamma(tau) - sum(x * tau ./ mu);
+    }
+}
+
+data {
+    int<lower=1> N;          // number of data points        
+    vector<lower=0>[N] cost; // response variable - cost reported by the study
+    
+    real dme_prediag[N];     // indicator of whether cost includes direct medical
+                             // pre-diagnosis costs
+    real dnme_prediag[N];    // indicator of whether cost includes direct non-
+                             // medical pre-diagnosis costs
+    real ie_prediag[N];      // indicator of whether cost includes indirect
+                             // pre-diagnosis costs
+    real dme_intsvtx[N];     // indicator of whether cost includes direct medical
+                             // intensive TB treatment costs
+    real dnme_intsvtx[N];    // indicator of whether cost includes direct non-
+                             // medical intensive TB treatment costs
+    real ie_intsvtx[N];      // indicator of whether cost includes indirect
+                             // intensive treatment costs
+    real dme_contntx[N];     // indicator of whether cost includes direct medical
+                             // continuation TB treatment costs
+    real dnme_contntx[N];    // indicator of whether cost includes direct non-
+                             // medical continuation TB treatment costs
+    real ie_contntx[N];      // indicator of whether cost includes indirect
+                             // continuation treatment costs
+    
+    // Random effects
+    int N_survey;            // Number of surveys
+    int survey_id[N];        // Survey identifiers
+    int N_country;           // Number of countries
+    int country_id[N];       // Country identifier
+    
+    // Covariate data 
+    // internal covariates 
+    real drtb_ind[N];       // indicator of whether study is DRTB
+    real survey_year[N];     // mean-centered survey end year
+    
+    // external covariates
+    real median_income[N];  // log-scale, mean-centered daily median income formatted in covariates.R
+    real oop_perc_che[N];   // mean-centered out of pocket expenses as a perc of current health expenditure
+    real uhc_index[N]; // mean-centered index of health care quality
+    
+    // dispersion
+    vector<lower=0>[N] se;  // study reported dispersion estimate 
+    // real<lower=0> tau;
+    
+    int prior_sigma; /// for normal priors below
+    
+    // test higher order betas 
+    int beta_exp; 
+    
+    // Indicator to hold data out for country-k fold 
+    int<lower=0,upper=1> holdout[N]; 
+    
+    // Empirical prob that cost is zero
+    real<lower=0, upper=1> prob_cost_zero; 
+}
+
+transformed data {
+    vector<lower=0>[N] se2 = square(se); 
+}
+
+parameters {
+    // overall effect for the different cost components 
+    real beta_dme_prediag;
+    real beta_dnme_prediag;
+    real beta_ie_prediag;
+    real beta_dme_intsvtx;
+    real beta_dnme_intsvtx;
+    real beta_ie_intsvtx;
+    real beta_dme_contntx;
+    real beta_dnme_contntx;
+    real beta_ie_contntx;
+    
+    // Random effects 
+    // survey-level 
+    real randeff_survey[N_survey];
+
+    // country-level 
+    real randeff_country[N_country];
+    
+    // dispersion of survey-level random effects 
+    real<lower=0> sigma_randeff_survey;
+
+    // dispersion of country-level random effects 
+    real<lower=0> sigma_randeff_country;
+    
+    // Covariates 
+    // DR-TB multiplier coefficient
+    real beta_drtb;
+    real<lower=0> sigma_drtb;    
+
+    // Study end year coefficient
+    real beta_year;
+    real<lower=0> sigma_year;    
+    
+    // Median income
+    real beta_med_income;
+    real<lower=0> sigma_med_income;    
+    
+    // OOP as perc of current health expenditures
+    real beta_oop_perc_che;
+    real<lower=0> sigma_oop_perc_che;
+    
+    //UHC index 
+    real beta_uhc; 
+    real<lower=0> sigma_uhc;
+
+    // Additional variance parameter
+    real<lower=0> tau;
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// Parameters for the hurdle model as we have costs equal to zero ////////
+    ///////////////////////////////////////////////////////////////////////////
+    /// We will have a coefficient for each of the cost categories
+    
+    real<upper=0> beta_theta_dme_prediag;
+    real<upper=0> beta_theta_dnme_prediag;
+    real<upper=0> beta_theta_ie_prediag;
+
+    real<upper=0> beta_theta_dme_intsvtx;
+    real<upper=0> beta_theta_dnme_intsvtx;
+    real<upper=0> beta_theta_ie_intsvtx;
+
+    real<upper=0> beta_theta_dme_contntx;
+    real<upper=0> beta_theta_dnme_contntx;
+    real<upper=0> beta_theta_ie_contntx;
+}
+
+// Calculate mu for each n
+transformed parameters {
+
+// Mean cost estimate
+    vector<lower=0>[N] mu;
+// Theta for bernoulli 
+    vector<upper=0>[N] theta;
+    
+
+///////////////////////////////////////////////////////////////////////////
+// Calculate mean cost estimate 
+///////////////////////////////////////////////////////////////////////////
+for (n in 1:N){
+        mu[n] =  (exp(beta_dme_prediag + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 dme_prediag[n]   +
+                 
+                 exp(beta_dnme_prediag +  
+                     (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                     (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 dnme_prediag[n] +
+                 
+                 exp(beta_ie_prediag + 
+                     (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                     (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 ie_prediag[n]   + 
+                 
+                 exp(beta_dme_intsvtx + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 dme_intsvtx[n]  +
+                 
+                 exp(beta_dnme_intsvtx + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 dnme_intsvtx[n] +
+                 
+                 exp(beta_ie_intsvtx + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 ie_intsvtx[n]   + 
+                 
+                 exp(beta_dme_contntx + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 dme_contntx[n]  +
+                 
+                 exp(beta_dnme_contntx + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 dnme_contntx[n] +
+                 
+                 exp(beta_ie_contntx + 
+                      (randeff_survey[survey_id[n]] * sigma_randeff_survey) + 
+                      (randeff_country[country_id[n]] * sigma_randeff_country)) *
+                 ie_contntx[n]) * 
+                 
+                 // Covariates 
+                 exp(beta_drtb * sigma_drtb * drtb_ind[n]) * 
+                 exp(beta_year * sigma_year * survey_year[n]) * 
+                 exp(beta_med_income * sigma_med_income * median_income[n]) * 
+                 exp(beta_oop_perc_che * sigma_oop_perc_che * oop_perc_che[n]) * 
+                 exp(beta_uhc * sigma_uhc * uhc_index[n]);    
+                 
+                 
+            /// The probability that cost[n] is zero is equal to the
+            /// joint probability that each component of that cost
+            /// is zero, so we sum them together here (in log space). 
+            theta[n]  = beta_theta_dme_prediag  * dme_prediag[n] +
+                        beta_theta_dnme_prediag * dnme_prediag[n] +
+                        beta_theta_ie_prediag   * ie_prediag[n] +
+                        beta_theta_dme_intsvtx  * dme_intsvtx[n] +
+                        beta_theta_dnme_intsvtx * dnme_intsvtx[n] +
+                        beta_theta_ie_intsvtx   * ie_intsvtx[n] +
+                        beta_theta_dme_contntx  * dme_contntx[n] +
+                        beta_theta_dnme_contntx * dnme_contntx[n] +
+                        beta_theta_ie_contntx   * ie_contntx[n];
+    }
+}
+
+// The model to be estimated.
+model {
+    // Priors for fixed effects  
+    beta_dme_prediag  ~ normal(0, 10);
+    beta_dnme_prediag ~ normal(0, 10);
+    beta_ie_prediag   ~ normal(0, 10);
+    beta_dme_intsvtx  ~ normal(0, 10);
+    beta_dnme_intsvtx ~ normal(0, 10);
+    beta_ie_intsvtx   ~ normal(0, 10);
+    beta_dme_contntx  ~ normal(0, 10);
+    beta_dnme_contntx ~ normal(0, 10);
+    beta_ie_contntx   ~ normal(0, 10);
+    
+    // Priors for internal covariate fixed effects 
+    // DR TB indicator
+    beta_drtb ~ normal(0, 1);
+    
+    // Mean centered study-end year
+    beta_year ~ normal(0, 1);
+
+    // Priors for external covariate fixed effects 
+    // Median income 
+    beta_med_income  ~ normal(0, 1);
+    
+    // OOP as perc of CHE
+    beta_oop_perc_che  ~ normal(0, 1);
+    
+    // UHC index 
+    beta_uhc ~ normal(0, 1); 
+    
+    // Priors for random slopes  
+    randeff_survey ~ normal(0, 1);
+    randeff_country ~ normal(0, 1);
+    
+    // Priors for covariate sigmas 
+    sigma_drtb ~ normal(0, prior_sigma);
+    sigma_year ~ normal(0, prior_sigma);
+    sigma_med_income    ~ normal(0, prior_sigma);
+    sigma_oop_perc_che  ~ normal(0, prior_sigma);
+    sigma_uhc           ~ normal(0, prior_sigma); 
+    
+    // Priors for dispersion of random effects
+    sigma_randeff_survey   ~ student_t(3, 0, 2.5);  
+    sigma_randeff_country  ~ student_t(3, 0, 2.5); 
+    
+    // Priors for dispersion parameter
+    tau ~ exponential(1); 
+    
+    // Priors for hurdle predictors  
+    beta_theta_dme_prediag ~ normal(log(prob_cost_zero), 1);
+    beta_theta_dnme_prediag ~ normal(log(prob_cost_zero), 1);
+    beta_theta_ie_prediag ~ normal(log(prob_cost_zero), 1);
+
+    beta_theta_dme_intsvtx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_dnme_intsvtx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_ie_intsvtx ~ normal(log(prob_cost_zero), 1);
+
+    beta_theta_dme_contntx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_dnme_contntx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_ie_contntx ~ normal(log(prob_cost_zero), 1);
+    
+    /// Calculate the likelihood
+    for(n in 1:N){
+        if(holdout[n] == 0){
+            if (cost[n] == 0){
+                // P(cost[n] = 0) 
+                target += theta[n];
+            } else {
+                vector[1] cost_n = [cost[n]]';
+                vector[1] mu_n = [mu[n]]';
+                // First the hurdle (non-zero) indicator:
+                target += log1m_exp(theta[n]) + 
+                // Then the gamma density (no truncation needed):
+                          alt_gamma_lpdf(cost_n | tau, mu_n);
+        }
+    } }
+    
+    // cost estimate
+    // cost ~ alt_gamma(tau, mu);
+    // for(n in 1:N){
+    // if(holdout[n] == 0){
+    //     vector[1] cost_n = [cost[n]]';
+    //     vector[1] mu_n = [mu[n]]';
+    //     target  += alt_gamma_lpdf(cost_n | tau, mu_n);
+    // } }
+}
+
+generated quantities {
+  // Add log_likelihood for model comparison
+    // Add log_likelihood for model comparison
+    vector[N] log_lik;
+    
+    for(n in 1:N){
+            /// The probability that cost[n] is zero is equal to the
+            /// joint probability that each component of that cost
+            /// is zero, so we sum them together here (in log space).
+            real theta_n  = beta_theta_dme_prediag * dme_prediag[n] +
+                            beta_theta_dnme_prediag * dnme_prediag[n] +
+                            beta_theta_ie_prediag * ie_prediag[n] +
+                            beta_theta_dme_intsvtx * dme_intsvtx[n] +
+                            beta_theta_dnme_intsvtx * dnme_intsvtx[n] +
+                            beta_theta_ie_intsvtx * ie_intsvtx[n] +
+                            beta_theta_dme_contntx * dme_contntx[n] +
+                            beta_theta_dnme_contntx * dnme_contntx[n] +
+                            beta_theta_ie_contntx * ie_contntx[n];
+
+            if (cost[n] == 0){
+                // P(y_n = 0)
+                log_lik[n] = theta[n];
+            } else {
+                vector[1] cost_n = [cost[n]]';
+                vector[1] mu_n = [mu[n]]';
+                // First the hurdle (non-zero) indicator:
+                log_lik[n] = log1m_exp(theta[n]) +
+                // Then the gamma density truncated at 0:
+                             alt_gamma_lpdf(cost_n | tau, mu_n);
+        }
+    }
+  
+    /// Predicted costs for each county 
+    vector[N] drtb_dme_prediag_cost_country;
+    vector[N] dstb_dme_prediag_cost_country;
+    vector[N] drtb_dnme_prediag_cost_country;
+    vector[N] dstb_dnme_prediag_cost_country;
+    vector[N] drtb_ie_prediag_cost_country;
+    vector[N] dstb_ie_prediag_cost_country;
+    
+    vector[N] drtb_dme_intsvtx_cost_country;
+    vector[N] dstb_dme_intsvtx_cost_country;
+    vector[N] drtb_dnme_intsvtx_cost_country;
+    vector[N] dstb_dnme_intsvtx_cost_country;
+    vector[N] drtb_ie_intsvtx_cost_country;
+    vector[N] dstb_ie_intsvtx_cost_country;
+    
+    vector[N] drtb_dme_contntx_cost_country;
+    vector[N] dstb_dme_contntx_cost_country;
+    vector[N] drtb_dnme_contntx_cost_country;
+    vector[N] dstb_dnme_contntx_cost_country;
+    vector[N] drtb_ie_contntx_cost_country;
+    vector[N] dstb_ie_contntx_cost_country;
+    
+    vector[N] drtb_dme_cost_country;
+    vector[N] drtb_dnme_cost_country;
+    vector[N] drtb_ie_cost_country;
+
+    vector[N] dstb_dme_cost_country;
+    vector[N] dstb_dnme_cost_country;
+    vector[N] dstb_ie_cost_country;
+    
+    vector[N] drtb_total_cost_country;
+    vector[N] dstb_total_cost_country;
+    
+    vector[N] randeff_country_pred; 
+    
+    /// covariate mulipliers
+    real mult_drtb; 
+    real mult_year;
+    real mult_uhc; 
+    real mult_oop_perc_che;
+    real mult_med_income; 
+    
+    
+    for (n in 1:N){
+        // if (review_ind[n] == 1){
+            randeff_country_pred[n] = randeff_country[country_id[n]] * sigma_randeff_country; 
+        // } else{
+        //     randeff_country_pred[n] = normal_rng(0, 1) * sigma_randeff_country; 
+        // }
+        // Direct medical costs in pre-treatment period   
+        // Covariate real multipliers 
+        mult_drtb = beta_drtb * sigma_drtb; 
+        mult_year = beta_year * sigma_year;
+        mult_uhc  = beta_uhc * sigma_uhc;
+        mult_oop_perc_che = beta_oop_perc_che * sigma_oop_perc_che;
+        mult_med_income = beta_med_income * sigma_med_income;
+    
+        drtb_dme_prediag_cost_country[n] =
+            exp(beta_dme_prediag + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+            
+        dstb_dme_prediag_cost_country[n] =
+            exp(beta_dme_prediag + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        drtb_dnme_prediag_cost_country[n] =
+            exp(beta_dnme_prediag + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_dnme_prediag_cost_country[n] =
+            exp(beta_dnme_prediag + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        drtb_ie_prediag_cost_country[n] =
+            exp(beta_ie_prediag + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_ie_prediag_cost_country[n] =
+            exp(beta_ie_prediag + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+
+        drtb_dme_intsvtx_cost_country[n] =
+            exp(beta_dme_intsvtx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_dme_intsvtx_cost_country[n] =
+            exp(beta_dme_intsvtx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+            
+        drtb_dnme_intsvtx_cost_country[n] =
+            exp(beta_dnme_intsvtx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_dnme_intsvtx_cost_country[n] =
+            exp(beta_dnme_intsvtx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        drtb_ie_intsvtx_cost_country[n] =
+            exp(beta_ie_intsvtx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_ie_intsvtx_cost_country[n] =
+            exp(beta_ie_intsvtx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        drtb_dme_contntx_cost_country[n] =
+            exp(beta_dme_contntx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_dme_contntx_cost_country[n] =
+            exp(beta_dme_contntx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        drtb_dnme_contntx_cost_country[n] =
+            exp(beta_dnme_contntx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_dnme_contntx_cost_country[n] =
+            exp(beta_dnme_contntx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        drtb_ie_contntx_cost_country[n] =
+            exp(beta_ie_contntx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]) *
+            exp(mult_drtb);
+        
+        dstb_ie_contntx_cost_country[n] =
+            exp(beta_ie_contntx + randeff_country_pred[n]) * 
+            exp(mult_year * survey_year[n]) * 
+            exp(mult_med_income * median_income[n]) * 
+            exp(mult_oop_perc_che * oop_perc_che[n]) +
+            exp(mult_uhc * uhc_index[n]);
+        
+        // Total costs              
+        //// Drug-resistant tuberculosis 
+        drtb_total_cost_country[n] = drtb_dme_prediag_cost_country[n] +
+                                     drtb_dnme_prediag_cost_country[n] + 
+                                     drtb_ie_prediag_cost_country[n] + 
+                                     drtb_dme_intsvtx_cost_country[n] +
+                                     drtb_dnme_intsvtx_cost_country[n] + 
+                                     drtb_ie_intsvtx_cost_country[n]+ 
+                                     drtb_dme_contntx_cost_country[n] +
+                                     drtb_dnme_contntx_cost_country[n] + 
+                                     drtb_ie_contntx_cost_country[n]; 
+                                    
+        drtb_dme_cost_country[n] = drtb_dme_prediag_cost_country[n] +
+                                   drtb_dme_intsvtx_cost_country[n] +
+                                   drtb_dme_contntx_cost_country[n]; 
+                                   
+        drtb_dnme_cost_country[n] = drtb_dnme_prediag_cost_country[n] +
+                                    drtb_dnme_intsvtx_cost_country[n] +
+                                    drtb_dnme_contntx_cost_country[n]; 
+        
+        drtb_ie_cost_country[n] = drtb_ie_prediag_cost_country[n] +
+                                  drtb_ie_intsvtx_cost_country[n] +
+                                  drtb_ie_contntx_cost_country[n]; 
+        
+        //// Drug-sensitive tuberculosis 
+        dstb_total_cost_country[n] = dstb_dme_prediag_cost_country[n] +
+                                     dstb_dnme_prediag_cost_country[n] + 
+                                     dstb_ie_prediag_cost_country[n] + 
+                                     dstb_dme_intsvtx_cost_country[n] +
+                                     dstb_dnme_intsvtx_cost_country[n] + 
+                                     dstb_ie_intsvtx_cost_country[n]+ 
+                                     dstb_dme_contntx_cost_country[n] +
+                                     dstb_dnme_contntx_cost_country[n] + 
+                                     dstb_ie_contntx_cost_country[n]; 
+                                    
+        dstb_dme_cost_country[n] = dstb_dme_prediag_cost_country[n] +
+                                   dstb_dme_intsvtx_cost_country[n] +
+                                   dstb_dme_contntx_cost_country[n]; 
+                                   
+        dstb_dnme_cost_country[n] = dstb_dnme_prediag_cost_country[n] +
+                                    dstb_dnme_intsvtx_cost_country[n] +
+                                    dstb_dnme_contntx_cost_country[n]; 
+        
+        dstb_ie_cost_country[n] = dstb_ie_prediag_cost_country[n] +
+                                  dstb_ie_intsvtx_cost_country[n] +
+                                  dstb_ie_contntx_cost_country[n]; 
+    }
+}

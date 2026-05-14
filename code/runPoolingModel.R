@@ -17,12 +17,23 @@ source(here("code/modelDataFormat.R"))
 tbPtntCstSeed <- 513
 tbPtntCstIter <- 4000
 tbPtntCstWarmup <- 500
+
+###############################################################################
+### We're going to test quite a few different model specifications below    ###
+### We'll need to format the data for stan, then call the models.           ###
+###############################################################################
+
+###############################################################################
+### Covariates have the a common effect and a random effect across cost category
+### Add the minimum value to all zero costs (just to get model up and running)
 ###############################################################################
 ### Format the data for stan                                                ###
 ###############################################################################
-stanModelData <- list(
+costVec <- modelData$cost 
+costVec[which(costVec==0)] <- min(costVec[-which(costVec==0)])
+stanModelDataFloor <- list(
                         N = length(modelData$cost),
-                        cost = modelData$cost + 1,
+                        cost = costVec,
                         se = rep(0, length(modelData$cost)),
                         # se = as.numeric(modelData$se)+ 0.01,
                         dme_prediag = modelData$dme.prediag, 
@@ -46,55 +57,188 @@ stanModelData <- list(
                         oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
                         uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
                         prior_sigma = 2,
-                        ### test with world region shut off 
-                        world_region = rep(0, length(modelData$cost))
+                        ### test with world region shut off , 
+                        beta_exp =1,
+                        world_region = rep(0, length(modelData$cost)), 
+                        holdout =  rep(0, length(modelData$cost))
                     )
-
 ###############################################################################
 ##### Call the stan models                                                #####
 ###############################################################################
 
-###############################################################################
-### Covariates allowed to vary across  each cost category
-###############################################################################
-
-totalModel <- stan(file = "code/inst/tbPatientCosts.stan",
-                   data = stanModelData,
-                   iter = tbPtntCstIter/4, chains = 2,
-                   warmup=tbPtntCstWarmup/2,
-                   control=list(max_treedepth=14), 
-                   seed = tbPtntCstSeed)
-
-looTotal <- rstan::loo(totalModel)
+totalModelFloor <- stan(file = "code/inst/tbPatientCosts.stan",
+                         data = stanModelDataFloor,
+                         iter = tbPtntCstIter, chains = 3,
+                         warmup=tbPtntCstWarmup,
+                         control=list(max_treedepth=14), 
+                         seed = tbPtntCstSeed)
 
 ### Pooled patient costs as mean median income and oop perc and study year
-exp(summary(totalModel)[[1]][1:9,"mean"])
-sum(exp(summary(totalModel)[[1]][1:9,"mean"]))
-# exp(summary(totalModel)[[1]][1:9,"50%"])
-# exp(summary(totalModel)[[1]][1:9,"2.5%"])
-# exp(summary(totalModel)[[1]][1:9,"97.5%"])
+looTotal <- rstan::loo(totalModelFloor)
+exp(summary(totalModelFloor)[[1]][1:9,"mean"])
+sum(exp(summary(totalModelFloor)[[1]][1:9,"mean"]))
+# exp(summary(totalModelFloor)[[1]][1:9,"50%"])
+# exp(summary(totalModelFloor)[[1]][1:9,"2.5%"])
+# exp(summary(totalModelFloor)[[1]][1:9,"97.5%"])
 
 ### Print the estimated impact of study year 
 # costCategories <- paste(c(rep("dme",3), rep("dnme",3), rep("ie",3)), 
 #                         c("prediag", "intsvtx", "contntx"), sep="_")
 # yearCoeffs <- paste0("beta_year_", costCategories)
-# exp(summary(totalModel)[[1]][yearCoeffs,"mean"])
+# exp(summary(totalModelFloor)[[1]][yearCoeffs,"mean"])
 # 
 # ### Print the estimated impact of drtb
 # drtbCoeffs <- paste0("beta_drtb_", costCategories)
-# exp(summary(totalModel)[[1]][drtbCoeffs,"mean"])
+# exp(summary(totalModelFloor)[[1]][drtbCoeffs,"mean"])
+
+
+###############################################################################
+### Covariates have the a common effect and a random effect across cost category
+### Hurdle model 
+###############################################################################
+### Format the data for stan                                                ###
+###############################################################################
+
+stanModelDataZeros <- list(
+                            N = length(modelData$cost),
+                            cost = modelData$cost,
+                            se = rep(0, length(modelData$cost)),
+                            # se = as.numeric(modelData$se)+ 0.01,
+                            dme_prediag = modelData$dme.prediag, 
+                            dnme_prediag =  modelData$dnme.prediag, 
+                            ie_prediag =  modelData$ie.prediag, 
+                            dme_intsvtx = modelData$dme.intsvtx, 
+                            dnme_intsvtx =  modelData$dnme.intsvtx, 
+                            ie_intsvtx =  modelData$ie.intsvtx,
+                            dme_contntx = modelData$dme.contntx, 
+                            dnme_contntx =  modelData$dnme.contntx, 
+                            ie_contntx =  modelData$ie.contntx, 
+                            N_survey = max(modelData$survey.id),
+                            survey_id = modelData$survey.id, 
+                            N_country = max(modelData$country.id),
+                            country_id = modelData$country.id, 
+                            ### Internal covariate
+                            drtb_ind= modelData$drtb.wt,
+                            survey_year = modelData$year_z,
+                            ### External covariates
+                            median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
+                            oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
+                            uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
+                            prior_sigma = 2,
+                            beta_exp =1,
+                            world_region = rep(0, length(modelData$cost)), 
+                            holdout =  rep(0, length(modelData$cost)), 
+                            prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
+)
+
+
+totalModelHurdle <- stan(file = "code/inst/tbPatientCosts-hurdle.stan",
+                   data = stanModelDataZeros,
+                   iter = tbPtntCstIter, chains = 3,
+                   warmup=tbPtntCstWarmup,
+                   control=list(max_treedepth=14), 
+                   seed = tbPtntCstSeed)
+
+###############################################################################
+### Covariates have the a common effect and a random effect across cost category
+### Run with zeroes omitted as it should closely approximate the hurdle 
+### conditional costs. 
+###############################################################################
+### Format the data for stan                                                ###
+###############################################################################
+
+modelDataNoZeros <- modelData %>% filter(cost !=0)
+stanModelDataNoZeros <- list(
+                            N = length(modelDataNoZeros$cost),
+                            cost = modelDataNoZeros$cost,
+                            se = rep(0, length(modelDataNoZeros$cost)),
+                            dme_prediag = modelDataNoZeros$dme.prediag, 
+                            dnme_prediag =  modelDataNoZeros$dnme.prediag, 
+                            ie_prediag =  modelDataNoZeros$ie.prediag, 
+                            dme_intsvtx = modelDataNoZeros$dme.intsvtx, 
+                            dnme_intsvtx =  modelDataNoZeros$dnme.intsvtx, 
+                            ie_intsvtx =  modelDataNoZeros$ie.intsvtx,
+                            dme_contntx = modelDataNoZeros$dme.contntx, 
+                            dnme_contntx =  modelDataNoZeros$dnme.contntx, 
+                            ie_contntx =  modelDataNoZeros$ie.contntx, 
+                            N_survey = max(modelDataNoZeros$survey.id),
+                            survey_id = modelDataNoZeros$survey.id, 
+                            N_country = max(modelDataNoZeros$country.id),
+                            country_id = modelDataNoZeros$country.id, 
+                            ### Internal covariate
+                            drtb_ind= modelDataNoZeros$drtb.wt,
+                            survey_year = modelDataNoZeros$year_z,
+                            ### External covariates
+                            median_income = ((modelDataNoZeros$median.income - mean(modelDataNoZeros$median.income)) / sd(modelDataNoZeros$median.income)),
+                            oop_perc_che =  (modelDataNoZeros$oop.perc.che - mean(modelDataNoZeros$oop.perc.che))/sd(modelDataNoZeros$UHCindex), 
+                            uhc_index =     (modelDataNoZeros$UHCindex - mean(modelDataNoZeros$UHCindex)) / sd(modelDataNoZeros$UHCindex),
+                            prior_sigma = 2,
+                            ### test with world region shut off , 
+                            beta_exp =1,
+                            world_region = rep(0, length(modelDataNoZeros$cost)), 
+                            holdout =  rep(0, length(modelDataNoZeros$cost))
+)
+
+totalModelNoZero <- stan(file = "code/inst/tbPatientCosts.stan",
+                   data = stanModelDataNoZeros,
+                   iter = tbPtntCstIter, chains = 3,
+                   warmup=tbPtntCstWarmup,
+                   control=list(max_treedepth=14), 
+                   seed = tbPtntCstSeed)
+
+totalModelTimeOnly <- stan(file = "code/inst/tbPatientCosts-TimeOnly.stan",
+                   data = stanModelDataNoZeros,
+                   iter = tbPtntCstIter, chains = 3,
+                   warmup=tbPtntCstWarmup,
+                   control=list(max_treedepth=14), 
+                   seed = tbPtntCstSeed)
+
+
+# looTotal <- rstan::loo(totalModelNoZero)
+
+###############################################################################
+### Covariates have the same effect across cost category
+###############################################################################
+simpModelFloor <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
+                   data = stanModelDataFloor,
+                   iter = tbPtntCstIter/4, chains = 2,
+                   warmup= tbPtntCstWarmup/2,
+                   control=list(max_treedepth=14), 
+                   seed = tbPtntCstSeed)
+
+simpModelHurdle <- stan(file = "code/inst/tbPatientCosts-simpCov-hurdle.stan",
+                        data = stanModelDataZeros,
+                        iter = tbPtntCstIter, chains = 3,
+                        warmup=tbPtntCstWarmup,
+                        control=list(max_treedepth=14),
+                        seed = tbPtntCstSeed)
+
+
+looSimp <- loo(simpModelFloor)
+### Pooled patient costs as mean median income and oop perc and study year
+# exp(summary(simpModelFloor)[[1]][1:9,"mean"])
+# exp(summary(totalModel)[[1]][1:9,"50%"])
+# exp(summary(totalModel)[[1]][1:9,"2.5%"])
+# exp(summary(totalModel)[[1]][1:9,"97.5%"])
+
+### Print the estimated impact of study year 
+# exp(summary(simpModelFloor)[[1]]["beta_year","mean"])
+
+### Print the estimated impact of drtb
+# exp(summary(simpModelFloor)[[1]]["beta_drtb","mean"])
+
 
 ###############################################################################
 ### Covariates have the a common effect and a random effect across cost category
 ###############################################################################
-reCovModel <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
-                   data = stanModelData,
-                   iter = tbPtntCstIter/4, chains = 2,
-                   warmup=tbPtntCstWarmup/2,
-                   control=list(max_treedepth=14),
-                   seed = tbPtntCstSeed)
+# reCovModel <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
+#                    data = stanModelData,
+#                    iter = tbPtntCstIter/4, chains = 2,
+#                    warmup=tbPtntCstWarmup/2,
+#                    control=list(max_treedepth=14),
+#                    seed = tbPtntCstSeed)
 
-looReCov <-rstan::loo(reCovModel) 
+# looReCov <-rstan::loo(reCovModel) 
 
 # sum(exp(summary(reCovModel)[[1]][1:9,"mean"]))
 # exp(summary(reCovModel)[[1]][1:9,"mean"])
@@ -103,28 +247,6 @@ looReCov <-rstan::loo(reCovModel)
 # 
 # reCovModelNoUnit <- reCovModel
 # reCovModelUnit <- reCovModel
-###############################################################################
-### Covariates have the same effect across cost category
-###############################################################################
-simpCovMod <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
-                   data = stanModelData,
-                   iter = tbPtntCstIter/4, chains = 2,
-                   warmup= tbPtntCstWarmup/2,
-                   control=list(max_treedepth=14), 
-                   seed = tbPtntCstSeed)
-
-looSimp <- loo(simpCovMod)
-### Pooled patient costs as mean median income and oop perc and study year
-# exp(summary(simpCovMod)[[1]][1:9,"mean"])
-# exp(summary(totalModel)[[1]][1:9,"50%"])
-# exp(summary(totalModel)[[1]][1:9,"2.5%"])
-# exp(summary(totalModel)[[1]][1:9,"97.5%"])
-
-### Print the estimated impact of study year 
-# exp(summary(simpCovMod)[[1]]["beta_year","mean"])
-
-### Print the estimated impact of drtb
-# exp(summary(simpCovMod)[[1]]["beta_drtb","mean"])
 
 ###############################################################################
 ### Compare with LOO
@@ -132,19 +254,19 @@ looSimp <- loo(simpCovMod)
 ### First check that pointwise log likelihood approximates that stan outputs
 ### for the total log likelihood 
 
-logLiks <- paste0("log_lik[", 1:nrow(modelData), "]")
-sum(summary(totalModel)[[1]][logLiks,"mean"])
-summary(totalModel)[[1]]["lp__","mean"]
+logLiks <- paste0("log_lik[", 1:nrow(modelDataFloor), "]")
+sum(summary(totalModelFloor)[[1]][logLiks,"mean"])
+summary(totalModelFloor)[[1]]["lp__","mean"]
 
-sum(summary(simpCovMod)[[1]][logLiks,"mean"])
-summary(simpCovMod)[[1]]["lp__","mean"]
+sum(summary(simpModelFloor)[[1]][logLiks,"mean"])
+summary(simpModelFloor)[[1]]["lp__","mean"]
 
 
 # looTotalN5 <- rstan::loo(totalN5Model)
 # looReCov <- rstan::loo(reCovModel)
 # looSimpN5 <- rstan::loo(simpCovN5Mod)
 
-loo_compare(looTotal, looReCov, looSimp)
+# loo_compare(looTotal, looReCov, looSimp)
 
 # modelList5 <- list("Data" = modelData, "9covs" = totalN5Model, 
 #                    "9covsRE" = reCovN5Model, "1cov" =simpCovN5Mod)
@@ -203,14 +325,14 @@ reCovModelSqrd <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan",
 looReCovSqrd <- rstan::loo(reCovModelSqrd)
 
 
-simpCovModSqrd <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
+simpModelFloorSqrd <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
                    data = stanModelDataSqrd,
                    iter = tbPtntCstIter/4, chains = 2,
                    warmup= tbPtntCstWarmup/2,
                    control=list(max_treedepth=14), 
                    seed = tbPtntCstSeed)
 
-looSimpSqrd <- loo(simpCovModSqrd)
+looSimpSqrd <- loo(simpModelFloorSqrd)
 
 
 ###############################################################################
