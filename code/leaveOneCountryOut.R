@@ -1,12 +1,23 @@
+###############################################################################
+### After narrowing down our model options in the runPoolingModel.R script, 
+### We use this script, to test the leading two options in leave one country
+### out analysis. Even though we have parallelized a bit, this script still 
+### takes 4-5 hours to implement with four cores. Plan accordingly. 
+### Operationalized as kfold where each fold is a country. 
+###############################################################################
 ### Inspired by code here
 ### https://www.r-bloggers.com/2018/07/k-fold-cross-validation-in-stan/
+###############################################################################
+tbPtntCstSeed <- 513
+tbPtntCstIter <- 4000
+tbPtntCstWarmup <- 500
 
 ### Create a list of data based on our ids 
 source(here("code/modelDataFormat.R"))
 
 stanModelData <- list(
     N = length(modelData$cost),
-    cost = modelData$cost +  0.01,
+    cost = modelData$cost,
     se = rep(0, length(modelData$cost)),
     # se = as.numeric(modelData$se)+ 0.01,
     dme_prediag = modelData$dme.prediag, 
@@ -24,7 +35,7 @@ stanModelData <- list(
     country_id = modelData$country.id, 
     ### Internal covariate
     drtb_ind= modelData$drtb.wt,
-    survey_year = modelData$year_z,
+    survey_year = ((modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year)),
     ### External covariates
     median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
     oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
@@ -72,8 +83,8 @@ stan_kfold <-  function(file = "code/inst/tbPatientCosts.stan",
                              s <- sampling(model, 
                                            data = list_of_datas[[k]], 
                                            chains = 1, chain_id = i,
-                                           warmup = 500,
-                                           iter = 2000,
+                                           warmup = tbPtntCstWarmup,
+                                           iter = tbPtntCstIter,
                                            control=list(max_treedepth=14),
                                            refresh = 0, seed = tbPtntCstSeed)
                              return(s)
@@ -141,18 +152,23 @@ kfold_elpd <- function(log_lik_heldout)  {
     return(out)
 }
 
-### Lots of covariate effects
-ss9 <- stan_kfold(file = "code/inst/tbPatientCosts.stan")
+###############################################################################
+### Covariates have the a common effect and a random effect across cost category
+###############################################################################
+ss_re <- stan_kfold(file = "code/inst/tbPatientCosts-hurdle.stan")
 
-ee9 <- extract_log_lik_K(ss9, holdout_list)
+ee_re <- extract_log_lik_K(ss_re, holdout_list)
 
-kk9 <- kfold_elpd(ee9); print(kk9)
+kk_re <- kfold_elpd(ee_re); print(kk_re)
 
-mainModelComp9 <- list(ss9, ee9, kk9)
-saveRDS(mainModelComp9, here("output/mainModelLOCO-ELPD.rds"))
+mainModelComp_re <- list(ss_re, ee_re, kk_re)
 
-### Single covariate effects
-ss_simp <- stan_kfold(file = "code/inst/tbPatientCosts-simpCov.stan")
+saveRDS(mainModelComp_re, here("output/mainModelLOCO-ELPD.rds"))
+
+###############################################################################
+### Covariates have the same effect across cost category
+###############################################################################
+ss_simp <- stan_kfold(file = "code/inst/tbPatientCosts-simpCov-hurdle.stan")
 
 ee_simp <- extract_log_lik_K(ss_simp, holdout_list)
 
