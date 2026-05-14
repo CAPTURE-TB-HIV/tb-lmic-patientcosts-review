@@ -151,7 +151,6 @@ for (country in unique(gniPcLCU$study.country)){
 ### Join the two together 
 gniPcDF <- full_join(gniPcUSD, gniPcLCU)
 
-
 ###### Read in the GINI data
 giniDF <- read.csv(here("data/covariateData/calc-median-income/GINI.csv")) %>% 
     select(Country.Name, 
@@ -187,6 +186,43 @@ medianIncomeDF0 <- left_join(gniPcDF, giniDF %>% select(!study.country), by=c("C
                            `GNI (USD per-capita)`, GNI.USD.interpolated, 
                            `GINI index`, GINI.interpolated)
 
+
+### Add in WHO region and calculate regional median values 
+### we will use these when the country specific values are missing 
+medianIncomeDF0 <- left_join(medianIncomeDF0, read.csv(here("data/who-regions.csv")) %>%
+              mutate(who.region = gsub(" \\(WHO\\)", "", World.regions.according.to.WHO)) %>% 
+              select(Code, who.region) %>% 
+              rename(Country.Code = Code),
+          by="Country.Code")  %>% 
+              mutate(who.region = ifelse(Country.Code == "VCT", 
+                                         "Americas", who.region)) %>% 
+              group_by(who.region, study.end.year) %>% 
+              mutate(GNI.LCU.interpolated.region = median(GNI.LCU.interpolated, na.rm=TRUE),
+                     GNI.USD.interpolated.region = median(GNI.USD.interpolated, na.rm=TRUE),
+                     GINI.interpolated.region = median(GINI.interpolated, na.rm=TRUE)) %>%
+              ungroup() %>% 
+              mutate(GNI.LCU.calc = ifelse(is.na(GNI.LCU.interpolated), 
+                                           GNI.LCU.interpolated.region, 
+                                           GNI.LCU.interpolated),
+                     GNI.USD.calc = ifelse(is.na(GNI.USD.interpolated), 
+                                           GNI.USD.interpolated.region, 
+                                           GNI.USD.interpolated), 
+                     GINI.calc = ifelse(is.na(GINI.interpolated), 
+                                        GINI.interpolated.region, 
+                                        GINI.interpolated), 
+                     GINI.desc = case_when(GINI.calc == `GINI index` ~ "Country/Year matched",
+                                           GINI.calc ==  GINI.interpolated ~ "Country interpolated", 
+                                           GINI.calc == GINI.interpolated.region ~ "Regional"
+                                           ), 
+                     GNI.desc = case_when(GNI.USD.calc == `GNI (USD per-capita)` ~ "Country/Year matched",
+                                          GNI.USD.calc ==  GNI.USD.interpolated ~ "Country interpolated", 
+                                          GNI.USD.calc ==  GNI.USD.interpolated.region ~ "Regional"
+                                          )
+                     );
+
+# medianIncomeDF0M <- medianIncomeDF01 %>% filter(study.end.year == 2023 & 
+                                                # (is.na(GNI.USD.interpolated) | is.na(GINI.interpolated)))
+# View(medianIncomeDF0M)
 ###############################################################################
 ###### Calculate median income using the dataset above
 
@@ -222,13 +258,13 @@ calc_median_income <- function(gini, #GNI
 ##### Apply the function 
 for(i in 1:nrow(medianIncomeDF0)){
     
-    if(! is.na(medianIncomeDF0[i, "GINI.interpolated"])){
+    if(! is.na(medianIncomeDF0[i, "GINI.calc"])){
     ### USD 
-    medianIncomeDF0[i,"median.income.calc.usd"] <- calc_median_income(medianIncomeDF0$GINI.interpolated[i]/100, 
-                                                                     medianIncomeDF0$GNI.USD.interpolated[i])
+    medianIncomeDF0[i,"median.income.calc.usd"] <- calc_median_income(medianIncomeDF0$GINI.calc[i]/100, 
+                                                                     medianIncomeDF0$GNI.USD.calc[i])
     ### Local currency units
-    medianIncomeDF0[i,"median.income.calc.lcu"] <- calc_median_income(medianIncomeDF0$GINI.interpolated[i]/100, 
-                                                                     medianIncomeDF0$GNI.LCU.interpolated[i])
+    medianIncomeDF0[i,"median.income.calc.lcu"] <- calc_median_income(medianIncomeDF0$GINI.calc[i]/100, 
+                                                                     medianIncomeDF0$GNI.LCU.calc[i])
     }}
 
 ### Join with the full data to check for missingness 
@@ -238,9 +274,9 @@ medianIncomeDF <- left_join(reviewData,
     rename(country.code = Country.Code) %>% 
     select(study.country, country.code, 
            study.end.year,
-           `GNI (LCU per-capita)`, GNI.LCU.interpolated, 
-           `GNI (USD per-capita)`, GNI.USD.interpolated,
-           `GINI index`, GINI.interpolated, median.income.calc.usd, median.income.calc.lcu)
+           `GNI (LCU per-capita)`, GNI.LCU.interpolated, GNI.LCU.calc,
+           `GNI (USD per-capita)`, GNI.USD.interpolated, GNI.USD.calc,
+           `GINI index`, GINI.interpolated, GINI.calc, median.income.calc.usd, median.income.calc.lcu)
 
 ##### Missingness is better; let's print the missing countries 
 medianIncomeDF[rowSums(is.na(medianIncomeDF)) > 1,]
