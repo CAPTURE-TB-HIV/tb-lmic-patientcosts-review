@@ -249,8 +249,8 @@ model {
     randeff_country ~ normal(0, 1);
     
     // Priors for covariate sigmas 
-    sigma_drtb ~ normal(0, prior_sigma);
-    sigma_year ~ normal(0, prior_sigma);
+    sigma_drtb          ~ normal(0, prior_sigma);
+    sigma_year          ~ normal(0, prior_sigma);
     sigma_med_income    ~ normal(0, prior_sigma);
     sigma_oop_perc_che  ~ normal(0, prior_sigma);
     sigma_uhc           ~ normal(0, prior_sigma); 
@@ -263,17 +263,17 @@ model {
     tau ~ exponential(1); 
     
     // Priors for hurdle predictors  
-    beta_theta_dme_prediag ~ normal(log(prob_cost_zero), 1);
+    beta_theta_dme_prediag  ~ normal(log(prob_cost_zero), 1);
     beta_theta_dnme_prediag ~ normal(log(prob_cost_zero), 1);
-    beta_theta_ie_prediag ~ normal(log(prob_cost_zero), 1);
+    beta_theta_ie_prediag   ~ normal(log(prob_cost_zero), 1);
 
-    beta_theta_dme_intsvtx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_dme_intsvtx  ~ normal(log(prob_cost_zero), 1);
     beta_theta_dnme_intsvtx ~ normal(log(prob_cost_zero), 1);
-    beta_theta_ie_intsvtx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_ie_intsvtx   ~ normal(log(prob_cost_zero), 1);
 
-    beta_theta_dme_contntx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_dme_contntx  ~ normal(log(prob_cost_zero), 1);
     beta_theta_dnme_contntx ~ normal(log(prob_cost_zero), 1);
-    beta_theta_ie_contntx ~ normal(log(prob_cost_zero), 1);
+    beta_theta_ie_contntx   ~ normal(log(prob_cost_zero), 1);
     
     /// Calculate the likelihood
     for(n in 1:N){
@@ -303,35 +303,26 @@ model {
 
 generated quantities {
   // Add log_likelihood for model comparison
-    // Add log_likelihood for model comparison
     vector[N] log_lik;
+  // unconditional mean 
+    vector[N] uncndtl_mu;
     
     for(n in 1:N){
-            /// The probability that cost[n] is zero is equal to the
-            /// joint probability that each component of that cost
-            /// is zero, so we sum them together here (in log space).
-            real theta_n  = beta_theta_dme_prediag * dme_prediag[n] +
-                            beta_theta_dnme_prediag * dnme_prediag[n] +
-                            beta_theta_ie_prediag * ie_prediag[n] +
-                            beta_theta_dme_intsvtx * dme_intsvtx[n] +
-                            beta_theta_dnme_intsvtx * dnme_intsvtx[n] +
-                            beta_theta_ie_intsvtx * ie_intsvtx[n] +
-                            beta_theta_dme_contntx * dme_contntx[n] +
-                            beta_theta_dnme_contntx * dnme_contntx[n] +
-                            beta_theta_ie_contntx * ie_contntx[n];
-
-            if (cost[n] == 0){
-                // P(y_n = 0)
-                log_lik[n] = theta[n];
-            } else {
-                vector[1] cost_n = [cost[n]]';
-                vector[1] mu_n = [mu[n]]';
-                // First the hurdle (non-zero) indicator:
-                log_lik[n] = log1m_exp(theta[n]) +
-                // Then the gamma density truncated at 0:
-                             alt_gamma_lpdf(cost_n | tau, mu_n);
+        if (cost[n] == 0){
+            // P(y_n = 0)
+            log_lik[n] = theta[n];
+        } else {
+            vector[1] cost_n = [cost[n]]';
+            vector[1] mu_n = [mu[n]]';
+            // First the hurdle (non-zero) indicator:
+             log_lik[n] = log1m_exp(theta[n]) +
+             // Then the gamma density truncated at 0:
+                          alt_gamma_lpdf(cost_n | tau, mu_n);
         }
     }
+    
+    /// Calculate the unconditional mean 
+    uncndtl_mu[n] = mu[n] * (1-exp(theta[n])); 
   
     /// Predicted costs for each county 
     vector[N] drtb_dme_prediag_cost_country;
