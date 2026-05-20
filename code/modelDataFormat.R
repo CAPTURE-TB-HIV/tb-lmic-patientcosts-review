@@ -1032,6 +1032,7 @@ modelData <- modelData %>%
     mutate(survey.id = cur_group_id()) %>% 
     ungroup() %>% 
     group_by(country.code) %>% 
-    mutate(country.id = cur_group_id()) %>% ungroup() 
-    
-
+    mutate(country.id = cur_group_id()) %>% ungroup() %>% 
+    ### Force these weights to be 1 or 0
+    mutate(drtb.wt = ifelse(pop.id == "DRTB", 1, 
+                             ifelse(pop.id == "DSTB", 0, drtb.wt)))
