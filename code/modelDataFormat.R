@@ -730,7 +730,7 @@ modelDataBind <- bind_rows(modelDataBind %>%
                   distinct()
 
 #### Add special survey 7919 which had DSTB weighted 
-surv7919 <- read.csv("~/Desktop/surv7919.csv") %>% 
+surv7919 <- read.csv(here("data/surv7919.csv")) %>% 
             select(! c(cost, drtb.wt)) %>% 
             rename(cost = wt.cost, drtb.wt = drtb.wt.new) %>% 
             mutate(covidence.id = as.character(covidence.id))
@@ -1032,6 +1032,6 @@ modelData <- modelData %>%
     mutate(survey.id = cur_group_id()) %>% 
     ungroup() %>% 
     group_by(country.code) %>% 
-    mutate(country.id = cur_group_id()) %>% ungroup()
+    mutate(country.id = cur_group_id()) %>% ungroup() 
     
 
