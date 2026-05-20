@@ -1,0 +1,479 @@
+BPLD,census_name,iso3,iso3_descript,WHO_region,WHO_sub_region,notes,WorldBank_income,WorldBank,wb_descript
+10500,Guam,GUM,Guam,WPR,WPR_X,,EAPR_A,EAP,East Asia & Pacific
+50010,Hong Kong,HKG,Hong Kong,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+50020,Macau,MAC,China,WPR,SEAR_X,recode - no iso3,EAPR_A,EAP,East Asia & Pacific
+50040,Taiwan,TWN,"Taiwan, Province of China",WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+50100,Japan,JPN,Japan,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+50200,Korea,KOR,"Korea, Republic of",WPR,WPR_B,recode,EAPR_A,EAP,East Asia & Pacific
+50220,South Korea,KOR,"Korea, Republic of",WPR,WPR_B,,EAPR_A,EAP,East Asia & Pacific
+51000,Brunei,BRN,Brunei Darussalam,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+51600,Singapore,SGP,Singapore,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+70010,Australia,AUS,Australia,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+70020,New Zealand,NZL,New Zealand,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+71010,New Caledonia,NCL,New Caledonia,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+71017,Norfolk Islands,NFK,Norfolk Island,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+71018,Niue,NIU,Niue,WPR,WPR_A,,EAPR_A,EAP,East Asia & Pacific
+71022,French Polynesia,PYF,French Polynesia,WPR,WPR_X,,EAPR_A,EAP,East Asia & Pacific
+71034,Nauru,NRU,Nauru,WPR,WPR_B,,EAPR_A,EAP,East Asia & Pacific
+71047,Northern Mariana Islands,MNP,Northern Mariana Islands,WPR,WPR_X,,EAPR_A,EAP,East Asia & Pacific
+80050,Heard and McDonald Islands,HMD,Heard Island and McDonald Islands,WPR,WPR_X,,EAPR_A,EAP,East Asia & Pacific
+10000,American Samoa,ASM,American Samoa,WPR,WPR_X,,EAPR_B,EAP,East Asia & Pacific
+10010,"Samoa, 1940-1950",ASM,American Samoa,WPR,WPR_X,recode - no iso3,EAPR_B,EAP,East Asia & Pacific
+50000,China,CHN,China,WPR,WPR_B,,EAPR_B,EAP,East Asia & Pacific
+51400,Malaysia,MYS,Malaysia,WPR,WPR_B,,EAPR_B,EAP,East Asia & Pacific
+51700,Thailand,THA,Thailand,SEAR,SEAR_B,,EAPR_B,EAP,East Asia & Pacific
+71015,Fiji,FJI,Fiji,WPR,WPR_B,,EAPR_B,EAP,East Asia & Pacific
+71028,Tuvalu,TUV,Tuvalu,WPR,WPR_B,,EAPR_B,EAP,East Asia & Pacific
+71041,Marshall Islands,MHL,Marshall Islands,WPR,WPR_B,,EAPR_B,EAP,East Asia & Pacific
+71048,Palau,PLW,Palau,WPR,WPR_B,,EAPR_B,EAP,East Asia & Pacific
+50030,Mongolia,MNG,Mongolia,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+51100,Cambodia (Kampuchea),KHM,Cambodia,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+51200,Indonesia,IDN,Indonesia,SEAR,SEAR_B,,EAPR_C,EAP,East Asia & Pacific
+51220,East Timor,TLS,Indonesia,SEAR,SEAR_D,recode -- not independent in 2000,EAPR_C,EAP,East Asia & Pacific
+51300,Laos,LAO,Lao People's Democratic Republic,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+51500,Philippines,PHL,Philippines,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+51800,Vietnam,VNM,Viet Nam,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+52130,Burma (Myanmar),MMR,Myanmar,SEAR,SEAR_D,,EAPR_C,EAP,East Asia & Pacific
+71012,Papua New Guinea,PNG,Papua New Guinea,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71013,Solomon Islands,SLB,Solomon Islands,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71014,Vanuatu (New Hebrides),VUT,Vanuatu,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71023,Tonga,TON,Tonga,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71025,Western Samoa,WSM,Samoa,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71032,Kiribati,KIR,Kiribati,WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71033,Canton and Enderbury,KIR,Kiribati,WPR,WPR_B,recode - no iso3,EAPR_C,EAP,East Asia & Pacific
+71039,"Micronesia, ns",FSM,"Micronesia, Federated States of",WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71042,Micronesia,FSM,"Micronesia, Federated States of",WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71043,Kosrae,FSM,"Micronesia, Federated States of",WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71044,Pohnpei,FSM,"Micronesia, Federated States of",WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71045,Truk,FSM,"Micronesia, Federated States of",WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+71046,Yap,FSM,"Micronesia, Federated States of",WPR,WPR_B,,EAPR_C,EAP,East Asia & Pacific
+50210,North Korea,PRK,"Korea, Democratic People's Republic of",SEAR,SEAR_D,,EAPR_D,EAP,East Asia & Pacific
+50900,"East Asia, ns",XXX,Other,SEAR,SEAR_X,recode -- no iso3,EAPR_X,EAP,East Asia & Pacific
+51210,East Indies,XXX,Other,SEAR,SEAR_X,recode -- no iso3,EAPR_X,EAP,East Asia & Pacific
+51900,"Southeast Asia, ns",XXX,Other,SEAR,SEAR_X,recode -- no iso3,EAPR_X,EAP,East Asia & Pacific
+60040,British Indian Ocean Territory,IOT,British Indian Ocean Territory,SEAR,SEAR_X,,EAPR_X,EAP,East Asia & Pacific
+70000,Australia and New Zealand,XXX,Other,WPR,WPR_X,,EAPR_X,EAP,East Asia & Pacific
+70011,Ashmore and Cartier Islands,AUS,Australia,WPR,WPR_A,recode - no iso3,EAPR_A,EAP,East Asia & Pacific
+70012,Coral Sea Islands Territory,AUS,Australia,WPR,WPR_A,recode -- no iso3,EAPR_A,EAP,East Asia & Pacific
+70013,Christmas Island,CXR,Christmas Island,WPR,WPR_A,recode - has a iso3 code,EAPR_A,EAP,East Asia & Pacific
+70014,Cocos Islands,CCK,Cocos (Keeling) Islands,WPR,WPR_A,recode - has a iso3 code,EAPR_A,EAP,East Asia & Pacific
+71000,Pacific Islands,XXX,Other,WPR,WPR_X,recode -- no iso3,EAPR_X,EAP,East Asia & Pacific
+71016,"Melanesia, ns",XXX,Other,WPR,WPR_X,recode -- no iso3,EAPR_X,EAP,East Asia & Pacific
+71020,Cook Islands,COK,Cook Islands,WPR,WPR_B,,EAPR_X,EAP,East Asia & Pacific
+71024,Wallis and Futuna Islands,WLF,Wallis and Futuna,WPR,WPR_X,,EAPR_X,EAP,East Asia & Pacific
+71029,"Polynesia, ns",XXX,Other,WPR,WPR_X,recode -- not a country,EAPR_X,EAP,East Asia & Pacific
+71049,"Pacific Trust Terr, ns",XXX,Other,WPR,WPR_X,recode -- not a country,EAPR_X,EAP,East Asia & Pacific
+71090,"Oceania, ns/nec",XXX,Other,WPR,WPR_X,recode -- not a country,EAPR_X,EAP,East Asia & Pacific
+16040,Greenland,GRL,Greenland,EUR,EUR_X,,ECAR_A,ECA,Europe & Central Asia
+16060,Canary Islands,ESP,Spain,EUR,EUR_A,recode-- no iso3,ECAR_A,ECA,Europe & Central Asia
+26072,Netherlands Antilles,ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26073,Bonaire,ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26074,Curacao,ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26075,Dutch St. Maarten,ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26076,Saba,ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26077,St. Eustatius,ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26079,"Dutch Caribbean, ns",ANT,Netherlands Antilles,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26080,French St. Maarten,MAF,Saint Martin (French part),EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+26089,"French Caribbean, ns",XXX,Other,EUR,EUR_A,recode-- no iso3,ECAR_A,ECA,Europe & Central Asia
+40000,Denmark,DNK,Denmark,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+40010,Faeroe Islands,FRO,Faroe Islands,AMR,AMR_X,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+40100,Finland,FIN,Finland,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+40200,Iceland,ISL,Iceland,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+40300,"Lapland, n.s.",FIN,Finland,EUR,EUR_A,recode-- no iso3,ECAR_A,ECA,Europe & Central Asia
+40400,Norway,NOR,Norway,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+40410,Svalbard and Jan Meyen,SJM,Svalbard and Jan Mayen,EUR,EUR_A,recode-- has iso3,ECAR_A,ECA,Europe & Central Asia
+40500,Sweden,SWE,Sweden,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+41000,England,GBR,United Kingdom,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+41020,Isle of Man,IMN,Isle of Man,EUR,EUR_X,,ECAR_A,ECA,Europe & Central Asia
+41100,Scotland,GBR,United Kingdom,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+41200,Wales,GBR,United Kingdom,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+41300,"United Kingdom, ns",GBR,United Kingdom,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+41400,Ireland,IRL,Ireland,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+41410,Northern Ireland,GBR,United Kingdom,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+42000,Belgium,BEL,Belgium,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+42100,France,FRA,France,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+42111,Alsace,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+42112,Lorraine,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+42200,Liechtenstein,LIE,Liechtenstein,EUR,EUR_X,,ECAR_A,ECA,Europe & Central Asia
+42300,Luxembourg,LUX,Luxembourg,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+42400,Monaco,MCO,Monaco,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+42500,Netherlands,NLD,Netherlands,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+42600,Switzerland,CHE,Switzerland,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43100,Andorra,AND,Andorra,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43200,Gibraltar,GIB,Gibraltar,EUR,EUR_X,,ECAR_A,ECA,Europe & Central Asia
+43300,Greece,GRC,Greece,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43310,Dodecanese Islands,GRC,Greece,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+43320,Turkey Greece,XXX,Other,EUR,EUR_A,recode -- not a country,ECAR_A,ECA,Europe & Central Asia
+43400,Italy,ITA,Italy,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43600,Portugal,PRT,Portugal,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43610,Azores,PRT,Portugal,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43620,Madeira Islands,PRT,Portugal,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43640,St. Miguel,PRT,Portugal,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+43700,San Marino,SMR,San Marino,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+43800,Spain,ESP,Spain,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+45000,Austria,AUT,Austria,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+45010,Austria-Hungary,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45020,Austria-Graz,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45030,Austria-Linz,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45040,Austria-Salzburg,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45050,Austria-Tyrol,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45060,Austria-Vienna,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45070,Austria-Kaernsten,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45080,Austria-Neustadt,AUT,Austria,EUR,EUR_A,recode -- no iso3,ECAR_A,ECA,Europe & Central Asia
+45200,Czechoslovakia,CZE,Czech Republic,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45210,Bohemia,CZE,Czech Republic,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45211,Bohemia-Moravia,CZE,Czech Republic,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45212,Slovakia,SVK,Slovakia,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+45213,Czech Republic,CZE,Czech Republic,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+45300,Germany,DEU,Germany,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+45301,Berlin,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45302,West Berlin,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45303,East Berlin,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45310,West Germany,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45311,Baden,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45312,Bavaria,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45313,Braunschweig,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45314,Bremen,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45315,Hamburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45316,Hanover,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45317,Hessen,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45318,Hessen-Nassau,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45319,Holstein,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45320,Lippe,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45321,Lubeck,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45322,Oldenburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45323,Rheinland,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45324,Schleswig,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45325,Schleswig-Holstein,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45326,Schwarzburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45327,Westphalia,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45328,Wurttemberg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45329,Waldeck,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45330,Wittenberg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45331,Frankfurt,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45332,Saarland,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45333,Nordhein-Westfalen,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45340,East Germany,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45341,Anhalt,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45342,Brandenburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45344,Mecklenburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45345,Sachsen-Altenburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45346,Sachsen-Coburg,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45347,Sachsen-Gotha,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45348,Sachsen-Meiningen,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45349,Sachsen-Weimar-Eisenach,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45350,Probable Saxony,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45351,Schwerin,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45352,Strelitz,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45353,Probably Thuringian States,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45360,"Prussia, nec",DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45361,Hohenzollern,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45362,Niedersachsen,DEU,Germany,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45400,Hungary,HUN,Hungary,EUR,EUR_C,,ECAR_A,ECA,Europe & Central Asia
+45500,Poland,POL,Poland,EUR,EUR_B,,ECAR_A,ECA,Europe & Central Asia
+45510,Austrian Poland,POL,Poland,EUR,EUR_B,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45511,Galicia,POL,Poland,EUR,EUR_B,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45520,German Poland,POL,Poland,EUR,EUR_B,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45523,Posen,POL,Poland,EUR,EUR_B,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45524,Prussian Poland,POL,Poland,EUR,EUR_B,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45530,Russian Poland,POL,Poland,EUR,EUR_B,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45710,Croatia,HRV,Croatia,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+45750,Dalmatia,HRV,Croatia,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45760,Slovonia,HRV,Croatia,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45770,Carniola,SVN,Slovenia,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+45780,Slovenia,SVN,Slovenia,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+46000,Estonia,EST,Estonia,EUR,EUR_C,,ECAR_A,ECA,Europe & Central Asia
+46100,Latvia,LVA,Latvia,EUR,EUR_C,,ECAR_A,ECA,Europe & Central Asia
+46200,Lithuania,LTU,Lithuania,EUR,EUR_C,,ECAR_A,ECA,Europe & Central Asia
+53100,Cyprus,CYP,Cyprus,EMR,EMR_B,,ECAR_A,ECA,Europe & Central Asia
+60050,Reunion,REU,R_union,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+60058,Bassas de India,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+60059,Europa,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+60060,Gloriosos,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+60061,Juan de Nova,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+60062,Mayotte,MYT,Mayotte,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+60063,Tromelin,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+43500,Malta,MLT,Malta,EUR,EUR_A,,ECAR_A,ECA,Europe & Central Asia
+71050,Clipperton Island,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+80010,Bouvet Islands,BVT,Bouvet Island,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+80040,French Southern and Antarctic Lands,ATF,French Southern Territories,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+43000,Albania,ALB,Albania,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+43330,Macedonia,MKD,"Macedonia, the former Yugoslav Republic of",EUR,EUR_B,recode -- has iso3,ECAR_B,ECA,Europe & Central Asia
+45100,Bulgaria,BGR,Bulgaria,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+45600,Romania,ROU,Romania,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+45610,Transylvania,ROU,Romania,EUR,EUR_B,recode - no iso3,ECAR_B,ECA,Europe & Central Asia
+45720,Montenegro,MNE,Montenegro,EUR,EUR_X,recode -- not independent before 2000,ECAR_B,ECA,Europe & Central Asia
+45730,Serbia,SRB,Serbia,EUR,EUR_B,recode to 2000 state (YUG),ECAR_B,ECA,Europe & Central Asia
+45740,Bosnia,BIH,Bosnia and Herzegovina,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+45790,Kosovo,YUG,Serbia,EUR,EUR_B,recode - not independent in 2000,ECAR_B,ECA,Europe & Central Asia
+46500,Other USSR/Russia,RUS,Russian Federation,EUR,EUR_C,recode - no iso3,ECAR_B,ECA,Europe & Central Asia
+46510,Byelorussia,BLR,Belarus,EUR,EUR_C,recode - no iso3,ECAR_B,ECA,Europe & Central Asia
+46541,Azerbaijan,AZE,Azerbaijan,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+46542,Republic of Georgia,GEO,Georgia,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+46543,Kazakhstan,KAZ,Kazakhstan,EUR,EUR_C,,ECAR_B,ECA,Europe & Central Asia
+46546,Turkmenistan,TKM,Turkmenistan,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+46548,Siberia,RUS,Russian Federation,EUR,EUR_C,recode - no iso3,ECAR_B,ECA,Europe & Central Asia
+54200,Turkey,TUR,Turkey,EUR,EUR_B,,ECAR_B,ECA,Europe & Central Asia
+54210,European Turkey,TUR,Turkey,EUR,EUR_B,recode - no iso3,ECAR_B,ECA,Europe & Central Asia
+54220,Asian Turkey,TUR,Turkey,EUR,EUR_B,recode - no iso3,ECAR_B,ECA,Europe & Central Asia
+46521,Bessarabia,MDA,"Moldova, Republic of",EUR,EUR_C,recode - no iso3,ECAR_C,ECA,Europe & Central Asia
+46530,Ukraine,UKR,Ukraine,EUR,EUR_C,,ECAR_C,ECA,Europe & Central Asia
+46540,Armenia,ARM,Armenia,EUR,EUR_B,,ECAR_C,ECA,Europe & Central Asia
+46544,Kirghizia,KGZ,Kyrgyzstan,EUR,EUR_B,recode - no iso3,ECAR_C,ECA,Europe & Central Asia
+46545,Tadzhik,TJK,Tajikistan,EUR,EUR_B,recode - no iso3,ECAR_C,ECA,Europe & Central Asia
+46547,Uzbekistan,UZB,Uzbekistan,EUR,EUR_B,,ECAR_C,ECA,Europe & Central Asia
+16030,Falkland Islands,FLK,Falkland Islands (Malvinas),AMR,EUR_X,recode -- has iso3,ECAR_X,ECA,Europe & Central Asia
+16050,St. Helena and Ascension,SHN,"Saint Helena, Ascension and Tristan da Cunha",EUR,EUR_X,recode -- has iso3,ECAR_X,ECA,Europe & Central Asia
+40411,Svalbard,SJM,Svalbard and Jan Mayen,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+40412,Jan Meyen,SJM,Svalbard and Jan Mayen,EUR,EUR_A,recode -- has iso3,ECAR_A,ECA,Europe & Central Asia
+41010,Channel Islands,GBR,United Kingdom,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+41011,Guernsey,GGY,Guernsey,EUR,EUR_X,,ECAR_X,ECA,Europe & Central Asia
+41012,Jersey,JEY,Jersey,EUR,EUR_X,,ECAR_X,ECA,Europe & Central Asia
+41900,"Northern Europe, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+42110,Alsace-Lorraine,FRA,France,EUR,EUR_A,recode - no iso3,ECAR_A,ECA,Europe & Central Asia
+42900,"Western Europe, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+43900,Vatican City,VAT,Holy See (Vatican City State),EUR,EUR_X,recode -- has iso3,ECAR_X,ECA,Europe & Central Asia
+44000,"Southern Europe, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+45521,East Prussia,XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+45522,Pomerania,XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+45525,Silesia,XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+45526,West Prussia,XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+45800,"Central Europe, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+45900,"Eastern Europe, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+46300,"Baltic States, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+46520,Moldavia,MDA,"Moldova, Republic of",EUR,EUR_X,,ECAR_X,ECA,Europe & Central Asia
+46590,"USSR, ns",SUN,USSR,EUR,EUR_X,note -- former country,ECAR_X,ECA,Europe & Central Asia
+49900,"Europe, ns",XXX,Other,EUR,EUR_X,recode - no iso3,ECAR_X,ECA,Europe & Central Asia
+71026,Pitcairn Island,PCN,Pitcairn,EUR,EUR_X,recode -- has iso3,ECAR_X,ECA,Europe & Central Asia
+71027,Tokelau,TKL,Tokelau,WPR,WPR_X,,ECAR_X,ECA,Europe & Central Asia
+45700,Yugoslavia,YUG,Yugoslavia,EUR,EUR_B,note -- former country,ECAR_X,ECA,Europe & Central Asia
+11000,Puerto Rico,PRI,Puerto Rico,AMR,AMR_X,,LACR_A,LAC,Latin America & Caribbean
+11500,U.S. Virgin Islands,VIR,"Virgin Islands, U.S.",AMR,AMR_X,,LACR_A,LAC,Latin America & Caribbean
+11510,St. Croix,VIR,"Virgin Islands, U.S.",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+11520,St. John,VIR,"Virgin Islands, U.S.",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+11530,St. Thomas,VIR,"Virgin Islands, U.S.",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26042,Antigua-Barbuda,ATG,Antigua and Barbuda,AMR,AMR_B,recode -- has iso3,LACR_A,LAC,Latin America & Caribbean
+26043,Bahamas,BHS,Bahamas,AMR,AMR_B,,LACR_A,LAC,Latin America & Caribbean
+26044,Barbados,BRB,Barbados,AMR,AMR_B,,LACR_A,LAC,Latin America & Caribbean
+26045,British Virgin Islands,VGB,"Virgin Islands, British",AMR,AMR_X,recode -- has iso3,LACR_A,LAC,Latin America & Caribbean
+26046,Anegada,VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26047,Cooper,VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26048,Jost Van Dyke,VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26049,Peter,VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26050,Tortola,VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26051,Virgin Gorda,VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26052,"Br. Virgin Islands, ns",VGB,"Virgin Islands, British",AMR,AMR_X,recode - no iso3,LACR_A,LAC,Latin America & Caribbean
+26053,Cayman Islands,CYM,Cayman Islands,AMR,AMR_X,,LACR_A,LAC,Latin America & Caribbean
+26057,St. Kitts-Nevis,KNA,Saint Kitts and Nevis,AMR,AMR_B,recode -- has iso3,LACR_A,LAC,Latin America & Caribbean
+26060,Trinidad and Tobago,TTO,Trinidad and Tobago,AMR,AMR_B,,LACR_A,LAC,Latin America & Caribbean
+26061,Turks and Caicos,TCA,Turks and Caicos Islands,AMR,AMR_X,recode -- has iso3,LACR_A,LAC,Latin America & Caribbean
+26069,"Br. Virgin Islands, ns",VGB,"Virgin Islands, British",AMR,AMR_X,recode -- has iso3,LACR_A,LAC,Latin America & Caribbean
+26071,Aruba,ABW,Aruba,AMR,AMR_X,,LACR_A,LAC,Latin America & Caribbean
+30020,Chile,CHL,Chile,AMR,AMR_B,,LACR_A,LAC,Latin America & Caribbean
+30060,Uruguay,URY,Uruguay,AMR,AMR_B,,LACR_A,LAC,Latin America & Caribbean
+20000,Mexico,MEX,Mexico,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+21010,Belize/British Honduras,BLZ,Belize,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+21020,Costa Rica,CRI,Costa Rica,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+21070,Panama,PAN,Panama,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+21071,Canal Zone,PAN,Panama,AMR,AMR_B,recode - no iso3,LACR_B,LAC,Latin America & Caribbean
+25000,Cuba,CUB,Cuba,AMR,AMR_A,,LACR_B,LAC,Latin America & Caribbean
+26010,Dominican Republic,DOM,Dominican Republic,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+26030,Jamaica,JAM,Jamaica,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+26054,Dominica,DMA,Dominica,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+26055,Grenada,GRD,Grenada,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+26058,St. Lucia,LCA,Saint Lucia,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+26059,St. Vincent,VCT,Saint Vincent and the Grenadines,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+26083,St. Barthelemy,BLM,Saint Barth_lemy,AMR,AMR_B,recode -- has iso3,LACR_B,LAC,Latin America & Caribbean
+30005,Argentina,ARG,Argentina,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+30015,Brazil,BRA,Brazil,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+30025,Colombia,COL,Colombia,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+30030,Ecuador,ECU,Ecuador,AMR,AMR_D,,LACR_B,LAC,Latin America & Caribbean
+30035,French Guiana,GUF,French Guiana,AMR,AMR_X,,LACR_B,LAC,Latin America & Caribbean
+30040,Guyana/British Guiana,GUY,Guyana,AMR,AMR_B,recode -- has iso3,LACR_B,LAC,Latin America & Caribbean
+30045,Paraguay,PRY,Paraguay,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+30050,Peru,PER,Peru,AMR,AMR_D,,LACR_B,LAC,Latin America & Caribbean
+30055,Suriname,SUR,Suriname,AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+30065,Venezuela,VEN,"Venezuela, Bolivarian Republic of",AMR,AMR_B,,LACR_B,LAC,Latin America & Caribbean
+21030,El Salvador,SLV,El Salvador,AMR,AMR_B,,LACR_C,LAC,Latin America & Caribbean
+21040,Guatemala,GTM,Guatemala,AMR,AMR_D,,LACR_C,LAC,Latin America & Caribbean
+21050,Honduras,HND,Honduras,AMR,AMR_B,,LACR_C,LAC,Latin America & Caribbean
+21060,Nicaragua,NIC,Nicaragua,AMR,AMR_D,,LACR_C,LAC,Latin America & Caribbean
+30010,Bolivia,BOL,"Bolivia, Plurinational State of",AMR,AMR_D,,LACR_C,LAC,Latin America & Caribbean
+26020,Haiti,HTI,Haiti,AMR,AMR_D,,LACR_D,LAC,Latin America & Caribbean
+21000,Central America,XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+21090,"Central America, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26000,West Indies,XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26040,British West Indies,XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26041,Anguilla,AIA,Anguilla,AMR,AMR_X,,LACR_X,LAC,Latin America & Caribbean
+26056,Montserrat,MSR,Montserrat,AMR,AMR_X,,LACR_X,LAC,Latin America & Caribbean
+26070,Other West Indies,XXX,Other,AMR,AMR_X,,LACR_X,LAC,Latin America & Caribbean
+26081,Guadeloupe,GLP,Guadeloupe,AMR,AMR_X,,LACR_X,LAC,Latin America & Caribbean
+26082,Martinique,MTQ,Martinique,AMR,AMR_X,,LACR_X,LAC,Latin America & Caribbean
+26090,"Antilles, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26091,"Caribbean, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26092,"Latin America, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26093,"Leeward Islands, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26094,"West Indies, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+26096,"Windward Islands, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+29900,"Americas, n.s.",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+30000,South America,XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+30090,"South America, ns",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+30091,"South and Central America, n.s.",XXX,Other,AMR,AMR_X,recode - no iso3,LACR_X,LAC,Latin America & Caribbean
+53000,Bahrain,BHR,Bahrain,EMR,EMR_B,,MENAR_A,MENA,Middle East & North Africa
+53400,Israel/Palestine,ISR,Israel,EUR,EUR_A,recode - no iso3,MENAR_A,MENA,Middle East & North Africa
+53440,Israel,ISR,Israel,EUR,EUR_A,,MENAR_A,MENA,Middle East & North Africa
+53600,Kuwait,KWT,Kuwait,EMR,EMR_B,,MENAR_A,MENA,Middle East & North Africa
+53800,Oman,OMN,Oman,EMR,EMR_B,,MENAR_A,MENA,Middle East & North Africa
+53900,Qatar,QAT,Qatar,EMR,EMR_B,,MENAR_A,MENA,Middle East & North Africa
+54000,Saudi Arabia,SAU,Saudi Arabia,EMR,EMR_B,,MENAR_A,MENA,Middle East & North Africa
+54300,United Arab Emirates,ARE,United Arab Emirates,EMR,EMR_B,,MENAR_A,MENA,Middle East & North Africa
+52200,Iran,IRN,"Iran, Islamic Republic of",EMR,EMR_B,,MENAR_B,MENA,Middle East & North Africa
+53200,Iraq,IRQ,Iraq,EMR,EMR_D,,MENAR_B,MENA,Middle East & North Africa
+53300,Iraq/Saudi Arabia,XXX,Other,EMR,EMR_D,recode - no iso3,MENAR_B,MENA,Middle East & North Africa
+53500,Jordan,JOR,Jordan,EMR,EMR_B,,MENAR_B,MENA,Middle East & North Africa
+53700,Lebanon,LBN,Lebanon,EMR,EMR_B,,MENAR_B,MENA,Middle East & North Africa
+60011,Algeria,DZA,Algeria,AFR,AFR_D,,MENAR_B,MENA,Middle East & North Africa
+60013,Libya,LBY,Libyan Arab Jamahiriya,EMR,EMR_B,,MENAR_B,MENA,Middle East & North Africa
+54100,Syria,SYR,Syrian Arab Republic,EMR,EMR_B,,MENAR_C,MENA,Middle East & North Africa
+54400,Yemen Arab Republic (North),YEM,Yemen,EMR,EMR_D,recode - no iso3,MENAR_C,MENA,Middle East & North Africa
+54500,"Yemen, PDR (South)",YEM,Yemen,EMR,EMR_D,recode - no iso3,MENAR_C,MENA,Middle East & North Africa
+60012,Egypt/United Arab Rep.,EGY,Egypt,EMR,EMR_D,,MENAR_C,MENA,Middle East & North Africa
+60014,Morocco,MAR,Morocco,EMR,EMR_D,,MENAR_C,MENA,Middle East & North Africa
+60016,Tunisia,TUN,Tunisia,EMR,EMR_B,,MENAR_C,MENA,Middle East & North Africa
+60043,Djibouti,DJI,Djibouti,EMR,EMR_D,,MENAR_C,MENA,Middle East & North Africa
+53210,Mesopotamia,XXX,Other,EMR,EMR_X,recode - no iso3,MENAR_X,MENA,Middle East & North Africa
+53410,Gaza Strip,PSE,"Palestinian Territory, Occupied",EMR,EMR_X,recode -- has iso3,MENAR_X,MENA,Middle East & North Africa
+53420,Palestine,PSE,"Palestinian Territory, Occupied",EMR,EMR_X,recode -- has iso3,MENAR_X,MENA,Middle East & North Africa
+53430,West Bank,PSE,"Palestinian Territory, Occupied",EMR,EMR_X,recode -- has iso3,MENAR_X,MENA,Middle East & North Africa
+54600,"Persian Gulf States, n.s.",XXX,Other,EMR,EMR_X,recode - no iso3,MENAR_X,MENA,Middle East & North Africa
+54700,"Middle East, ns",XXX,Other,EMR,EMR_X,recode - no iso3,MENAR_X,MENA,Middle East & North Africa
+60010,Northern Africa,XXX,Other,AFR,AFR_X,recode - no iso3,MENAR_X,MENA,Middle East & North Africa
+60019,"North Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,MENAR_X,MENA,Middle East & North Africa
+15000,Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15010,English Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15011,British Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15013,Alberta,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15015,Saskatchewan,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15017,Northwest,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15019,Ruperts Land,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15020,Manitoba,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15021,Red River,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15030,Ontario/Upper Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15031,Upper Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15032,Canada West,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15040,New Brunswick,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15050,Nova Scotia,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15051,Cape Breton,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15052,Halifax,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15060,Prince Edward Island,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15070,Newfoundland,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15080,French Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15081,Quebec,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15082,Lower Canada,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15083,Canada East,CAN,Canada,AMR,AMR_A,,NAMR_A,NAM,North America
+15500,St. Pierre and Miquelon,SPM,Saint Pierre and Miquelon,AMR,AMR_A,recode -- has iso3,NAMR_A,NAM,North America
+16010,Bermuda,BMU,Bermuda,AMR,AMR_X,,NAMR_A,NAM,North America
+71040,US Pacific Trust Territories,XXX,Other,WPR,WPR_X,recode - no iso3,NAMR_X,NAM,North America
+12010,Johnson Atoll,XXX,Other,AMR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12020,Midway Islands,XXX,Other,AMR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12030,Wake Island,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12040,Other US Caribbean Islands,XXX,Other,AMR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12041,Navassa Island,XXX,Other,AMR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12050,Other US Pacific Islands,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12051,Baker Island,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12052,Howland Island,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12053,Jarvis Island,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12054,Kingman Reef,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12055,Palmyra Atoll,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12056,Canton and Enderbury Island,XXX,Other,WPR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12090,"US outlying areas, ns",XXX,Other,AMR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12091,"US possessions, ns",XXX,Other,OTHER,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12092,"US territory, ns",XXX,Other,OTHER,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+19900,"North America, ns",XXX,Other,AMR,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+12000,Other US Possessions,XXX,Other,OTHER,AMR_X,recode - no iso3,NAMR_X,NAM,North America
+52300,Maldives,MDV,Maldives,SEAR,SEAR_D,,SAR_B,SA,South Asia
+52100,India,IND,India,SEAR,SEAR_B,,SAR_C,SA,South Asia
+52110,Bangladesh,BGD,Bangladesh,SEAR,SEAR_D,,SAR_C,SA,South Asia
+52120,Bhutan,BTN,Bhutan,SEAR,SEAR_D,,SAR_C,SA,South Asia
+52140,Pakistan,PAK,Pakistan,EMR,EMR_D,,SAR_C,SA,South Asia
+52150,Sri Lanka (Ceylon),LKA,Sri Lanka,SEAR,SEAR_B,,SAR_C,SA,South Asia
+52000,Afghanistan,AFG,Afghanistan,EMR,EMR_D,,SAR_D,SA,South Asia
+52400,Nepal,NPL,Nepal,SEAR,SEAR_D,,SAR_D,SA,South Asia
+51910,"Indochina, ns",XXX,Other,SEAR,SEAR_X,recode - no iso3,SAR_X,SA,South Asia
+54800,"Southwest Asia, nec/ns",XXX,Other,EMR,EMR_X,recode - no iso3,SAR_X,SA,South Asia
+54900,"Asia Minor, ns",XXX,Other,EMR,EMR_X,recode - no iso3,SAR_X,SA,South Asia
+55000,"South Asia, nec/ns",XXX,Other,SEAR,SEAR_X,recode - no iso3,SAR_X,SA,South Asia
+60052,Seychelles,SYC,Seychelles,AFR,AFR_D,,SSAR_A,SSA,Sub-Saharan Africa
+60048,Mauritius,MUS,Mauritius,AFR,AFR_D,,SSAR_B,SSA,Sub-Saharan Africa
+60071,Angola,AGO,Angola,AFR,AFR_D,,SSAR_B,SSA,Sub-Saharan Africa
+60076,Equatorial Guinea,GNQ,Equatorial Guinea,AFR,AFR_D,,SSAR_B,SSA,Sub-Saharan Africa
+60077,Gabon,GAB,Gabon,AFR,AFR_D,,SSAR_B,SSA,Sub-Saharan Africa
+60091,Botswana,BWA,Botswana,AFR,AFR_E,,SSAR_B,SSA,Sub-Saharan Africa
+60093,Namibia,NAM,Namibia,AFR,AFR_E,,SSAR_B,SSA,Sub-Saharan Africa
+60094,South Africa (Union of),ZAF,South Africa,AFR,AFR_E,,SSAR_B,SSA,Sub-Saharan Africa
+16020,Cape Verde,CPV,Cape Verde,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+43630,Cape Verde Islands,CPV,Cape Verde,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60015,Sudan,SDN,Sudan,EMR,EMR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60066,South Sudan,SSD,Sudan,EMR,EMR_D,recode -- not independent in 2000,SSAR_C,SSA,Sub-Saharan Africa
+60023,Ghana,GHA,Ghana,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60026,Ivory Coast,CIV,C»te d'Ivoire,AFR,AFR_E,,SSAR_C,SSA,Sub-Saharan Africa
+60029,Mauritania,MRT,Mauritania,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60031,Nigeria,NGA,Nigeria,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60045,Kenya,KEN,Kenya,AFR,AFR_E,,SSAR_C,SSA,Sub-Saharan Africa
+60056,Zambia,ZMB,Zambia,AFR,AFR_E,,SSAR_C,SSA,Sub-Saharan Africa
+60072,Cameroon,CMR,Cameroon,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60078,Sao Tome and Principe,STP,Sao Tome and Principe,AFR,AFR_D,,SSAR_C,SSA,Sub-Saharan Africa
+60092,Lesotho,LSO,Lesotho,AFR,AFR_E,,SSAR_C,SSA,Sub-Saharan Africa
+60095,Swaziland,SWZ,Swaziland,AFR,AFR_E,,SSAR_C,SSA,Sub-Saharan Africa
+60020,Benin,BEN,Benin,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60021,Burkina Faso,BFA,Burkina Faso,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60022,Gambia,GMB,Gambia,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60024,Guinea,GIN,Guinea,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60025,Guinea-Bissau,GNB,Guinea-Bissau,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60027,Liberia,LBR,Liberia,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60028,Mali,MLI,Mali,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60030,Niger,NER,Niger,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60032,Senegal,SEN,Senegal,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60033,Sierra Leone,SLE,Sierra Leone,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60034,Togo,TGO,Togo,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60041,Burundi,BDI,Burundi,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60042,Comoros,COM,Comoros,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60044,Ethiopia,ETH,Ethiopia,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60046,Madagascar,MDG,Madagascar,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60047,Malawi,MWI,Malawi,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60049,Mozambique,MOZ,Mozambique,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60051,Rwanda,RWA,Rwanda,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60053,Somalia,SOM,Somalia,EMR,EMR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60054,Tanzania,TZA,"Tanzania, United Republic of",AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60055,Uganda,UGA,Uganda,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60057,Zimbabwe,ZWE,Zimbabwe,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60065,Eritrea,ERI,Eritrea,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60073,Central Africa Republic,CAF,Central African Republic,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60074,Chad,TCD,Chad,AFR,AFR_D,,SSAR_D,SSA,Sub-Saharan Africa
+60075,Congo,COG,Congo,AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60079,Zaire,COD,"Congo, the Democratic Republic of the",AFR,AFR_E,,SSAR_D,SSA,Sub-Saharan Africa
+60000,Africa,XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60017,Western Sahara,ESH,Western Sahara,AFR,AFR_X,,SSAR_X,SSA,Sub-Saharan Africa
+60038,"Western Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60039,"French West Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60064,"Eastern Africa, nec/ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60070,Central Africa,XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60080,"Central Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60081,"Equatorial Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60082,"French Equatorial Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60090,Southern Africa,XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60096,"Southern Africa, ns",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+60099,"Africa, ns/nec",XXX,Other,AFR,AFR_X,recode - no iso3,SSAR_X,SSA,Sub-Saharan Africa
+16000,Atlantic Islands,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+59900,"Asia, nec/ns",XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+80000,"Antarctica, ns/nec",XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+80020,British Antarctic Terr.,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+80030,Dronning Maud Land,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+90000,Abroad (unknown) or at sea,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+90010,"Abroad, ns",XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+90011,Abroad (US citizen),XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+90020,At sea,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+90021,At sea (US citizen),XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+90022,At seaa or abroad (U.S. citizen),XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+95000,Other n.e.c.,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other
+99900,Missing/blank,XXX,Other,OTHER,XXX_X,recode - no iso3,XXX_X,XXX,Other

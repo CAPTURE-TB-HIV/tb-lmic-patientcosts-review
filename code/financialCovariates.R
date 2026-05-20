@@ -98,10 +98,10 @@ saveRDS(healthSpendData0, here("data/covariateData/healthAccounts.rds"), version
 gniPcUSD <- read.csv(here("data/covariateData/calc-median-income/GNI-PC-USD/API_NY.GNP.PCAP.CD_DS2_en_csv_v2_763.csv")) %>%
     select(Country.Name,
            Country.Code,
-           X2000:X2024) %>%
+           X2000:X2023) %>%
     rename(study.country = Country.Name) %>%
     filter(Country.Code %in% LMIC$country.code) %>% 
-    pivot_longer(cols = X2000:X2024, names_to = "study.end.year", values_to = "GNI (USD per-capita)") %>%
+    pivot_longer(cols = X2000:X2023, names_to = "study.end.year", values_to = "GNI (USD per-capita)") %>%
     mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) #%>%
     ## filter to only the countries of interest
     # filter(Country.Code %in% reviewData$Country.Code)
@@ -125,10 +125,10 @@ for (country in unique(gniPcUSD$study.country)){
 gniPcLCU <- read.csv(here("data/covariateData/calc-median-income/GNI-PC-LCU/API_NY.GNP.PCAP.CN_DS2_en_csv_v2_9957.csv")) %>% 
     select(Country.Name, 
            Country.Code,
-           X2000:X2024) %>%
+           X2000:X2023) %>%
     rename(study.country = Country.Name) %>%
     filter(Country.Code %in% LMIC$country.code) %>% 
-    pivot_longer(cols = X2000:X2024, names_to = "study.end.year", values_to = "GNI (LCU per-capita)") %>%
+    pivot_longer(cols = X2000:X2023, names_to = "study.end.year", values_to = "GNI (LCU per-capita)") %>%
     mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) #%>%
     ## filter to only the countries of interest 
     # filter(Country.Code %in% reviewData$Country.Code)
@@ -155,10 +155,10 @@ gniPcDF <- full_join(gniPcUSD, gniPcLCU)
 giniDF <- read.csv(here("data/covariateData/calc-median-income/GINI.csv")) %>% 
     select(Country.Name, 
            Country.Code,
-           X2000:X2024) %>%
+           X2000:X2023) %>%
     filter(Country.Code %in% LMIC$country.code) %>% 
     rename(study.country = Country.Name) %>%
-    pivot_longer(cols = X2000:X2024, names_to = "study.end.year", values_to = "GINI index") %>%
+    pivot_longer(cols = X2000:X2023, names_to = "study.end.year", values_to = "GINI index") %>%
     mutate(study.end.year = as.double(gsub("X", "", study.end.year, fixed = TRUE))) #%>% 
     ## filter to only the countries of interest 
     # filter(Country.Code %in% reviewData$Country.Code)
@@ -200,22 +200,34 @@ medianIncomeDF0 <- left_join(medianIncomeDF0, read.csv(here("data/who-regions.cs
               mutate(GNI.LCU.interpolated.region = median(GNI.LCU.interpolated, na.rm=TRUE),
                      GNI.USD.interpolated.region = median(GNI.USD.interpolated, na.rm=TRUE),
                      GINI.interpolated.region = median(GINI.interpolated, na.rm=TRUE)) %>%
-              ungroup() %>% 
-              mutate(GNI.LCU.calc = ifelse(is.na(GNI.LCU.interpolated), 
-                                           GNI.LCU.interpolated.region, 
+              ungroup() 
+
+### We also developed an imputation model in `giniImputation.R` that imputed missing 
+### GINI via GDP, HDI, and other covariates. Stored in data/.../GINI-imputed.csv
+giniImpDF <- read.csv(here("data/covariateData/calc-median-income/GINI-imputed.csv")) %>% 
+             select(iso3, year, gni_pred) %>% 
+             rename(Country.Code = iso3, 
+                    study.end.year = year,
+                    GINI.imputed = gni_pred)
+
+
+
+medianIncomeDF0 <- left_join(medianIncomeDF0, giniImpDF) %>%
+              mutate(GNI.LCU.calc = ifelse(is.na(GNI.LCU.interpolated),
+                                           GNI.LCU.interpolated.region,
                                            GNI.LCU.interpolated),
-                     GNI.USD.calc = ifelse(is.na(GNI.USD.interpolated), 
-                                           GNI.USD.interpolated.region, 
-                                           GNI.USD.interpolated), 
-                     GINI.calc = ifelse(is.na(GINI.interpolated), 
-                                        GINI.interpolated.region, 
-                                        GINI.interpolated), 
+                     GNI.USD.calc = ifelse(is.na(GNI.USD.interpolated),
+                                           GNI.USD.interpolated.region,
+                                           GNI.USD.interpolated),
+                     GINI.calc = ifelse(is.na(GINI.interpolated),
+                                        GINI.imputed,
+                                        GINI.interpolated),
                      GINI.desc = case_when(GINI.calc == `GINI index` ~ "Country/Year matched",
-                                           GINI.calc ==  GINI.interpolated ~ "Country interpolated", 
-                                           GINI.calc == GINI.interpolated.region ~ "Regional"
-                                           ), 
+                                           GINI.calc ==  GINI.interpolated ~ "Country interpolated",
+                                           GINI.calc ==  GINI.imputed ~ "Imputed"
+                                           ),
                      GNI.desc = case_when(GNI.USD.calc == `GNI (USD per-capita)` ~ "Country/Year matched",
-                                          GNI.USD.calc ==  GNI.USD.interpolated ~ "Country interpolated", 
+                                          GNI.USD.calc ==  GNI.USD.interpolated ~ "Country interpolated",
                                           GNI.USD.calc ==  GNI.USD.interpolated.region ~ "Regional"
                                           )
                      );
