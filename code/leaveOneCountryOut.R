@@ -8,8 +8,12 @@
 ### Inspired by code here
 ### https://www.r-bloggers.com/2018/07/k-fold-cross-validation-in-stan/
 ###############################################################################
+
+library(rstan)
+library(loo)
+library(here)
 tbPtntCstSeed <- 513
-tbPtntCstIter <- 4000
+tbPtntCstIter <- 1000
 tbPtntCstWarmup <- 500
 
 ### Create a list of data based on our ids 
@@ -42,8 +46,10 @@ stanModelData <- list(
     uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
     prior_sigma = 2,
     ### test with world region shut off , 
-    beta_exp =1,
-    world_region = rep(0, length(modelData$cost))
+    beta_exp = 1,
+    world_region = rep(0, length(modelData$cost)),
+    prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
+    
 ) 
 
 fold_data_list <- rep(list(stanModelData),
@@ -67,7 +73,7 @@ for (country in unique(modelData$country.code)){
 # fold_data_list[[1]]$holdout <- holdout_list[[1]]
 # fold_data_list[[2]]$holdout <- holdout_list[[2]]
 
-stan_kfold <-  function(file = "code/inst/tbPatientCosts.stan",
+stan_kfold <-  function(file = "code/inst/tbPatientCosts-hurdle.stan",
                         list_of_datas = fold_data_list,
                         chains = 3, cores = 4){
     library(pbmcapply)
