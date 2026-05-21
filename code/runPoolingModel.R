@@ -51,10 +51,10 @@ stanModelDataFloor <- list(
                         country_id = modelData$country.id, 
                         ### Internal covariate
                         drtb_ind= modelData$drtb.wt,
-                        survey_year = modelData$year_z,
+                        survey_year = ((modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year)),
                         ### External covariates
                         median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
-                        oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
+                        oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che), 
                         uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
                         prior_sigma = 2,
                         ### test with world region shut off , 
@@ -119,13 +119,13 @@ stanModelDataZeros <- list(
                             country_id = modelData$country.id, 
                             ### Internal covariate
                             drtb_ind= modelData$drtb.wt,
-                            survey_year = modelData$year_z,
+                            survey_year = (modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year),
                             ### External covariates
-                            median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
-                            oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
-                            uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
+                            median_income = (modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income),
+                            oop_perc_che =  (modelData$oop.perc.che   - mean(modelData$oop.perc.che))  / sd(modelData$oop.perc.che), 
+                            uhc_index =     (modelData$UHCindex       - mean(modelData$UHCindex))      / sd(modelData$UHCindex),
                             prior_sigma = 2,
-                            beta_exp =1,
+                            beta_exp = 1,
                             world_region = rep(0, length(modelData$cost)), 
                             holdout =  rep(0, length(modelData$cost)), 
                             prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
@@ -135,9 +135,25 @@ stanModelDataZeros <- list(
 totalModelHurdle <- stan(file = "code/inst/tbPatientCosts-hurdle.stan",
                    data = stanModelDataZeros,
                    iter = tbPtntCstIter, chains = 3,
-                   warmup=tbPtntCstWarmup,
+                   warmup = tbPtntCstWarmup,
                    control=list(max_treedepth=14), 
                    seed = tbPtntCstSeed)
+
+totalModelTimeOnly <- stan(file = "code/inst/tbPatientCosts-TimeOnly.stan",
+                           data = stanModelDataZeros,
+                           iter = tbPtntCstIter, chains = 3,
+                           warmup=tbPtntCstWarmup,
+                           control=list(max_treedepth=14), 
+                           seed = tbPtntCstSeed)
+
+totalModelTimeaCovs <- stan(file = "code/inst/tbPatientCosts-allCovs-Time.stan",
+                           data = stanModelDataZeros,
+                           iter = tbPtntCstIter, chains = 3,
+                           warmup=tbPtntCstWarmup,
+                           control=list(max_treedepth=14), 
+                           seed = tbPtntCstSeed)
+
+
 
 ###############################################################################
 ### Covariates have the a common effect and a random effect across cost category
@@ -170,7 +186,7 @@ stanModelDataNoZeros <- list(
                             survey_year = modelDataNoZeros$year_z,
                             ### External covariates
                             median_income = ((modelDataNoZeros$median.income - mean(modelDataNoZeros$median.income)) / sd(modelDataNoZeros$median.income)),
-                            oop_perc_che =  (modelDataNoZeros$oop.perc.che - mean(modelDataNoZeros$oop.perc.che))/sd(modelDataNoZeros$UHCindex), 
+                            oop_perc_che =  (modelDataNoZeros$oop.perc.che - mean(modelDataNoZeros$oop.perc.che))/sd(modelDataNoZeros$oop.perc.che), 
                             uhc_index =     (modelDataNoZeros$UHCindex - mean(modelDataNoZeros$UHCindex)) / sd(modelDataNoZeros$UHCindex),
                             prior_sigma = 2,
                             ### test with world region shut off , 
@@ -186,14 +202,6 @@ totalModelNoZero <- stan(file = "code/inst/tbPatientCosts.stan",
                    control=list(max_treedepth=14), 
                    seed = tbPtntCstSeed)
 
-totalModelTimeOnly <- stan(file = "code/inst/tbPatientCosts-TimeOnly.stan",
-                   data = stanModelDataNoZeros,
-                   iter = tbPtntCstIter, chains = 3,
-                   warmup=tbPtntCstWarmup,
-                   control=list(max_treedepth=14), 
-                   seed = tbPtntCstSeed)
-
-
 # looTotal <- rstan::loo(totalModelNoZero)
 
 ###############################################################################
@@ -203,14 +211,14 @@ simpModelFloor <- stan(file = "code/inst/tbPatientCosts-simpCov.stan",
                    data = stanModelDataFloor,
                    iter = tbPtntCstIter/4, chains = 2,
                    warmup= tbPtntCstWarmup/2,
-                   control=list(max_treedepth=14), 
+                   control=list(max_treedepth=14, adapt_delta = 0.99), 
                    seed = tbPtntCstSeed)
 
 simpModelHurdle <- stan(file = "code/inst/tbPatientCosts-simpCov-hurdle.stan",
                         data = stanModelDataZeros,
-                        iter = tbPtntCstIter, chains = 3,
-                        warmup=tbPtntCstWarmup,
-                        control=list(max_treedepth=14),
+                        iter = tbPtntCstIter/4, chains = 3,
+                        warmup=tbPtntCstWarmup/2,
+                        control=list(max_treedepth=14, adapt_delta = 0.99),
                         seed = tbPtntCstSeed)
 
 
@@ -299,7 +307,7 @@ stanModelDataSqrd <- list(
     survey_year = modelData$year_z,
     ### External covariates
     median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
-    oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$UHCindex), 
+    oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che), 
     uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
     prior_sigma = 2, 
     beta_exp = 2
@@ -341,29 +349,29 @@ looSimpSqrd <- loo(simpModelFloorSqrd)
 totModList <- list() 
 reModList <- list()
 
-for (i in c(2,4)){
+for (i in c(2,4,6)){
     
-    tmpModelData <- stanModelData
+    tmpModelData <- stanModelDataZeros
     tmpModelData[["prior_sigma"]] <- i
     
-    totModList[[i]] <- stan(file = "code/inst/tbPatientCosts.stan",
+    totModList[[i]] <- stan(file = "code/inst/tbPatientCosts-hurdle.stan",
                        data = tmpModelData,
-                       iter = tbPtntCstIter, chains = 3,
+                       iter = tbPtntCstIter/2, chains = 3,
                        warmup=tbPtntCstWarmup,
                        control=list(max_treedepth=14),
                        seed = tbPtntCstSeed)
     
-    reModList[[i]] <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
-                       data = tmpModelData, 
-                       iter = tbPtntCstIter, chains = 3,
-                       warmup=tbPtntCstWarmup,
-                       control=list(max_treedepth=14),
-                       seed = tbPtntCstSeed)
+    # reModList[[i]] <- stan(file = "code/inst/tbPatientCosts-randEffCov.stan", 
+    #                    data = tmpModelData, 
+    #                    iter = tbPtntCstIter, chains = 3,
+    #                    warmup=tbPtntCstWarmup,
+    #                    control=list(max_treedepth=14),
+    #                    seed = tbPtntCstSeed)
 }
 
 
-loo_compare(loo(totModList[[2]]), loo(totModList[[4]]),
-            loo(reModList[[2]]), loo(reModList[[4]]))
+loo_compare(loo(totModList[[2]]), loo(totModList[[4]]),  loo(totModList[[6]]))
+            # loo(reModList[[2]]), loo(reModList[[4]]))
 
 ### Random effects model with prior sigma = 2 is best performance
 
