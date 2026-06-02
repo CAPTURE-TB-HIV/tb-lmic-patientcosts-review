@@ -60,7 +60,7 @@ data {
     real median_income_new[N_country_new];  
     real oop_perc_che_new[N_country_new];   
     real uhc_index_new[N_country_new];
-    int pred_year;
+    real pred_year;
     
 }
 
