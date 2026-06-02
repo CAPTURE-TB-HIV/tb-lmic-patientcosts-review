@@ -324,3 +324,171 @@ allDraws <- spread_draws(lmicSamps,
 # saveRDS(lmicPred, here("output/costPredictions.rds"), version=2)
 # write.csv(lmicPred, here("output/costPredictions.csv"))
    
+   ##############################################################################|
+   ##### Run for all countries and years 
+   ##############################################################################|
+   
+   ###############################################################################
+   ##### Setup covariates for the prediction 
+   ###############################################################################
+   
+   covariatesTime00 <- left_join(medianIncome %>% 
+                                     filter(study.end.year >  2008 &
+                                                study.end.year < 2024,
+                                            country.code %in% LMIC$country.code) , 
+                                 oopSpending  %>%
+                                     filter(study.end.year >  2008 &
+                                                study.end.year < 2024), 
+                                 by = c("country.code", "study.end.year"))
+   
+   covariatesTime0  <- left_join(covariatesTime00, 
+                                 uhcIndex  %>%
+                                     filter(study.end.year >  2008 &
+                                                study.end.year < 2024, 
+                                            country.code %in% LMIC$country.code), 
+                                 by = c("country.code", "study.end.year"))
+   
+   
+   
+   # View(covariatesTime0 %>% filter(is.na(oop.perc.che)))
+   
+   
+   ### DRTB was internal to the review dataset and was a binary indicator
+   ### We will model both so each entry above will get a 0 and 1 for drtb.ind
+   # drtb.ind <- 0:1
+   # covariates <- crossing(covariates, drtb.ind)
+   
+   ### Mean center study year 
+   covariatesTime <- covariatesTime0 %>% 
+       group_by(study.country) %>% 
+       na.omit() %>%
+       mutate(country.id.new = cur_group_id(), 
+              in.review = ifelse(country.code %in% modelData$country.code, 
+                                 1, 0)) %>% 
+       left_join(modelData %>% ungroup() %>% 
+                     select(country.code, country.id) %>% unique()) %>% 
+       mutate(in.review.id = ifelse(is.na(country.id), 99, country.id), 
+              oop.perc.che = as.numeric(oop.perc.che)) %>% 
+       select(!country.id) 
+   
+   # View(covariatesTime)
+   
+   covariatesTime <- covariatesTime %>% 
+       mutate(log.median.income = log(median.income),
+              
+              median.income.trunc = case_when(median.income < min(modelData$median.income) ~ min(modelData$median.income), 
+                                              median.income > max(modelData$median.income) ~ max(modelData$median.income),
+                                              .default = median.income), 
+              
+              log.median.income.trunc = case_when(log.median.income < min(modelData$log.median.income) ~ min(modelData$log.median.income), 
+                                                  log.median.income > max(modelData$log.median.income) ~ max(modelData$log.median.income),
+                                                  .default = log.median.income), 
+              oop.perc.che.trunc = case_when(oop.perc.che < min(modelData$oop.perc.che) ~ min(modelData$oop.perc.che), 
+                                             oop.perc.che > max(modelData$oop.perc.che) ~ max(modelData$oop.perc.che),
+                                             .default = oop.perc.che), 
+              uhc.index.trunc = case_when(uhc.index < min(modelData$UHCindex) ~ min(modelData$UHCindex), 
+                                          uhc.index > max(modelData$UHCindex) ~ max(modelData$UHCindex),
+                                          .default = uhc.index))
+   
+   covariatesTime <- arrange(covariatesTime, country.id.new)
+   # covariatesTime <- covariatesTimeFilt
+   ### Stan requires a list for data. 
+   predictionDataTime <- list(
+       N = length(modelData$cost),
+       cost = modelData$cost,
+       # se = rep(0, length(modelData$cost)),
+       se = as.numeric(modelData$se)+ 0.01,
+       dme_prediag = modelData$dme.prediag, 
+       dnme_prediag =  modelData$dnme.prediag, 
+       ie_prediag =  modelData$ie.prediag, 
+       dme_intsvtx = modelData$dme.intsvtx, 
+       dnme_intsvtx =  modelData$dnme.intsvtx, 
+       ie_intsvtx =  modelData$ie.intsvtx,
+       dme_contntx = modelData$dme.contntx, 
+       dnme_contntx =  modelData$dnme.contntx, 
+       ie_contntx =  modelData$ie.contntx, 
+       N_survey = max(modelData$survey.id),
+       survey_id = modelData$survey.id, 
+       N_country = max(modelData$country.id),
+       country_id = modelData$country.id, 
+       ### Internal covariate
+       drtb_ind= modelData$drtb.wt,
+       survey_year = ((modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year)),
+       ### External covariatesTime
+       median_income = ((modelData$log.median.income - mean(modelData$log.median.income)) / sd(modelData$log.median.income)),
+       oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che), 
+       uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
+       ### Prediction data 
+       N_country_new = max(covariatesTime$country.id.new),
+       review_ind = covariatesTime$in.review, 
+       in_review_id = covariatesTime$in.review.id, # note that this is different from modelData country.id
+       pred_year = (covariatesTime$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year), 
+       median_income_new = (covariatesTime$log.median.income.trunc- mean(modelData$log.median.income)) / sd(modelData$log.median.income), 
+       oop_perc_che_new = (covariatesTime$oop.perc.che.trunc - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
+       uhc_index_new = (covariatesTime$uhc.index.trunc - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
+       prior_sigma = 2, 
+       prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
+   )
+   
+   
+   saveRDS(covariatesTime, file = here("output/covariatesTime.rds"))
+   ##############################################################################|
+   ##### Estimate the predicted costs using the model above
+   ##############################################################################|
+   lmicSampsTime <- list()
+   for (t in sort(unique(covariatesTime$study.end.year))) {
+       
+       print(t)
+       
+       covariateFilt <- covariatesTime %>% filter(study.end.year==t)
+       
+       predDataFilt <- list(
+           N = length(modelData$cost),
+           cost = modelData$cost,
+           # se = rep(0, length(modelData$cost)),
+           se = as.numeric(modelData$se)+ 0.01,
+           dme_prediag = modelData$dme.prediag, 
+           dnme_prediag =  modelData$dnme.prediag, 
+           ie_prediag =  modelData$ie.prediag, 
+           dme_intsvtx = modelData$dme.intsvtx, 
+           dnme_intsvtx =  modelData$dnme.intsvtx, 
+           ie_intsvtx =  modelData$ie.intsvtx,
+           dme_contntx = modelData$dme.contntx, 
+           dnme_contntx =  modelData$dnme.contntx, 
+           ie_contntx =  modelData$ie.contntx, 
+           N_survey = max(modelData$survey.id),
+           survey_id = modelData$survey.id, 
+           N_country = max(modelData$country.id),
+           country_id = modelData$country.id, 
+           ### Internal covariate
+           drtb_ind= modelData$drtb.wt,
+           survey_year = ((modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year)),
+           ### External covariateFilt
+           median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
+           oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che), 
+           uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
+           ### Prediction data 
+           N_country_new = max(covariateFilt$country.id.new),
+           review_ind = covariateFilt$in.review, 
+           in_review_id = covariateFilt$in.review.id, # note that this is different from modelData country.id
+           pred_year = (t - mean(modelData$study.end.year)) / sd(modelData$study.end.year), 
+           median_income_new = (covariateFilt$median.income.trunc - mean(modelData$median.income)) / sd(modelData$median.income), 
+           oop_perc_che_new = (covariateFilt$oop.perc.che.trunc - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
+           uhc_index_new = (covariateFilt$uhc.index.trunc - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
+           prior_sigma = 2, 
+           prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
+       )
+       
+       lmicSampsTime[[as.character(t)]] <- rstan::sampling(
+           predModel, predDataFilt,
+           chains = 4, cores = 4,
+           warmup = tbPtntCstWarmup,
+           iter = tbPtntCstIter,
+           control=list(max_treedepth=14),
+           refresh = 0, seed = tbPtntCstSeed
+       )
+       
+   }
+   
+   saveRDS(lmicSampsTime, here("output/timeSamps_06-01.rds"), version=2)
+   
