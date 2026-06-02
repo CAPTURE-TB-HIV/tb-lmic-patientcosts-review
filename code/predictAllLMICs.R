@@ -43,8 +43,8 @@ medianIncome <- readRDS(here("data/covariateData/medianIncomePrediction.rds")) %
 
 oopSpending <- readRDS(here("data/covariateData/healthAccounts.rds")) %>% 
                select(country.code, study.end.year, 
-                      `Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`) %>% 
-               mutate(oop.perc.che = as.numeric(`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`),
+                      oop.perc.che.interpolated) %>% 
+               mutate(oop.perc.che = as.numeric(oop.perc.che.interpolated),
                       study.end.year = as.numeric(study.end.year)) 
 
 uhcIndex <- readRDS(here("data/covariateData/uhcIndex.rds")) %>% 
@@ -96,7 +96,7 @@ covariates <- covariates0 %>%
 ### Save the countries for which we don't have covariates
 countriesNoCovs <- covariates0 %>% filter(! country.code %in% covariates$country.code) 
 
-View(covariates0 %>% filter(is.na(median.income) | is.na(uhc.index) | is.na(oop.perc.che)))
+# View(covariates0 %>% filter(is.na(median.income) | is.na(uhc.index) | is.na(oop.perc.che)))
 
 ### Those with OOP missing -- check for alternative years 
 oopSpending %>% filter(country.code %in% c("PRK", "PSE", "UKR", "XKX"))
@@ -115,15 +115,22 @@ covariates0[which(covariates0$country.code == "UKR"), "oop.perc.che"] <- unlist(
 # countriesCovOutRange <- covariates %>% filter(! country.code %in% covariatesFilt$country.code) 
 
 covariates <- covariates %>% 
-                   mutate(median.income.trunc = case_when(median.income < min(modelData$median.income) ~ min(modelData$median.income), 
+                   mutate(log.median.income = log(median.income), 
+                          
+                          median.income.trunc = case_when(median.income < min(modelData$median.income) ~ min(modelData$median.income), 
                                                     median.income > max(modelData$median.income) ~ max(modelData$median.income),
                                                     .default = median.income), 
+                          
+                          log.median.income.trunc = case_when(log.median.income < min(modelData$log.median.income) ~ min(modelData$log.median.income), 
+                                                              log.median.income > max(modelData$log.median.income) ~ max(modelData$log.median.income),
+                                                          .default = log.median.income), 
                           oop.perc.che.trunc = case_when(oop.perc.che < min(modelData$oop.perc.che) ~ min(modelData$oop.perc.che), 
                                                     oop.perc.che > max(modelData$oop.perc.che) ~ max(modelData$oop.perc.che),
                                                     .default = oop.perc.che), 
                           uhc.index.trunc = case_when(uhc.index < min(modelData$UHCindex) ~ min(modelData$UHCindex), 
                                                 uhc.index > max(modelData$UHCindex) ~ max(modelData$UHCindex),
-                                                .default = uhc.index))
+                                                .default = uhc.index)
+                   )
 # format covariates for supplement table 
 
 covariatesFormatted <- covariates %>% 
@@ -139,6 +146,8 @@ covariatesFormatted <- covariates %>%
 # write.csv(covariatesFormatted, here("output/supplement/countryPredictiveCovariates.csv"))
 
 covariates <- arrange(covariates, country.id.new)
+### save non formatted covariates for matching in exhibits
+# saveRDS(covariates, file = here("output/covariates.rds"))
 # covariates <- covariatesFilt
 ### Stan requires a list for data. 
 predictionData <- list(
@@ -163,7 +172,7 @@ predictionData <- list(
             drtb_ind= modelData$drtb.wt,
             survey_year = ((modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year)),
             ### External covariates
-            median_income = ((modelData$median.income - mean(modelData$median.income)) / sd(modelData$median.income)),
+            median_income = ((modelData$log.median.income - mean(modelData$log.median.income)) / sd(modelData$log.median.income)),
             oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che), 
             uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
             ### Prediction data 
@@ -171,7 +180,7 @@ predictionData <- list(
             review_ind = covariates$in.review, 
             in_review_id = covariates$in.review.id, # note that this is different from modelData country.id
             pred_year = unique(covariates$pred.year),
-            median_income_new = (covariates$median.income.trunc- mean(modelData$median.income)) / sd(modelData$median.income), 
+            median_income_new = (covariates$log.median.income.trunc- mean(modelData$log.median.income)) / sd(modelData$log.median.income), 
             oop_perc_che_new = (covariates$oop.perc.che.trunc - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
             uhc_index_new = (covariates$uhc.index.trunc - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
             prior_sigma = 2, 
@@ -192,7 +201,7 @@ lmicSamps <- rstan::sampling(
                     refresh = 0, seed = tbPtntCstSeed
 )
 
-saveRDS(lmicSamps, here("output/goodModelRun-05-20.rds"))
+saveRDS(lmicSamps, here("output/goodModelRun-06-01.rds"))
 
 ##############################################################################|
 ##### Some model checks
@@ -314,3 +323,4 @@ allDraws <- spread_draws(lmicSamps,
 
 # saveRDS(lmicPred, here("output/costPredictions.rds"), version=2)
 # write.csv(lmicPred, here("output/costPredictions.csv"))
+   

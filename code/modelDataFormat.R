@@ -1036,3 +1036,11 @@ modelData <- modelData %>%
     ### Force these weights to be 1 or 0
     mutate(drtb.wt = ifelse(pop.id == "DRTB", 1, 
                              ifelse(pop.id == "DSTB", 0, drtb.wt)))
+
+
+##############################################################################|
+### Add log median income into the model        ###
+##############################################################################|
+
+modelData <- modelData %>% 
+             mutate(log.median.income = log(median.income))
