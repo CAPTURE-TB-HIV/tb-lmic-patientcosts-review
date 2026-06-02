@@ -47,7 +47,7 @@ sum(is.na(tbSpendData$`Tuberculosis`)) / nrow(tbSpendData) *100
 ### These data are the current health expenditure (in current USD per capita 
 ### and % GDP) and OOP (in current USD per capita and % CHE)
 
-healthSpendData0 <- read.csv(here("data/covariateData/health-accounts/NHA indicators-general-formatted.csv")) %>% 
+healthSpendData0 <- read.csv(here("data/covariateData/health-accounts/NHA indicators-general-formatted.csv"), na.strings = c("")) %>% 
     rename(study.country = Countries) %>%
     ### Make data longer format for years
     pivot_longer(cols = starts_with("X"), 
@@ -66,15 +66,37 @@ healthSpendData0 <- read.csv(here("data/covariateData/health-accounts/NHA indica
                                      grepl("Moldova", study.country) ~ countryCodes[grep("Moldova", countryCodes$study.country), "country.code"],
                                      grepl("Micronesia", study.country) ~ countryCodes[grep("Micronesia", countryCodes$study.country), "country.code"],
                                      grepl("Korea, Republic of", study.country) ~ "KOR",
-                                     .default = country.code)) 
-    ### These data did not have country codes so we have to manually rename some counties
-    # mutate(study.country = case_when(grepl("Iran", study.country) ~ "Iran",
-    #                                  grepl("Tanzania", study.country) ~ "Tanzania",
-    #                                  grepl("of the Congo", study.country) ~ "DR Congo",
-    #                                  grepl("Moldova", study.country) ~ "Moldova", 
-    #                                  grepl("Lao", study.country) ~ "Lao PDR", 
-    #                                  .default = study.country))
-    
+                                     .default = country.code)) %>% 
+    right_join(LMIC %>% crossing(study.end.year = 2000:2024) %>%
+               select(!study.country) %>% 
+               mutate(study.end.year = as.character(study.end.year)), by=c("country.code", "study.end.year"))
+
+### Those with OOP missing -- check for alternative years 
+# dim(healthSpendData0 %>% filter(is.na(`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`),
+#                                  study.end.year < 2024))
+
+#### Interpolate missing GNI 
+#### Using a loop because dplyr had odd behavior and deadlines 
+for (country in unique(healthSpendData0$study.country)){
+    print(country)
+    tmpDF <- healthSpendData0 %>% filter(study.country == country)
+    ### Interpolate through the points we have 
+    if(sum(!is.na(tmpDF$`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)) > 1){
+        healthSpendData0[which(healthSpendData0$study.country == country), "oop.perc.che.interpolated"] <- approx(x=tmpDF$study.end.year[!is.na(tmpDF$`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)],
+                                                                                             y=tmpDF$`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`[!is.na(tmpDF$`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)], xout=tmpDF$study.end.year,
+                                                                                             rule = 2, method = "linear")$y
+    } else if(sum(!is.na(tmpDF$`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`))== 1){
+        healthSpendData0[which(healthSpendData0$study.country == country), "oop.perc.che.interpolated"] <- na.omit(tmpDF$`Out-of-pocket (OOPS) as % of Current Health Expenditure (CHE)`)[1]
+    }
+}
+### Those with OOP missing -- check for alternative years 
+# dim(healthSpendData0 %>% filter(is.na(`oop.perc.che.interpolated`),
+#                                  study.end.year < 2024))
+
+### Those with OOP missing -- check for alternative years 
+# View(healthSpendData0 %>% filter(is.na(`oop.perc.che.interpolated`),
+#                                  study.end.year < 2024))
+
 
 ### Join so we can see the availability of the data 
 healthSpendData <- left_join(reviewData %>%
@@ -288,7 +310,7 @@ medianIncomeDF <- left_join(reviewData,
            study.end.year,
            `GNI (LCU per-capita)`, GNI.LCU.interpolated, GNI.LCU.calc,
            `GNI (USD per-capita)`, GNI.USD.interpolated, GNI.USD.calc,
-           `GINI index`, GINI.interpolated, GINI.calc, median.income.calc.usd, median.income.calc.lcu)
+           `GINI index`, GINI.interpolated, GINI.imputed, GINI.calc, median.income.calc.usd, median.income.calc.lcu)
 
 ##### Missingness is better; let's print the missing countries 
 medianIncomeDF[rowSums(is.na(medianIncomeDF)) > 1,]
