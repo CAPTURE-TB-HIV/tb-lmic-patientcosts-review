@@ -1024,7 +1024,7 @@ length(unique(modelData$covidence.id))
 
 
 ##############################################################################|
-### Add study and countrylevel identifier into the model data               ###
+### Add study and country-level identifier into the model data              ###
 ##############################################################################|
 modelData <- modelData %>%
     ungroup() %>%
@@ -1044,3 +1044,15 @@ modelData <- modelData %>%
 
 modelData <- modelData %>% 
              mutate(log.median.income = log(median.income))
+
+##############################################################################|
+### Add nat rep
+##############################################################################|
+modelData <- left_join(modelData, dataInds %>% select(covidence.id, natRep)) %>% 
+              mutate(natRep = ifelse(natRep == "National", 1, 0), 
+                     whoSurv = ifelse(covidence.id %in% 
+                                           ### These are the WHO patient costs surveys 
+                                           c(1:4, 8688, 7799, 8781, 7682, 9330,
+                                             8270, 9620, 7443,7355, 7919, 9422,
+                                             8310, 9585, 8634, 8677, 9301), 1, 0))
+##############################################################################|
