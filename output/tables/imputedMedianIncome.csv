@@ -1,0 +1,2206 @@
+,study.country,Country.Code,study.end.year,GINI.desc,GNI.desc
+1,Afghanistan,AFG,2000,Imputed,Country interpolated
+2,Afghanistan,AFG,2001,Imputed,Country interpolated
+3,Afghanistan,AFG,2002,Imputed,Country/Year matched
+4,Afghanistan,AFG,2003,Imputed,Country/Year matched
+5,Afghanistan,AFG,2004,Imputed,Country/Year matched
+6,Afghanistan,AFG,2005,Imputed,Country/Year matched
+7,Afghanistan,AFG,2006,Imputed,Country/Year matched
+8,Afghanistan,AFG,2007,Imputed,Country/Year matched
+9,Afghanistan,AFG,2008,Imputed,Country/Year matched
+10,Afghanistan,AFG,2009,Imputed,Country/Year matched
+11,Afghanistan,AFG,2010,Imputed,Country/Year matched
+12,Afghanistan,AFG,2011,Imputed,Country/Year matched
+13,Afghanistan,AFG,2012,Imputed,Country/Year matched
+14,Afghanistan,AFG,2013,Imputed,Country/Year matched
+15,Afghanistan,AFG,2014,Imputed,Country/Year matched
+16,Afghanistan,AFG,2015,Imputed,Country/Year matched
+17,Afghanistan,AFG,2016,Imputed,Country/Year matched
+18,Afghanistan,AFG,2017,Imputed,Country/Year matched
+19,Afghanistan,AFG,2018,Imputed,Country/Year matched
+20,Afghanistan,AFG,2019,Imputed,Country/Year matched
+21,Afghanistan,AFG,2020,Imputed,Country/Year matched
+22,Afghanistan,AFG,2021,Imputed,Country/Year matched
+23,Afghanistan,AFG,2022,Imputed,Country/Year matched
+24,Afghanistan,AFG,2023,Imputed,Country/Year matched
+25,Angola,AGO,2001,Country interpolated,Country/Year matched
+26,Angola,AGO,2002,Country interpolated,Country/Year matched
+27,Angola,AGO,2003,Country interpolated,Country/Year matched
+28,Angola,AGO,2004,Country interpolated,Country/Year matched
+29,Angola,AGO,2005,Country interpolated,Country/Year matched
+30,Angola,AGO,2006,Country interpolated,Country/Year matched
+31,Angola,AGO,2007,Country interpolated,Country/Year matched
+32,Angola,AGO,2009,Country interpolated,Country/Year matched
+33,Angola,AGO,2010,Country interpolated,Country/Year matched
+34,Angola,AGO,2011,Country interpolated,Country/Year matched
+35,Angola,AGO,2012,Country interpolated,Country/Year matched
+36,Angola,AGO,2013,Country interpolated,Country/Year matched
+37,Angola,AGO,2014,Country interpolated,Country/Year matched
+38,Angola,AGO,2015,Country interpolated,Country/Year matched
+39,Angola,AGO,2016,Country interpolated,Country/Year matched
+40,Angola,AGO,2017,Country interpolated,Country/Year matched
+41,Angola,AGO,2019,Country interpolated,Country/Year matched
+42,Angola,AGO,2020,Country interpolated,Country/Year matched
+43,Angola,AGO,2021,Country interpolated,Country/Year matched
+44,Angola,AGO,2022,Country interpolated,Country/Year matched
+45,Angola,AGO,2023,Country interpolated,Country/Year matched
+46,Albania,ALB,2000,Country interpolated,Country/Year matched
+47,Albania,ALB,2001,Country interpolated,Country/Year matched
+48,Albania,ALB,2003,Country interpolated,Country/Year matched
+49,Albania,ALB,2004,Country interpolated,Country/Year matched
+50,Albania,ALB,2006,Country interpolated,Country/Year matched
+51,Albania,ALB,2007,Country interpolated,Country/Year matched
+52,Albania,ALB,2009,Country interpolated,Country/Year matched
+53,Albania,ALB,2010,Country interpolated,Country/Year matched
+54,Albania,ALB,2011,Country interpolated,Country/Year matched
+55,Albania,ALB,2013,Country interpolated,Country/Year matched
+56,Albania,ALB,2021,Country interpolated,Country/Year matched
+57,Albania,ALB,2022,Country interpolated,Country/Year matched
+58,Albania,ALB,2023,Country interpolated,Country/Year matched
+59,Argentina,ARG,2015,Country interpolated,Country/Year matched
+60,Armenia,ARM,2000,Country interpolated,Country/Year matched
+61,Azerbaijan,AZE,2000,Country interpolated,Country/Year matched
+62,Azerbaijan,AZE,2006,Country interpolated,Country/Year matched
+63,Azerbaijan,AZE,2007,Country interpolated,Country/Year matched
+64,Azerbaijan,AZE,2008,Country interpolated,Country/Year matched
+65,Azerbaijan,AZE,2009,Country interpolated,Country/Year matched
+66,Azerbaijan,AZE,2010,Country interpolated,Country/Year matched
+67,Azerbaijan,AZE,2011,Country interpolated,Country/Year matched
+68,Azerbaijan,AZE,2012,Country interpolated,Country/Year matched
+69,Azerbaijan,AZE,2013,Country interpolated,Country/Year matched
+70,Azerbaijan,AZE,2014,Country interpolated,Country/Year matched
+71,Azerbaijan,AZE,2015,Country interpolated,Country/Year matched
+72,Azerbaijan,AZE,2016,Country interpolated,Country/Year matched
+73,Azerbaijan,AZE,2017,Country interpolated,Country/Year matched
+74,Azerbaijan,AZE,2018,Country interpolated,Country/Year matched
+75,Azerbaijan,AZE,2019,Country interpolated,Country/Year matched
+76,Azerbaijan,AZE,2020,Country interpolated,Country/Year matched
+77,Azerbaijan,AZE,2021,Country interpolated,Country/Year matched
+78,Azerbaijan,AZE,2022,Country interpolated,Country/Year matched
+79,Azerbaijan,AZE,2023,Country interpolated,Country/Year matched
+80,Burundi,BDI,2000,Country interpolated,Country/Year matched
+81,Burundi,BDI,2001,Country interpolated,Country/Year matched
+82,Burundi,BDI,2002,Country interpolated,Country/Year matched
+83,Burundi,BDI,2003,Country interpolated,Country/Year matched
+84,Burundi,BDI,2004,Country interpolated,Country/Year matched
+85,Burundi,BDI,2005,Country interpolated,Country/Year matched
+86,Burundi,BDI,2007,Country interpolated,Country/Year matched
+87,Burundi,BDI,2008,Country interpolated,Country/Year matched
+88,Burundi,BDI,2009,Country interpolated,Country/Year matched
+89,Burundi,BDI,2010,Country interpolated,Country/Year matched
+90,Burundi,BDI,2011,Country interpolated,Country/Year matched
+91,Burundi,BDI,2012,Country interpolated,Country/Year matched
+92,Burundi,BDI,2014,Country interpolated,Country/Year matched
+93,Burundi,BDI,2015,Country interpolated,Country/Year matched
+94,Burundi,BDI,2016,Country interpolated,Country/Year matched
+95,Burundi,BDI,2017,Country interpolated,Country/Year matched
+96,Burundi,BDI,2018,Country interpolated,Country/Year matched
+97,Burundi,BDI,2019,Country interpolated,Country/Year matched
+98,Burundi,BDI,2021,Country interpolated,Country/Year matched
+99,Burundi,BDI,2022,Country interpolated,Country/Year matched
+100,Burundi,BDI,2023,Country interpolated,Country/Year matched
+101,Benin,BEN,2000,Country interpolated,Country/Year matched
+102,Benin,BEN,2001,Country interpolated,Country/Year matched
+103,Benin,BEN,2002,Country interpolated,Country/Year matched
+104,Benin,BEN,2004,Country interpolated,Country/Year matched
+105,Benin,BEN,2005,Country interpolated,Country/Year matched
+106,Benin,BEN,2006,Country interpolated,Country/Year matched
+107,Benin,BEN,2007,Country interpolated,Country/Year matched
+108,Benin,BEN,2008,Country interpolated,Country/Year matched
+109,Benin,BEN,2009,Country interpolated,Country/Year matched
+110,Benin,BEN,2010,Country interpolated,Country/Year matched
+111,Benin,BEN,2012,Country interpolated,Country/Year matched
+112,Benin,BEN,2013,Country interpolated,Country/Year matched
+113,Benin,BEN,2014,Country interpolated,Country/Year matched
+114,Benin,BEN,2016,Country interpolated,Country/Year matched
+115,Benin,BEN,2017,Country interpolated,Country/Year matched
+116,Benin,BEN,2019,Country interpolated,Country/Year matched
+117,Benin,BEN,2020,Country interpolated,Country/Year matched
+118,Benin,BEN,2022,Country interpolated,Country/Year matched
+119,Benin,BEN,2023,Country interpolated,Country/Year matched
+120,Burkina Faso,BFA,2000,Country interpolated,Country/Year matched
+121,Burkina Faso,BFA,2001,Country interpolated,Country/Year matched
+122,Burkina Faso,BFA,2002,Country interpolated,Country/Year matched
+123,Burkina Faso,BFA,2004,Country interpolated,Country/Year matched
+124,Burkina Faso,BFA,2005,Country interpolated,Country/Year matched
+125,Burkina Faso,BFA,2006,Country interpolated,Country/Year matched
+126,Burkina Faso,BFA,2007,Country interpolated,Country/Year matched
+127,Burkina Faso,BFA,2008,Country interpolated,Country/Year matched
+128,Burkina Faso,BFA,2010,Country interpolated,Country/Year matched
+129,Burkina Faso,BFA,2011,Country interpolated,Country/Year matched
+130,Burkina Faso,BFA,2012,Country interpolated,Country/Year matched
+131,Burkina Faso,BFA,2013,Country interpolated,Country/Year matched
+132,Burkina Faso,BFA,2015,Country interpolated,Country/Year matched
+133,Burkina Faso,BFA,2016,Country interpolated,Country/Year matched
+134,Burkina Faso,BFA,2017,Country interpolated,Country/Year matched
+135,Burkina Faso,BFA,2019,Country interpolated,Country/Year matched
+136,Burkina Faso,BFA,2020,Country interpolated,Country/Year matched
+137,Burkina Faso,BFA,2022,Country interpolated,Country/Year matched
+138,Burkina Faso,BFA,2023,Country interpolated,Country/Year matched
+139,Bangladesh,BGD,2001,Country interpolated,Country/Year matched
+140,Bangladesh,BGD,2002,Country interpolated,Country/Year matched
+141,Bangladesh,BGD,2003,Country interpolated,Country/Year matched
+142,Bangladesh,BGD,2004,Country interpolated,Country/Year matched
+143,Bangladesh,BGD,2006,Country interpolated,Country/Year matched
+144,Bangladesh,BGD,2007,Country interpolated,Country/Year matched
+145,Bangladesh,BGD,2008,Country interpolated,Country/Year matched
+146,Bangladesh,BGD,2009,Country interpolated,Country/Year matched
+147,Bangladesh,BGD,2011,Country interpolated,Country/Year matched
+148,Bangladesh,BGD,2012,Country interpolated,Country/Year matched
+149,Bangladesh,BGD,2013,Country interpolated,Country/Year matched
+150,Bangladesh,BGD,2014,Country interpolated,Country/Year matched
+151,Bangladesh,BGD,2015,Country interpolated,Country/Year matched
+152,Bangladesh,BGD,2017,Country interpolated,Country/Year matched
+153,Bangladesh,BGD,2018,Country interpolated,Country/Year matched
+154,Bangladesh,BGD,2019,Country interpolated,Country/Year matched
+155,Bangladesh,BGD,2020,Country interpolated,Country/Year matched
+156,Bangladesh,BGD,2021,Country interpolated,Country/Year matched
+157,Bangladesh,BGD,2023,Country interpolated,Country/Year matched
+158,Bosnia and Herzegovina,BIH,2000,Country interpolated,Country/Year matched
+159,Bosnia and Herzegovina,BIH,2002,Country interpolated,Country/Year matched
+160,Bosnia and Herzegovina,BIH,2003,Country interpolated,Country/Year matched
+161,Bosnia and Herzegovina,BIH,2005,Country interpolated,Country/Year matched
+162,Bosnia and Herzegovina,BIH,2006,Country interpolated,Country/Year matched
+163,Bosnia and Herzegovina,BIH,2008,Country interpolated,Country/Year matched
+164,Bosnia and Herzegovina,BIH,2009,Country interpolated,Country/Year matched
+165,Bosnia and Herzegovina,BIH,2010,Country interpolated,Country/Year matched
+166,Bosnia and Herzegovina,BIH,2012,Country interpolated,Country/Year matched
+167,Bosnia and Herzegovina,BIH,2013,Country interpolated,Country/Year matched
+168,Bosnia and Herzegovina,BIH,2014,Country interpolated,Country/Year matched
+169,Bosnia and Herzegovina,BIH,2016,Country interpolated,Country/Year matched
+170,Bosnia and Herzegovina,BIH,2017,Country interpolated,Country/Year matched
+171,Bosnia and Herzegovina,BIH,2018,Country interpolated,Country/Year matched
+172,Bosnia and Herzegovina,BIH,2019,Country interpolated,Country/Year matched
+173,Bosnia and Herzegovina,BIH,2020,Country interpolated,Country/Year matched
+174,Bosnia and Herzegovina,BIH,2022,Country interpolated,Country/Year matched
+175,Bosnia and Herzegovina,BIH,2023,Country interpolated,Country/Year matched
+176,Belarus,BLR,2021,Country interpolated,Country/Year matched
+177,Belarus,BLR,2022,Country interpolated,Country/Year matched
+178,Belarus,BLR,2023,Country interpolated,Country/Year matched
+179,Belize,BLZ,2000,Country interpolated,Country/Year matched
+180,Belize,BLZ,2001,Country interpolated,Country/Year matched
+181,Belize,BLZ,2002,Country interpolated,Country/Year matched
+182,Belize,BLZ,2003,Country interpolated,Country/Year matched
+183,Belize,BLZ,2004,Country interpolated,Country/Year matched
+184,Belize,BLZ,2005,Country interpolated,Country/Year matched
+185,Belize,BLZ,2006,Country interpolated,Country/Year matched
+186,Belize,BLZ,2007,Country interpolated,Country/Year matched
+187,Belize,BLZ,2008,Country interpolated,Country/Year matched
+188,Belize,BLZ,2009,Country interpolated,Country/Year matched
+189,Belize,BLZ,2010,Country interpolated,Country/Year matched
+190,Belize,BLZ,2011,Country interpolated,Country/Year matched
+191,Belize,BLZ,2012,Country interpolated,Country/Year matched
+192,Belize,BLZ,2013,Country interpolated,Country/Year matched
+193,Belize,BLZ,2014,Country interpolated,Country/Year matched
+194,Belize,BLZ,2015,Country interpolated,Country/Year matched
+195,Belize,BLZ,2016,Country interpolated,Country/Year matched
+196,Belize,BLZ,2017,Country interpolated,Country/Year matched
+197,Belize,BLZ,2019,Country interpolated,Country/Year matched
+198,Belize,BLZ,2020,Country interpolated,Country/Year matched
+199,Belize,BLZ,2021,Country interpolated,Country/Year matched
+200,Belize,BLZ,2022,Country interpolated,Country/Year matched
+201,Belize,BLZ,2023,Country interpolated,Country/Year matched
+202,Bolivia,BOL,2003,Country interpolated,Country/Year matched
+203,Bolivia,BOL,2010,Country interpolated,Country/Year matched
+204,Brazil,BRA,2000,Country interpolated,Country/Year matched
+205,Brazil,BRA,2010,Country interpolated,Country/Year matched
+206,Bhutan,BTN,2000,Country interpolated,Country/Year matched
+207,Bhutan,BTN,2001,Country interpolated,Country/Year matched
+208,Bhutan,BTN,2002,Country interpolated,Country/Year matched
+209,Bhutan,BTN,2004,Country interpolated,Country/Year matched
+210,Bhutan,BTN,2005,Country interpolated,Country/Year matched
+211,Bhutan,BTN,2006,Country interpolated,Country/Year matched
+212,Bhutan,BTN,2008,Country interpolated,Country/Year matched
+213,Bhutan,BTN,2009,Country interpolated,Country/Year matched
+214,Bhutan,BTN,2010,Country interpolated,Country/Year matched
+215,Bhutan,BTN,2011,Country interpolated,Country/Year matched
+216,Bhutan,BTN,2013,Country interpolated,Country/Year matched
+217,Bhutan,BTN,2014,Country interpolated,Country/Year matched
+218,Bhutan,BTN,2015,Country interpolated,Country/Year matched
+219,Bhutan,BTN,2016,Country interpolated,Country/Year matched
+220,Bhutan,BTN,2018,Country interpolated,Country/Year matched
+221,Bhutan,BTN,2019,Country interpolated,Country/Year matched
+222,Bhutan,BTN,2020,Country interpolated,Country/Year matched
+223,Bhutan,BTN,2021,Country interpolated,Country/Year matched
+224,Bhutan,BTN,2023,Country interpolated,Country/Year matched
+225,Botswana,BWA,2000,Country interpolated,Country/Year matched
+226,Botswana,BWA,2001,Country interpolated,Country/Year matched
+227,Botswana,BWA,2003,Country interpolated,Country/Year matched
+228,Botswana,BWA,2004,Country interpolated,Country/Year matched
+229,Botswana,BWA,2005,Country interpolated,Country/Year matched
+230,Botswana,BWA,2006,Country interpolated,Country/Year matched
+231,Botswana,BWA,2007,Country interpolated,Country/Year matched
+232,Botswana,BWA,2008,Country interpolated,Country/Year matched
+233,Botswana,BWA,2010,Country interpolated,Country/Year matched
+234,Botswana,BWA,2011,Country interpolated,Country/Year matched
+235,Botswana,BWA,2012,Country interpolated,Country/Year matched
+236,Botswana,BWA,2013,Country interpolated,Country/Year matched
+237,Botswana,BWA,2014,Country interpolated,Country/Year matched
+238,Botswana,BWA,2016,Country interpolated,Country/Year matched
+239,Botswana,BWA,2017,Country interpolated,Country/Year matched
+240,Botswana,BWA,2018,Country interpolated,Country/Year matched
+241,Botswana,BWA,2019,Country interpolated,Country/Year matched
+242,Botswana,BWA,2020,Country interpolated,Country/Year matched
+243,Botswana,BWA,2021,Country interpolated,Country/Year matched
+244,Botswana,BWA,2022,Country interpolated,Country/Year matched
+245,Botswana,BWA,2023,Country interpolated,Country/Year matched
+246,Central African Republic,CAF,2000,Country interpolated,Country/Year matched
+247,Central African Republic,CAF,2001,Country interpolated,Country/Year matched
+248,Central African Republic,CAF,2002,Country interpolated,Country/Year matched
+249,Central African Republic,CAF,2003,Country interpolated,Country/Year matched
+250,Central African Republic,CAF,2004,Country interpolated,Country/Year matched
+251,Central African Republic,CAF,2005,Country interpolated,Country/Year matched
+252,Central African Republic,CAF,2006,Country interpolated,Country/Year matched
+253,Central African Republic,CAF,2007,Country interpolated,Country/Year matched
+254,Central African Republic,CAF,2009,Country interpolated,Country/Year matched
+255,Central African Republic,CAF,2010,Country interpolated,Country/Year matched
+256,Central African Republic,CAF,2011,Country interpolated,Country/Year matched
+257,Central African Republic,CAF,2012,Country interpolated,Country/Year matched
+258,Central African Republic,CAF,2013,Country interpolated,Country/Year matched
+259,Central African Republic,CAF,2014,Country interpolated,Country/Year matched
+260,Central African Republic,CAF,2015,Country interpolated,Country/Year matched
+261,Central African Republic,CAF,2016,Country interpolated,Country/Year matched
+262,Central African Republic,CAF,2017,Country interpolated,Country/Year matched
+263,Central African Republic,CAF,2018,Country interpolated,Country/Year matched
+264,Central African Republic,CAF,2019,Country interpolated,Country/Year matched
+265,Central African Republic,CAF,2020,Country interpolated,Country/Year matched
+266,Central African Republic,CAF,2022,Country interpolated,Country/Year matched
+267,Central African Republic,CAF,2023,Country interpolated,Country/Year matched
+268,China,CHN,2000,Country interpolated,Country/Year matched
+269,China,CHN,2001,Country interpolated,Country/Year matched
+270,China,CHN,2003,Country interpolated,Country/Year matched
+271,China,CHN,2004,Country interpolated,Country/Year matched
+272,China,CHN,2006,Country interpolated,Country/Year matched
+273,China,CHN,2007,Country interpolated,Country/Year matched
+274,China,CHN,2009,Country interpolated,Country/Year matched
+275,China,CHN,2023,Country interpolated,Country/Year matched
+276,Cote d'Ivoire,CIV,2000,Country interpolated,Country/Year matched
+277,Cote d'Ivoire,CIV,2001,Country interpolated,Country/Year matched
+278,Cote d'Ivoire,CIV,2003,Country interpolated,Country/Year matched
+279,Cote d'Ivoire,CIV,2004,Country interpolated,Country/Year matched
+280,Cote d'Ivoire,CIV,2005,Country interpolated,Country/Year matched
+281,Cote d'Ivoire,CIV,2006,Country interpolated,Country/Year matched
+282,Cote d'Ivoire,CIV,2007,Country interpolated,Country/Year matched
+283,Cote d'Ivoire,CIV,2009,Country interpolated,Country/Year matched
+284,Cote d'Ivoire,CIV,2010,Country interpolated,Country/Year matched
+285,Cote d'Ivoire,CIV,2011,Country interpolated,Country/Year matched
+286,Cote d'Ivoire,CIV,2012,Country interpolated,Country/Year matched
+287,Cote d'Ivoire,CIV,2013,Country interpolated,Country/Year matched
+288,Cote d'Ivoire,CIV,2014,Country interpolated,Country/Year matched
+289,Cote d'Ivoire,CIV,2016,Country interpolated,Country/Year matched
+290,Cote d'Ivoire,CIV,2017,Country interpolated,Country/Year matched
+291,Cote d'Ivoire,CIV,2019,Country interpolated,Country/Year matched
+292,Cote d'Ivoire,CIV,2020,Country interpolated,Country/Year matched
+293,Cote d'Ivoire,CIV,2022,Country interpolated,Country/Year matched
+294,Cote d'Ivoire,CIV,2023,Country interpolated,Country/Year matched
+295,Cameroon,CMR,2000,Country interpolated,Country/Year matched
+296,Cameroon,CMR,2002,Country interpolated,Country/Year matched
+297,Cameroon,CMR,2003,Country interpolated,Country/Year matched
+298,Cameroon,CMR,2004,Country interpolated,Country/Year matched
+299,Cameroon,CMR,2005,Country interpolated,Country/Year matched
+300,Cameroon,CMR,2006,Country interpolated,Country/Year matched
+301,Cameroon,CMR,2008,Country interpolated,Country/Year matched
+302,Cameroon,CMR,2009,Country interpolated,Country/Year matched
+303,Cameroon,CMR,2010,Country interpolated,Country/Year matched
+304,Cameroon,CMR,2011,Country interpolated,Country/Year matched
+305,Cameroon,CMR,2012,Country interpolated,Country/Year matched
+306,Cameroon,CMR,2013,Country interpolated,Country/Year matched
+307,Cameroon,CMR,2015,Country interpolated,Country/Year matched
+308,Cameroon,CMR,2016,Country interpolated,Country/Year matched
+309,Cameroon,CMR,2017,Country interpolated,Country/Year matched
+310,Cameroon,CMR,2018,Country interpolated,Country/Year matched
+311,Cameroon,CMR,2019,Country interpolated,Country/Year matched
+312,Cameroon,CMR,2020,Country interpolated,Country/Year matched
+313,Cameroon,CMR,2022,Country interpolated,Country/Year matched
+314,Cameroon,CMR,2023,Country interpolated,Country/Year matched
+315,"Congo, Dem. Rep.",COD,2000,Country interpolated,Country/Year matched
+316,"Congo, Dem. Rep.",COD,2001,Country interpolated,Country/Year matched
+317,"Congo, Dem. Rep.",COD,2002,Country interpolated,Country/Year matched
+318,"Congo, Dem. Rep.",COD,2003,Country interpolated,Country/Year matched
+319,"Congo, Dem. Rep.",COD,2005,Country interpolated,Country/Year matched
+320,"Congo, Dem. Rep.",COD,2006,Country interpolated,Country/Year matched
+321,"Congo, Dem. Rep.",COD,2007,Country interpolated,Country/Year matched
+322,"Congo, Dem. Rep.",COD,2008,Country interpolated,Country/Year matched
+323,"Congo, Dem. Rep.",COD,2009,Country interpolated,Country/Year matched
+324,"Congo, Dem. Rep.",COD,2010,Country interpolated,Country/Year matched
+325,"Congo, Dem. Rep.",COD,2011,Country interpolated,Country/Year matched
+326,"Congo, Dem. Rep.",COD,2013,Country interpolated,Country/Year matched
+327,"Congo, Dem. Rep.",COD,2014,Country interpolated,Country/Year matched
+328,"Congo, Dem. Rep.",COD,2015,Country interpolated,Country/Year matched
+329,"Congo, Dem. Rep.",COD,2016,Country interpolated,Country/Year matched
+330,"Congo, Dem. Rep.",COD,2017,Country interpolated,Country/Year matched
+331,"Congo, Dem. Rep.",COD,2018,Country interpolated,Country/Year matched
+332,"Congo, Dem. Rep.",COD,2019,Country interpolated,Country/Year matched
+333,"Congo, Dem. Rep.",COD,2021,Country interpolated,Country/Year matched
+334,"Congo, Dem. Rep.",COD,2022,Country interpolated,Country/Year matched
+335,"Congo, Dem. Rep.",COD,2023,Country interpolated,Country/Year matched
+336,"Congo, Rep.",COG,2000,Country interpolated,Country/Year matched
+337,"Congo, Rep.",COG,2001,Country interpolated,Country/Year matched
+338,"Congo, Rep.",COG,2002,Country interpolated,Country/Year matched
+339,"Congo, Rep.",COG,2003,Country interpolated,Country/Year matched
+340,"Congo, Rep.",COG,2004,Country interpolated,Country/Year matched
+341,"Congo, Rep.",COG,2006,Country interpolated,Country/Year matched
+342,"Congo, Rep.",COG,2007,Country interpolated,Country/Year matched
+343,"Congo, Rep.",COG,2008,Country interpolated,Country/Year matched
+344,"Congo, Rep.",COG,2009,Country interpolated,Country/Year matched
+345,"Congo, Rep.",COG,2010,Country interpolated,Country/Year matched
+346,"Congo, Rep.",COG,2012,Country interpolated,Country/Year matched
+347,"Congo, Rep.",COG,2013,Country interpolated,Country/Year matched
+348,"Congo, Rep.",COG,2014,Country interpolated,Country/Year matched
+349,"Congo, Rep.",COG,2015,Country interpolated,Country/Year matched
+350,"Congo, Rep.",COG,2016,Country interpolated,Country/Year matched
+351,"Congo, Rep.",COG,2017,Country interpolated,Country/Year matched
+352,"Congo, Rep.",COG,2018,Country interpolated,Country/Year matched
+353,"Congo, Rep.",COG,2019,Country interpolated,Country/Year matched
+354,"Congo, Rep.",COG,2020,Country interpolated,Country/Year matched
+355,"Congo, Rep.",COG,2021,Country interpolated,Country/Year matched
+356,"Congo, Rep.",COG,2022,Country interpolated,Country/Year matched
+357,"Congo, Rep.",COG,2023,Country interpolated,Country/Year matched
+358,Colombia,COL,2006,Country interpolated,Country/Year matched
+359,Colombia,COL,2007,Country interpolated,Country/Year matched
+360,Comoros,COM,2000,Country interpolated,Country/Year matched
+361,Comoros,COM,2001,Country interpolated,Country/Year matched
+362,Comoros,COM,2002,Country interpolated,Country/Year matched
+363,Comoros,COM,2003,Country interpolated,Country/Year matched
+364,Comoros,COM,2005,Country interpolated,Country/Year matched
+365,Comoros,COM,2006,Country interpolated,Country/Year matched
+366,Comoros,COM,2007,Country interpolated,Country/Year matched
+367,Comoros,COM,2008,Country interpolated,Country/Year matched
+368,Comoros,COM,2009,Country interpolated,Country/Year matched
+369,Comoros,COM,2010,Country interpolated,Country/Year matched
+370,Comoros,COM,2011,Country interpolated,Country/Year matched
+371,Comoros,COM,2012,Country interpolated,Country/Year matched
+372,Comoros,COM,2013,Country interpolated,Country/Year matched
+373,Comoros,COM,2015,Country interpolated,Country/Year matched
+374,Comoros,COM,2016,Country interpolated,Country/Year matched
+375,Comoros,COM,2017,Country interpolated,Country/Year matched
+376,Comoros,COM,2018,Country interpolated,Country/Year matched
+377,Comoros,COM,2019,Country interpolated,Country/Year matched
+378,Comoros,COM,2021,Country interpolated,Country/Year matched
+379,Comoros,COM,2022,Country interpolated,Country/Year matched
+380,Comoros,COM,2023,Country interpolated,Country/Year matched
+381,Cabo Verde,CPV,2000,Country interpolated,Country/Year matched
+382,Cabo Verde,CPV,2002,Country interpolated,Country/Year matched
+383,Cabo Verde,CPV,2003,Country interpolated,Country/Year matched
+384,Cabo Verde,CPV,2004,Country interpolated,Country/Year matched
+385,Cabo Verde,CPV,2005,Country interpolated,Country/Year matched
+386,Cabo Verde,CPV,2006,Country interpolated,Country/Year matched
+387,Cabo Verde,CPV,2008,Country interpolated,Country/Year matched
+388,Cabo Verde,CPV,2009,Country interpolated,Country/Year matched
+389,Cabo Verde,CPV,2010,Country interpolated,Country/Year matched
+390,Cabo Verde,CPV,2011,Country interpolated,Country/Year matched
+391,Cabo Verde,CPV,2012,Country interpolated,Country/Year matched
+392,Cabo Verde,CPV,2013,Country interpolated,Country/Year matched
+393,Cabo Verde,CPV,2014,Country interpolated,Country/Year matched
+394,Cabo Verde,CPV,2016,Country interpolated,Country/Year matched
+395,Cabo Verde,CPV,2017,Country interpolated,Country/Year matched
+396,Cabo Verde,CPV,2018,Country interpolated,Country/Year matched
+397,Cabo Verde,CPV,2019,Country interpolated,Country/Year matched
+398,Cabo Verde,CPV,2020,Country interpolated,Country/Year matched
+399,Cabo Verde,CPV,2021,Country interpolated,Country/Year matched
+400,Cabo Verde,CPV,2022,Country interpolated,Country/Year matched
+401,Cabo Verde,CPV,2023,Country interpolated,Country/Year matched
+402,Cuba,CUB,2000,Imputed,Country/Year matched
+403,Cuba,CUB,2001,Imputed,Country/Year matched
+404,Cuba,CUB,2002,Imputed,Country/Year matched
+405,Cuba,CUB,2003,Imputed,Country/Year matched
+406,Cuba,CUB,2004,Imputed,Country/Year matched
+407,Cuba,CUB,2005,Imputed,Country/Year matched
+408,Cuba,CUB,2006,Imputed,Country/Year matched
+409,Cuba,CUB,2007,Imputed,Country/Year matched
+410,Cuba,CUB,2008,Imputed,Country/Year matched
+411,Cuba,CUB,2009,Imputed,Country/Year matched
+412,Cuba,CUB,2010,Imputed,Country/Year matched
+413,Cuba,CUB,2011,Imputed,Country/Year matched
+414,Cuba,CUB,2012,Imputed,Country/Year matched
+415,Cuba,CUB,2013,Imputed,Country/Year matched
+416,Cuba,CUB,2014,Imputed,Country/Year matched
+417,Cuba,CUB,2015,Imputed,Country/Year matched
+418,Cuba,CUB,2016,Imputed,Country/Year matched
+419,Cuba,CUB,2017,Imputed,Country/Year matched
+420,Cuba,CUB,2018,Imputed,Country/Year matched
+421,Cuba,CUB,2019,Imputed,Country/Year matched
+422,Cuba,CUB,2020,Imputed,Country interpolated
+423,Cuba,CUB,2021,Imputed,Country interpolated
+424,Cuba,CUB,2022,Imputed,Country interpolated
+425,Cuba,CUB,2023,Imputed,Country interpolated
+426,Djibouti,DJI,2000,Country interpolated,Country interpolated
+427,Djibouti,DJI,2001,Country interpolated,Country interpolated
+428,Djibouti,DJI,2002,Country/Year matched,Country interpolated
+429,Djibouti,DJI,2003,Country interpolated,Country interpolated
+430,Djibouti,DJI,2004,Country interpolated,Country interpolated
+431,Djibouti,DJI,2005,Country interpolated,Country interpolated
+432,Djibouti,DJI,2006,Country interpolated,Country interpolated
+433,Djibouti,DJI,2007,Country interpolated,Country interpolated
+434,Djibouti,DJI,2008,Country interpolated,Country interpolated
+435,Djibouti,DJI,2009,Country interpolated,Country interpolated
+436,Djibouti,DJI,2010,Country interpolated,Country interpolated
+437,Djibouti,DJI,2011,Country interpolated,Country interpolated
+438,Djibouti,DJI,2012,Country/Year matched,Country interpolated
+439,Djibouti,DJI,2013,Country/Year matched,Country interpolated
+440,Djibouti,DJI,2014,Country interpolated,Country interpolated
+441,Djibouti,DJI,2015,Country interpolated,Country/Year matched
+442,Djibouti,DJI,2016,Country interpolated,Country/Year matched
+443,Djibouti,DJI,2018,Country interpolated,Country/Year matched
+444,Djibouti,DJI,2019,Country interpolated,Country/Year matched
+445,Djibouti,DJI,2020,Country interpolated,Country/Year matched
+446,Djibouti,DJI,2021,Country interpolated,Country/Year matched
+447,Djibouti,DJI,2022,Country interpolated,Country/Year matched
+448,Djibouti,DJI,2023,Country interpolated,Country/Year matched
+449,Dominica,DMA,2000,Imputed,Country/Year matched
+450,Dominica,DMA,2001,Imputed,Country/Year matched
+451,Dominica,DMA,2002,Imputed,Country/Year matched
+452,Dominica,DMA,2003,Imputed,Country/Year matched
+453,Dominica,DMA,2004,Imputed,Country/Year matched
+454,Dominica,DMA,2005,Imputed,Country/Year matched
+455,Dominica,DMA,2006,Imputed,Country/Year matched
+456,Dominica,DMA,2007,Imputed,Country/Year matched
+457,Dominica,DMA,2008,Imputed,Country/Year matched
+458,Dominica,DMA,2009,Imputed,Country/Year matched
+459,Dominica,DMA,2010,Imputed,Country/Year matched
+460,Dominica,DMA,2011,Imputed,Country/Year matched
+461,Dominica,DMA,2012,Imputed,Country/Year matched
+462,Dominica,DMA,2013,Imputed,Country/Year matched
+463,Dominica,DMA,2014,Imputed,Country/Year matched
+464,Dominica,DMA,2015,Imputed,Country/Year matched
+465,Dominica,DMA,2016,Imputed,Country/Year matched
+466,Dominica,DMA,2017,Imputed,Country/Year matched
+467,Dominica,DMA,2018,Imputed,Country/Year matched
+468,Dominica,DMA,2019,Imputed,Country/Year matched
+469,Dominica,DMA,2020,Imputed,Country/Year matched
+470,Dominica,DMA,2021,Imputed,Country/Year matched
+471,Dominica,DMA,2022,Imputed,Country/Year matched
+472,Dominica,DMA,2023,Imputed,Country/Year matched
+473,Algeria,DZA,2000,Country interpolated,Country/Year matched
+474,Algeria,DZA,2001,Country interpolated,Country/Year matched
+475,Algeria,DZA,2002,Country interpolated,Country/Year matched
+476,Algeria,DZA,2003,Country interpolated,Country/Year matched
+477,Algeria,DZA,2004,Country interpolated,Country/Year matched
+478,Algeria,DZA,2005,Country interpolated,Country/Year matched
+479,Algeria,DZA,2006,Country interpolated,Country/Year matched
+480,Algeria,DZA,2007,Country interpolated,Country/Year matched
+481,Algeria,DZA,2008,Country interpolated,Country/Year matched
+482,Algeria,DZA,2009,Country interpolated,Country/Year matched
+483,Algeria,DZA,2010,Country interpolated,Country/Year matched
+484,Algeria,DZA,2012,Country interpolated,Country/Year matched
+485,Algeria,DZA,2013,Country interpolated,Country/Year matched
+486,Algeria,DZA,2014,Country interpolated,Country/Year matched
+487,Algeria,DZA,2015,Country interpolated,Country/Year matched
+488,Algeria,DZA,2016,Country interpolated,Country/Year matched
+489,Algeria,DZA,2017,Country interpolated,Country/Year matched
+490,Algeria,DZA,2018,Country interpolated,Country/Year matched
+491,Algeria,DZA,2019,Country interpolated,Country/Year matched
+492,Algeria,DZA,2020,Country interpolated,Country/Year matched
+493,Algeria,DZA,2021,Country interpolated,Country/Year matched
+494,Algeria,DZA,2022,Country interpolated,Country/Year matched
+495,Algeria,DZA,2023,Country interpolated,Country/Year matched
+496,Ecuador,ECU,2001,Country interpolated,Country/Year matched
+497,Ecuador,ECU,2002,Country interpolated,Country/Year matched
+498,"Egypt, Arab Rep.",EGY,2000,Country interpolated,Country/Year matched
+499,"Egypt, Arab Rep.",EGY,2001,Country interpolated,Country/Year matched
+500,"Egypt, Arab Rep.",EGY,2002,Country interpolated,Country/Year matched
+501,"Egypt, Arab Rep.",EGY,2003,Country interpolated,Country/Year matched
+502,"Egypt, Arab Rep.",EGY,2005,Country interpolated,Country/Year matched
+503,"Egypt, Arab Rep.",EGY,2006,Country interpolated,Country/Year matched
+504,"Egypt, Arab Rep.",EGY,2007,Country interpolated,Country/Year matched
+505,"Egypt, Arab Rep.",EGY,2009,Country interpolated,Country/Year matched
+506,"Egypt, Arab Rep.",EGY,2011,Country interpolated,Country/Year matched
+507,"Egypt, Arab Rep.",EGY,2013,Country interpolated,Country/Year matched
+508,"Egypt, Arab Rep.",EGY,2014,Country interpolated,Country/Year matched
+509,"Egypt, Arab Rep.",EGY,2016,Country interpolated,Country/Year matched
+510,"Egypt, Arab Rep.",EGY,2018,Country interpolated,Country/Year matched
+511,"Egypt, Arab Rep.",EGY,2020,Country interpolated,Country/Year matched
+512,"Egypt, Arab Rep.",EGY,2022,Country interpolated,Country/Year matched
+513,"Egypt, Arab Rep.",EGY,2023,Country interpolated,Country/Year matched
+514,Eritrea,ERI,2000,Imputed,Country/Year matched
+515,Eritrea,ERI,2001,Imputed,Country/Year matched
+516,Eritrea,ERI,2002,Imputed,Country/Year matched
+517,Eritrea,ERI,2003,Imputed,Country/Year matched
+518,Eritrea,ERI,2004,Imputed,Country/Year matched
+519,Eritrea,ERI,2005,Imputed,Country/Year matched
+520,Eritrea,ERI,2006,Imputed,Country/Year matched
+521,Eritrea,ERI,2007,Imputed,Country/Year matched
+522,Eritrea,ERI,2008,Imputed,Country/Year matched
+523,Eritrea,ERI,2009,Imputed,Country/Year matched
+524,Eritrea,ERI,2010,Imputed,Country/Year matched
+525,Eritrea,ERI,2011,Imputed,Country/Year matched
+526,Eritrea,ERI,2012,Imputed,Country interpolated
+527,Eritrea,ERI,2013,Imputed,Country interpolated
+528,Eritrea,ERI,2014,Imputed,Country interpolated
+529,Eritrea,ERI,2015,Imputed,Country interpolated
+530,Eritrea,ERI,2016,Imputed,Country interpolated
+531,Eritrea,ERI,2017,Imputed,Country interpolated
+532,Eritrea,ERI,2018,Imputed,Country interpolated
+533,Eritrea,ERI,2019,Imputed,Country interpolated
+534,Eritrea,ERI,2020,Imputed,Country interpolated
+535,Eritrea,ERI,2021,Imputed,Country interpolated
+536,Eritrea,ERI,2022,Imputed,Country interpolated
+537,Eritrea,ERI,2023,Imputed,Country interpolated
+538,Ethiopia,ETH,2000,Country interpolated,Country/Year matched
+539,Ethiopia,ETH,2001,Country interpolated,Country/Year matched
+540,Ethiopia,ETH,2002,Country interpolated,Country/Year matched
+541,Ethiopia,ETH,2003,Country interpolated,Country/Year matched
+542,Ethiopia,ETH,2005,Country interpolated,Country/Year matched
+543,Ethiopia,ETH,2006,Country interpolated,Country/Year matched
+544,Ethiopia,ETH,2007,Country interpolated,Country/Year matched
+545,Ethiopia,ETH,2008,Country interpolated,Country/Year matched
+546,Ethiopia,ETH,2009,Country interpolated,Country/Year matched
+547,Ethiopia,ETH,2011,Country interpolated,Country/Year matched
+548,Ethiopia,ETH,2012,Country interpolated,Country/Year matched
+549,Ethiopia,ETH,2013,Country interpolated,Country/Year matched
+550,Ethiopia,ETH,2014,Country interpolated,Country/Year matched
+551,Ethiopia,ETH,2016,Country interpolated,Country/Year matched
+552,Ethiopia,ETH,2017,Country interpolated,Country/Year matched
+553,Ethiopia,ETH,2018,Country interpolated,Country/Year matched
+554,Ethiopia,ETH,2019,Country interpolated,Country/Year matched
+555,Ethiopia,ETH,2020,Country interpolated,Country/Year matched
+556,Ethiopia,ETH,2022,Country interpolated,Country/Year matched
+557,Ethiopia,ETH,2023,Country interpolated,Country/Year matched
+558,Fiji,FJI,2000,Country interpolated,Country/Year matched
+559,Fiji,FJI,2001,Country interpolated,Country/Year matched
+560,Fiji,FJI,2003,Country interpolated,Country/Year matched
+561,Fiji,FJI,2004,Country interpolated,Country/Year matched
+562,Fiji,FJI,2005,Country interpolated,Country/Year matched
+563,Fiji,FJI,2006,Country interpolated,Country/Year matched
+564,Fiji,FJI,2007,Country interpolated,Country/Year matched
+565,Fiji,FJI,2009,Country interpolated,Country/Year matched
+566,Fiji,FJI,2010,Country interpolated,Country/Year matched
+567,Fiji,FJI,2011,Country interpolated,Country/Year matched
+568,Fiji,FJI,2012,Country interpolated,Country/Year matched
+569,Fiji,FJI,2014,Country interpolated,Country/Year matched
+570,Fiji,FJI,2015,Country interpolated,Country/Year matched
+571,Fiji,FJI,2016,Country interpolated,Country/Year matched
+572,Fiji,FJI,2017,Country interpolated,Country/Year matched
+573,Fiji,FJI,2018,Country interpolated,Country/Year matched
+574,Fiji,FJI,2020,Country interpolated,Country/Year matched
+575,Fiji,FJI,2021,Country interpolated,Country/Year matched
+576,Fiji,FJI,2022,Country interpolated,Country/Year matched
+577,Fiji,FJI,2023,Country interpolated,Country/Year matched
+578,"Micronesia, Fed. Sts.",FSM,2000,Country interpolated,Country/Year matched
+579,"Micronesia, Fed. Sts.",FSM,2001,Country interpolated,Country/Year matched
+580,"Micronesia, Fed. Sts.",FSM,2002,Country interpolated,Country/Year matched
+581,"Micronesia, Fed. Sts.",FSM,2003,Country interpolated,Country/Year matched
+582,"Micronesia, Fed. Sts.",FSM,2004,Country interpolated,Country/Year matched
+583,"Micronesia, Fed. Sts.",FSM,2006,Country interpolated,Country/Year matched
+584,"Micronesia, Fed. Sts.",FSM,2007,Country interpolated,Country/Year matched
+585,"Micronesia, Fed. Sts.",FSM,2008,Country interpolated,Country/Year matched
+586,"Micronesia, Fed. Sts.",FSM,2009,Country interpolated,Country/Year matched
+587,"Micronesia, Fed. Sts.",FSM,2010,Country interpolated,Country/Year matched
+588,"Micronesia, Fed. Sts.",FSM,2011,Country interpolated,Country/Year matched
+589,"Micronesia, Fed. Sts.",FSM,2012,Country interpolated,Country/Year matched
+590,"Micronesia, Fed. Sts.",FSM,2014,Country interpolated,Country/Year matched
+591,"Micronesia, Fed. Sts.",FSM,2015,Country interpolated,Country/Year matched
+592,"Micronesia, Fed. Sts.",FSM,2016,Country interpolated,Country/Year matched
+593,"Micronesia, Fed. Sts.",FSM,2017,Country interpolated,Country/Year matched
+594,"Micronesia, Fed. Sts.",FSM,2018,Country interpolated,Country/Year matched
+595,"Micronesia, Fed. Sts.",FSM,2019,Country interpolated,Country/Year matched
+596,"Micronesia, Fed. Sts.",FSM,2020,Country interpolated,Country/Year matched
+597,"Micronesia, Fed. Sts.",FSM,2021,Country interpolated,Country/Year matched
+598,"Micronesia, Fed. Sts.",FSM,2022,Country interpolated,Country/Year matched
+599,"Micronesia, Fed. Sts.",FSM,2023,Country interpolated,Country/Year matched
+600,Gabon,GAB,2000,Country interpolated,Country/Year matched
+601,Gabon,GAB,2001,Country interpolated,Country/Year matched
+602,Gabon,GAB,2002,Country interpolated,Country/Year matched
+603,Gabon,GAB,2003,Country interpolated,Country/Year matched
+604,Gabon,GAB,2004,Country interpolated,Country/Year matched
+605,Gabon,GAB,2006,Country interpolated,Country/Year matched
+606,Gabon,GAB,2007,Country interpolated,Country/Year matched
+607,Gabon,GAB,2008,Country interpolated,Country/Year matched
+608,Gabon,GAB,2009,Country interpolated,Country/Year matched
+609,Gabon,GAB,2010,Country interpolated,Country/Year matched
+610,Gabon,GAB,2011,Country interpolated,Country/Year matched
+611,Gabon,GAB,2012,Country interpolated,Country/Year matched
+612,Gabon,GAB,2013,Country interpolated,Country/Year matched
+613,Gabon,GAB,2014,Country interpolated,Country/Year matched
+614,Gabon,GAB,2015,Country interpolated,Country/Year matched
+615,Gabon,GAB,2016,Country interpolated,Country/Year matched
+616,Gabon,GAB,2018,Country interpolated,Country/Year matched
+617,Gabon,GAB,2019,Country interpolated,Country/Year matched
+618,Gabon,GAB,2020,Country interpolated,Country/Year matched
+619,Gabon,GAB,2021,Country interpolated,Country/Year matched
+620,Gabon,GAB,2022,Country interpolated,Country/Year matched
+621,Gabon,GAB,2023,Country interpolated,Country/Year matched
+622,Ghana,GHA,2000,Country interpolated,Country/Year matched
+623,Ghana,GHA,2001,Country interpolated,Country/Year matched
+624,Ghana,GHA,2002,Country interpolated,Country/Year matched
+625,Ghana,GHA,2003,Country interpolated,Country/Year matched
+626,Ghana,GHA,2004,Country interpolated,Country/Year matched
+627,Ghana,GHA,2006,Country interpolated,Country/Year matched
+628,Ghana,GHA,2007,Country interpolated,Country/Year matched
+629,Ghana,GHA,2008,Country interpolated,Country/Year matched
+630,Ghana,GHA,2009,Country interpolated,Country/Year matched
+631,Ghana,GHA,2010,Country interpolated,Country/Year matched
+632,Ghana,GHA,2011,Country interpolated,Country/Year matched
+633,Ghana,GHA,2013,Country interpolated,Country/Year matched
+634,Ghana,GHA,2014,Country interpolated,Country/Year matched
+635,Ghana,GHA,2015,Country interpolated,Country/Year matched
+636,Ghana,GHA,2017,Country interpolated,Country/Year matched
+637,Ghana,GHA,2018,Country interpolated,Country/Year matched
+638,Ghana,GHA,2019,Country interpolated,Country/Year matched
+639,Ghana,GHA,2020,Country interpolated,Country/Year matched
+640,Ghana,GHA,2021,Country interpolated,Country/Year matched
+641,Ghana,GHA,2022,Country interpolated,Country/Year matched
+642,Ghana,GHA,2023,Country interpolated,Country/Year matched
+643,Guinea,GIN,2000,Country interpolated,Country/Year matched
+644,Guinea,GIN,2001,Country interpolated,Country/Year matched
+645,Guinea,GIN,2003,Country interpolated,Country/Year matched
+646,Guinea,GIN,2004,Country interpolated,Country/Year matched
+647,Guinea,GIN,2005,Country interpolated,Country/Year matched
+648,Guinea,GIN,2006,Country interpolated,Country/Year matched
+649,Guinea,GIN,2008,Country interpolated,Country/Year matched
+650,Guinea,GIN,2009,Country interpolated,Country/Year matched
+651,Guinea,GIN,2010,Country interpolated,Country/Year matched
+652,Guinea,GIN,2011,Country interpolated,Country/Year matched
+653,Guinea,GIN,2013,Country interpolated,Country/Year matched
+654,Guinea,GIN,2014,Country interpolated,Country/Year matched
+655,Guinea,GIN,2015,Country interpolated,Country/Year matched
+656,Guinea,GIN,2016,Country interpolated,Country/Year matched
+657,Guinea,GIN,2017,Country interpolated,Country/Year matched
+658,Guinea,GIN,2019,Country interpolated,Country/Year matched
+659,Guinea,GIN,2020,Country interpolated,Country/Year matched
+660,Guinea,GIN,2021,Country interpolated,Country/Year matched
+661,Guinea,GIN,2022,Country interpolated,Country/Year matched
+662,Guinea,GIN,2023,Country interpolated,Country/Year matched
+663,"Gambia, The",GMB,2000,Country interpolated,Country/Year matched
+664,"Gambia, The",GMB,2001,Country interpolated,Country/Year matched
+665,"Gambia, The",GMB,2002,Country interpolated,Country/Year matched
+666,"Gambia, The",GMB,2004,Country interpolated,Country/Year matched
+667,"Gambia, The",GMB,2005,Country interpolated,Country/Year matched
+668,"Gambia, The",GMB,2006,Country interpolated,Country/Year matched
+669,"Gambia, The",GMB,2007,Country interpolated,Country/Year matched
+670,"Gambia, The",GMB,2008,Country interpolated,Country/Year matched
+671,"Gambia, The",GMB,2009,Country interpolated,Country/Year matched
+672,"Gambia, The",GMB,2011,Country interpolated,Country/Year matched
+673,"Gambia, The",GMB,2012,Country interpolated,Country/Year matched
+674,"Gambia, The",GMB,2013,Country interpolated,Country/Year matched
+675,"Gambia, The",GMB,2014,Country interpolated,Country/Year matched
+676,"Gambia, The",GMB,2016,Country interpolated,Country/Year matched
+677,"Gambia, The",GMB,2017,Country interpolated,Country/Year matched
+678,"Gambia, The",GMB,2018,Country interpolated,Country/Year matched
+679,"Gambia, The",GMB,2019,Country interpolated,Country/Year matched
+680,"Gambia, The",GMB,2021,Country interpolated,Country/Year matched
+681,"Gambia, The",GMB,2022,Country interpolated,Country/Year matched
+682,"Gambia, The",GMB,2023,Country interpolated,Country/Year matched
+683,Guinea-Bissau,GNB,2000,Country interpolated,Country/Year matched
+684,Guinea-Bissau,GNB,2001,Country interpolated,Country/Year matched
+685,Guinea-Bissau,GNB,2003,Country interpolated,Country/Year matched
+686,Guinea-Bissau,GNB,2004,Country interpolated,Country/Year matched
+687,Guinea-Bissau,GNB,2005,Country interpolated,Country/Year matched
+688,Guinea-Bissau,GNB,2006,Country interpolated,Country/Year matched
+689,Guinea-Bissau,GNB,2007,Country interpolated,Country/Year matched
+690,Guinea-Bissau,GNB,2008,Country interpolated,Country/Year matched
+691,Guinea-Bissau,GNB,2009,Country interpolated,Country/Year matched
+692,Guinea-Bissau,GNB,2011,Country interpolated,Country/Year matched
+693,Guinea-Bissau,GNB,2012,Country interpolated,Country/Year matched
+694,Guinea-Bissau,GNB,2013,Country interpolated,Country/Year matched
+695,Guinea-Bissau,GNB,2014,Country interpolated,Country/Year matched
+696,Guinea-Bissau,GNB,2015,Country interpolated,Country/Year matched
+697,Guinea-Bissau,GNB,2016,Country interpolated,Country/Year matched
+698,Guinea-Bissau,GNB,2017,Country interpolated,Country/Year matched
+699,Guinea-Bissau,GNB,2019,Country interpolated,Country/Year matched
+700,Guinea-Bissau,GNB,2020,Country interpolated,Country/Year matched
+701,Guinea-Bissau,GNB,2022,Country interpolated,Country/Year matched
+702,Guinea-Bissau,GNB,2023,Country interpolated,Country/Year matched
+703,Equatorial Guinea,GNQ,2000,Country interpolated,Country/Year matched
+704,Equatorial Guinea,GNQ,2001,Country interpolated,Country/Year matched
+705,Equatorial Guinea,GNQ,2002,Country interpolated,Country/Year matched
+706,Equatorial Guinea,GNQ,2003,Country interpolated,Country/Year matched
+707,Equatorial Guinea,GNQ,2004,Country interpolated,Country/Year matched
+708,Equatorial Guinea,GNQ,2005,Country interpolated,Country/Year matched
+709,Equatorial Guinea,GNQ,2006,Country interpolated,Country/Year matched
+710,Equatorial Guinea,GNQ,2007,Country interpolated,Country/Year matched
+711,Equatorial Guinea,GNQ,2008,Country interpolated,Country/Year matched
+712,Equatorial Guinea,GNQ,2009,Country interpolated,Country/Year matched
+713,Equatorial Guinea,GNQ,2010,Country interpolated,Country/Year matched
+714,Equatorial Guinea,GNQ,2011,Country interpolated,Country/Year matched
+715,Equatorial Guinea,GNQ,2012,Country interpolated,Country/Year matched
+716,Equatorial Guinea,GNQ,2013,Country interpolated,Country/Year matched
+717,Equatorial Guinea,GNQ,2014,Country interpolated,Country/Year matched
+718,Equatorial Guinea,GNQ,2015,Country interpolated,Country/Year matched
+719,Equatorial Guinea,GNQ,2016,Country interpolated,Country/Year matched
+720,Equatorial Guinea,GNQ,2017,Country interpolated,Country/Year matched
+721,Equatorial Guinea,GNQ,2018,Country interpolated,Country/Year matched
+722,Equatorial Guinea,GNQ,2019,Country interpolated,Country/Year matched
+723,Equatorial Guinea,GNQ,2020,Country interpolated,Country/Year matched
+724,Equatorial Guinea,GNQ,2021,Country interpolated,Country/Year matched
+725,Equatorial Guinea,GNQ,2023,Country interpolated,Country/Year matched
+726,Grenada,GRD,2000,Country interpolated,Country/Year matched
+727,Grenada,GRD,2001,Country interpolated,Country/Year matched
+728,Grenada,GRD,2002,Country interpolated,Country/Year matched
+729,Grenada,GRD,2003,Country interpolated,Country/Year matched
+730,Grenada,GRD,2004,Country interpolated,Country/Year matched
+731,Grenada,GRD,2005,Country interpolated,Country/Year matched
+732,Grenada,GRD,2006,Country interpolated,Country/Year matched
+733,Grenada,GRD,2007,Country interpolated,Country/Year matched
+734,Grenada,GRD,2008,Country interpolated,Country/Year matched
+735,Grenada,GRD,2009,Country interpolated,Country/Year matched
+736,Grenada,GRD,2010,Country interpolated,Country/Year matched
+737,Grenada,GRD,2011,Country interpolated,Country/Year matched
+738,Grenada,GRD,2012,Country interpolated,Country/Year matched
+739,Grenada,GRD,2013,Country interpolated,Country/Year matched
+740,Grenada,GRD,2014,Country interpolated,Country/Year matched
+741,Grenada,GRD,2015,Country interpolated,Country/Year matched
+742,Grenada,GRD,2016,Country interpolated,Country/Year matched
+743,Grenada,GRD,2017,Country interpolated,Country/Year matched
+744,Grenada,GRD,2019,Country interpolated,Country/Year matched
+745,Grenada,GRD,2020,Country interpolated,Country/Year matched
+746,Grenada,GRD,2021,Country interpolated,Country/Year matched
+747,Grenada,GRD,2022,Country interpolated,Country/Year matched
+748,Grenada,GRD,2023,Country interpolated,Country/Year matched
+749,Guatemala,GTM,2001,Country interpolated,Country/Year matched
+750,Guatemala,GTM,2002,Country interpolated,Country/Year matched
+751,Guatemala,GTM,2003,Country interpolated,Country/Year matched
+752,Guatemala,GTM,2004,Country interpolated,Country/Year matched
+753,Guatemala,GTM,2005,Country interpolated,Country/Year matched
+754,Guatemala,GTM,2007,Country interpolated,Country/Year matched
+755,Guatemala,GTM,2008,Country interpolated,Country/Year matched
+756,Guatemala,GTM,2009,Country interpolated,Country/Year matched
+757,Guatemala,GTM,2010,Country interpolated,Country/Year matched
+758,Guatemala,GTM,2011,Country interpolated,Country/Year matched
+759,Guatemala,GTM,2012,Country interpolated,Country/Year matched
+760,Guatemala,GTM,2013,Country interpolated,Country/Year matched
+761,Guatemala,GTM,2015,Country interpolated,Country/Year matched
+762,Guatemala,GTM,2016,Country interpolated,Country/Year matched
+763,Guatemala,GTM,2017,Country interpolated,Country/Year matched
+764,Guatemala,GTM,2018,Country interpolated,Country/Year matched
+765,Guatemala,GTM,2019,Country interpolated,Country/Year matched
+766,Guatemala,GTM,2020,Country interpolated,Country/Year matched
+767,Guatemala,GTM,2021,Country interpolated,Country/Year matched
+768,Guatemala,GTM,2022,Country interpolated,Country/Year matched
+769,Honduras,HND,2000,Country interpolated,Country/Year matched
+770,Honduras,HND,2020,Country interpolated,Country/Year matched
+771,Honduras,HND,2021,Country interpolated,Country/Year matched
+772,Honduras,HND,2022,Country interpolated,Country/Year matched
+773,Haiti,HTI,2000,Country interpolated,Country/Year matched
+774,Haiti,HTI,2002,Country interpolated,Country/Year matched
+775,Haiti,HTI,2003,Country interpolated,Country/Year matched
+776,Haiti,HTI,2004,Country interpolated,Country/Year matched
+777,Haiti,HTI,2005,Country interpolated,Country/Year matched
+778,Haiti,HTI,2006,Country interpolated,Country/Year matched
+779,Haiti,HTI,2007,Country interpolated,Country/Year matched
+780,Haiti,HTI,2008,Country interpolated,Country/Year matched
+781,Haiti,HTI,2009,Country interpolated,Country/Year matched
+782,Haiti,HTI,2010,Country interpolated,Country/Year matched
+783,Haiti,HTI,2011,Country interpolated,Country/Year matched
+784,Haiti,HTI,2013,Country interpolated,Country/Year matched
+785,Haiti,HTI,2014,Country interpolated,Country/Year matched
+786,Haiti,HTI,2015,Country interpolated,Country/Year matched
+787,Haiti,HTI,2016,Country interpolated,Country/Year matched
+788,Haiti,HTI,2017,Country interpolated,Country/Year matched
+789,Haiti,HTI,2018,Country interpolated,Country/Year matched
+790,Haiti,HTI,2019,Country interpolated,Country/Year matched
+791,Haiti,HTI,2020,Country interpolated,Country/Year matched
+792,Haiti,HTI,2021,Country interpolated,Country/Year matched
+793,Haiti,HTI,2022,Country interpolated,Country/Year matched
+794,Haiti,HTI,2023,Country interpolated,Country/Year matched
+795,India,IND,2000,Country interpolated,Country/Year matched
+796,India,IND,2001,Country interpolated,Country/Year matched
+797,India,IND,2002,Country interpolated,Country/Year matched
+798,India,IND,2003,Country interpolated,Country/Year matched
+799,India,IND,2005,Country interpolated,Country/Year matched
+800,India,IND,2006,Country interpolated,Country/Year matched
+801,India,IND,2007,Country interpolated,Country/Year matched
+802,India,IND,2008,Country interpolated,Country/Year matched
+803,India,IND,2010,Country interpolated,Country/Year matched
+804,India,IND,2012,Country interpolated,Country/Year matched
+805,India,IND,2013,Country interpolated,Country/Year matched
+806,India,IND,2014,Country interpolated,Country/Year matched
+807,India,IND,2015,Country interpolated,Country/Year matched
+808,India,IND,2016,Country interpolated,Country/Year matched
+809,India,IND,2017,Country interpolated,Country/Year matched
+810,India,IND,2018,Country interpolated,Country/Year matched
+811,India,IND,2019,Country interpolated,Country/Year matched
+812,India,IND,2020,Country interpolated,Country/Year matched
+813,India,IND,2021,Country interpolated,Country/Year matched
+814,India,IND,2023,Country interpolated,Country/Year matched
+815,"Iran, Islamic Rep.",IRN,2000,Country interpolated,Country/Year matched
+816,"Iran, Islamic Rep.",IRN,2001,Country interpolated,Country/Year matched
+817,"Iran, Islamic Rep.",IRN,2002,Country interpolated,Country/Year matched
+818,"Iran, Islamic Rep.",IRN,2003,Country interpolated,Country/Year matched
+819,"Iran, Islamic Rep.",IRN,2004,Country interpolated,Country/Year matched
+820,"Iran, Islamic Rep.",IRN,2007,Country interpolated,Country/Year matched
+821,"Iran, Islamic Rep.",IRN,2008,Country interpolated,Country/Year matched
+822,"Iran, Islamic Rep.",IRN,2010,Country interpolated,Country/Year matched
+823,Iraq,IRQ,2000,Country interpolated,Country/Year matched
+824,Iraq,IRQ,2001,Country interpolated,Country/Year matched
+825,Iraq,IRQ,2002,Country interpolated,Country/Year matched
+826,Iraq,IRQ,2003,Country interpolated,Country/Year matched
+827,Iraq,IRQ,2004,Country interpolated,Country/Year matched
+828,Iraq,IRQ,2005,Country interpolated,Country/Year matched
+829,Iraq,IRQ,2007,Country interpolated,Country/Year matched
+830,Iraq,IRQ,2008,Country interpolated,Country/Year matched
+831,Iraq,IRQ,2009,Country interpolated,Country/Year matched
+832,Iraq,IRQ,2010,Country interpolated,Country/Year matched
+833,Iraq,IRQ,2011,Country interpolated,Country/Year matched
+834,Iraq,IRQ,2013,Country interpolated,Country/Year matched
+835,Iraq,IRQ,2014,Country interpolated,Country/Year matched
+836,Iraq,IRQ,2015,Country interpolated,Country/Year matched
+837,Iraq,IRQ,2016,Country interpolated,Country/Year matched
+838,Iraq,IRQ,2017,Country interpolated,Country/Year matched
+839,Iraq,IRQ,2018,Country interpolated,Country/Year matched
+840,Iraq,IRQ,2019,Country interpolated,Country/Year matched
+841,Iraq,IRQ,2020,Country interpolated,Country/Year matched
+842,Iraq,IRQ,2021,Country interpolated,Country/Year matched
+843,Iraq,IRQ,2022,Country interpolated,Country/Year matched
+844,Jamaica,JAM,2000,Country interpolated,Country/Year matched
+845,Jamaica,JAM,2001,Country interpolated,Country/Year matched
+846,Jamaica,JAM,2003,Country interpolated,Country/Year matched
+847,Jamaica,JAM,2005,Country interpolated,Country/Year matched
+848,Jamaica,JAM,2006,Country interpolated,Country/Year matched
+849,Jamaica,JAM,2007,Country interpolated,Country/Year matched
+850,Jamaica,JAM,2008,Country interpolated,Country/Year matched
+851,Jamaica,JAM,2009,Country interpolated,Country/Year matched
+852,Jamaica,JAM,2010,Country interpolated,Country/Year matched
+853,Jamaica,JAM,2011,Country interpolated,Country/Year matched
+854,Jamaica,JAM,2012,Country interpolated,Country/Year matched
+855,Jamaica,JAM,2013,Country interpolated,Country/Year matched
+856,Jamaica,JAM,2014,Country interpolated,Country/Year matched
+857,Jamaica,JAM,2015,Country interpolated,Country/Year matched
+858,Jamaica,JAM,2016,Country interpolated,Country/Year matched
+859,Jamaica,JAM,2017,Country interpolated,Country/Year matched
+860,Jamaica,JAM,2019,Country interpolated,Country/Year matched
+861,Jamaica,JAM,2020,Country interpolated,Country/Year matched
+862,Jamaica,JAM,2022,Country interpolated,Country/Year matched
+863,Jamaica,JAM,2023,Country interpolated,Country/Year matched
+864,Jordan,JOR,2000,Country interpolated,Country/Year matched
+865,Jordan,JOR,2001,Country interpolated,Country/Year matched
+866,Jordan,JOR,2003,Country interpolated,Country/Year matched
+867,Jordan,JOR,2004,Country interpolated,Country/Year matched
+868,Jordan,JOR,2005,Country interpolated,Country/Year matched
+869,Jordan,JOR,2007,Country interpolated,Country/Year matched
+870,Jordan,JOR,2009,Country interpolated,Country/Year matched
+871,Jordan,JOR,2011,Country interpolated,Country/Year matched
+872,Jordan,JOR,2012,Country interpolated,Country/Year matched
+873,Jordan,JOR,2013,Country interpolated,Country/Year matched
+874,Jordan,JOR,2014,Country interpolated,Country/Year matched
+875,Jordan,JOR,2015,Country interpolated,Country/Year matched
+876,Jordan,JOR,2016,Country interpolated,Country/Year matched
+877,Jordan,JOR,2017,Country interpolated,Country/Year matched
+878,Jordan,JOR,2018,Country interpolated,Country/Year matched
+879,Jordan,JOR,2019,Country interpolated,Country/Year matched
+880,Jordan,JOR,2020,Country interpolated,Country/Year matched
+881,Jordan,JOR,2021,Country interpolated,Country/Year matched
+882,Jordan,JOR,2022,Country interpolated,Country/Year matched
+883,Jordan,JOR,2023,Country interpolated,Country/Year matched
+884,Kazakhstan,KAZ,2000,Country interpolated,Country/Year matched
+885,Kazakhstan,KAZ,2022,Country interpolated,Country/Year matched
+886,Kazakhstan,KAZ,2023,Country interpolated,Country/Year matched
+887,Kenya,KEN,2000,Country interpolated,Country/Year matched
+888,Kenya,KEN,2001,Country interpolated,Country/Year matched
+889,Kenya,KEN,2002,Country interpolated,Country/Year matched
+890,Kenya,KEN,2003,Country interpolated,Country/Year matched
+891,Kenya,KEN,2004,Country interpolated,Country/Year matched
+892,Kenya,KEN,2006,Country interpolated,Country/Year matched
+893,Kenya,KEN,2007,Country interpolated,Country/Year matched
+894,Kenya,KEN,2008,Country interpolated,Country/Year matched
+895,Kenya,KEN,2009,Country interpolated,Country/Year matched
+896,Kenya,KEN,2010,Country interpolated,Country/Year matched
+897,Kenya,KEN,2011,Country interpolated,Country/Year matched
+898,Kenya,KEN,2012,Country interpolated,Country/Year matched
+899,Kenya,KEN,2013,Country interpolated,Country/Year matched
+900,Kenya,KEN,2014,Country interpolated,Country/Year matched
+901,Kenya,KEN,2016,Country interpolated,Country/Year matched
+902,Kenya,KEN,2017,Country interpolated,Country/Year matched
+903,Kenya,KEN,2018,Country interpolated,Country/Year matched
+904,Kenya,KEN,2019,Country interpolated,Country/Year matched
+905,Kenya,KEN,2023,Country interpolated,Country/Year matched
+906,Cambodia,KHM,2000,Imputed,Country/Year matched
+907,Cambodia,KHM,2001,Imputed,Country/Year matched
+908,Cambodia,KHM,2002,Imputed,Country/Year matched
+909,Cambodia,KHM,2003,Imputed,Country/Year matched
+910,Cambodia,KHM,2004,Imputed,Country/Year matched
+911,Cambodia,KHM,2005,Imputed,Country/Year matched
+912,Cambodia,KHM,2006,Imputed,Country/Year matched
+913,Cambodia,KHM,2007,Imputed,Country/Year matched
+914,Cambodia,KHM,2008,Imputed,Country/Year matched
+915,Cambodia,KHM,2009,Imputed,Country/Year matched
+916,Cambodia,KHM,2010,Imputed,Country/Year matched
+917,Cambodia,KHM,2011,Imputed,Country/Year matched
+918,Cambodia,KHM,2012,Imputed,Country/Year matched
+919,Cambodia,KHM,2013,Imputed,Country/Year matched
+920,Cambodia,KHM,2014,Imputed,Country/Year matched
+921,Cambodia,KHM,2015,Imputed,Country/Year matched
+922,Cambodia,KHM,2016,Imputed,Country/Year matched
+923,Cambodia,KHM,2017,Imputed,Country/Year matched
+924,Cambodia,KHM,2018,Imputed,Country/Year matched
+925,Cambodia,KHM,2019,Imputed,Country/Year matched
+926,Cambodia,KHM,2020,Imputed,Country/Year matched
+927,Cambodia,KHM,2021,Imputed,Country/Year matched
+928,Cambodia,KHM,2022,Imputed,Country/Year matched
+929,Cambodia,KHM,2023,Imputed,Country/Year matched
+930,Kiribati,KIR,2000,Country interpolated,Country/Year matched
+931,Kiribati,KIR,2001,Country interpolated,Country/Year matched
+932,Kiribati,KIR,2002,Country interpolated,Country/Year matched
+933,Kiribati,KIR,2003,Country interpolated,Country/Year matched
+934,Kiribati,KIR,2004,Country interpolated,Country/Year matched
+935,Kiribati,KIR,2005,Country interpolated,Country/Year matched
+936,Kiribati,KIR,2007,Country interpolated,Country/Year matched
+937,Kiribati,KIR,2008,Country interpolated,Country/Year matched
+938,Kiribati,KIR,2009,Country interpolated,Country/Year matched
+939,Kiribati,KIR,2010,Country interpolated,Country/Year matched
+940,Kiribati,KIR,2011,Country interpolated,Country/Year matched
+941,Kiribati,KIR,2012,Country interpolated,Country/Year matched
+942,Kiribati,KIR,2013,Country interpolated,Country/Year matched
+943,Kiribati,KIR,2014,Country interpolated,Country/Year matched
+944,Kiribati,KIR,2015,Country interpolated,Country/Year matched
+945,Kiribati,KIR,2016,Country interpolated,Country/Year matched
+946,Kiribati,KIR,2017,Country interpolated,Country/Year matched
+947,Kiribati,KIR,2018,Country interpolated,Country/Year matched
+948,Kiribati,KIR,2020,Country interpolated,Country/Year matched
+949,Kiribati,KIR,2021,Country interpolated,Country/Year matched
+950,Kiribati,KIR,2022,Country interpolated,Country/Year matched
+951,Lao PDR,LAO,2000,Country interpolated,Country/Year matched
+952,Lao PDR,LAO,2001,Country interpolated,Country/Year matched
+953,Lao PDR,LAO,2003,Country interpolated,Country/Year matched
+954,Lao PDR,LAO,2004,Country interpolated,Country/Year matched
+955,Lao PDR,LAO,2005,Country interpolated,Country/Year matched
+956,Lao PDR,LAO,2006,Country interpolated,Country/Year matched
+957,Lao PDR,LAO,2008,Country interpolated,Country/Year matched
+958,Lao PDR,LAO,2009,Country interpolated,Country/Year matched
+959,Lao PDR,LAO,2010,Country interpolated,Country/Year matched
+960,Lao PDR,LAO,2011,Country interpolated,Country/Year matched
+961,Lao PDR,LAO,2013,Country interpolated,Country/Year matched
+962,Lao PDR,LAO,2014,Country interpolated,Country/Year matched
+963,Lao PDR,LAO,2015,Country interpolated,Country/Year matched
+964,Lao PDR,LAO,2016,Country interpolated,Country/Year matched
+965,Lao PDR,LAO,2017,Country interpolated,Country/Year matched
+966,Lao PDR,LAO,2019,Country interpolated,Country/Year matched
+967,Lao PDR,LAO,2020,Country interpolated,Country/Year matched
+968,Lao PDR,LAO,2021,Country interpolated,Country/Year matched
+969,Lao PDR,LAO,2022,Country interpolated,Country/Year matched
+970,Lao PDR,LAO,2023,Country interpolated,Country/Year matched
+971,Lebanon,LBN,2000,Country interpolated,Country/Year matched
+972,Lebanon,LBN,2001,Country interpolated,Country/Year matched
+973,Lebanon,LBN,2002,Country interpolated,Country/Year matched
+974,Lebanon,LBN,2003,Country interpolated,Country/Year matched
+975,Lebanon,LBN,2004,Country interpolated,Country/Year matched
+976,Lebanon,LBN,2005,Country interpolated,Country/Year matched
+977,Lebanon,LBN,2006,Country interpolated,Country/Year matched
+978,Lebanon,LBN,2007,Country interpolated,Country/Year matched
+979,Lebanon,LBN,2008,Country interpolated,Country/Year matched
+980,Lebanon,LBN,2009,Country interpolated,Country/Year matched
+981,Lebanon,LBN,2010,Country interpolated,Country/Year matched
+982,Lebanon,LBN,2012,Country interpolated,Country/Year matched
+983,Lebanon,LBN,2013,Country interpolated,Country/Year matched
+984,Lebanon,LBN,2014,Country interpolated,Country/Year matched
+985,Lebanon,LBN,2015,Country interpolated,Country/Year matched
+986,Lebanon,LBN,2016,Country interpolated,Country/Year matched
+987,Lebanon,LBN,2017,Country interpolated,Country/Year matched
+988,Lebanon,LBN,2018,Country interpolated,Country/Year matched
+989,Lebanon,LBN,2019,Country interpolated,Country/Year matched
+990,Lebanon,LBN,2020,Country interpolated,Country/Year matched
+991,Lebanon,LBN,2021,Country interpolated,Country/Year matched
+992,Lebanon,LBN,2023,Country interpolated,Country/Year matched
+993,Liberia,LBR,2000,Country interpolated,Country/Year matched
+994,Liberia,LBR,2001,Country interpolated,Country/Year matched
+995,Liberia,LBR,2002,Country interpolated,Country/Year matched
+996,Liberia,LBR,2003,Country interpolated,Country/Year matched
+997,Liberia,LBR,2004,Country interpolated,Country/Year matched
+998,Liberia,LBR,2005,Country interpolated,Country/Year matched
+999,Liberia,LBR,2006,Country interpolated,Country/Year matched
+1000,Liberia,LBR,2008,Country interpolated,Country/Year matched
+1001,Liberia,LBR,2009,Country interpolated,Country/Year matched
+1002,Liberia,LBR,2010,Country interpolated,Country/Year matched
+1003,Liberia,LBR,2011,Country interpolated,Country/Year matched
+1004,Liberia,LBR,2012,Country interpolated,Country/Year matched
+1005,Liberia,LBR,2013,Country interpolated,Country/Year matched
+1006,Liberia,LBR,2015,Country interpolated,Country/Year matched
+1007,Liberia,LBR,2017,Country interpolated,Country/Year matched
+1008,Liberia,LBR,2018,Country interpolated,Country/Year matched
+1009,Liberia,LBR,2019,Country interpolated,Country/Year matched
+1010,Liberia,LBR,2020,Country interpolated,Country/Year matched
+1011,Liberia,LBR,2021,Country interpolated,Country/Year matched
+1012,Liberia,LBR,2022,Country interpolated,Country/Year matched
+1013,Liberia,LBR,2023,Country interpolated,Country/Year matched
+1014,Libya,LBY,2000,Imputed,Country/Year matched
+1015,Libya,LBY,2001,Imputed,Country/Year matched
+1016,Libya,LBY,2002,Imputed,Country/Year matched
+1017,Libya,LBY,2003,Imputed,Country/Year matched
+1018,Libya,LBY,2004,Imputed,Country/Year matched
+1019,Libya,LBY,2005,Imputed,Country/Year matched
+1020,Libya,LBY,2006,Imputed,Country/Year matched
+1021,Libya,LBY,2007,Imputed,Country/Year matched
+1022,Libya,LBY,2008,Imputed,Country/Year matched
+1023,Libya,LBY,2009,Imputed,Country/Year matched
+1024,Libya,LBY,2010,Imputed,Country/Year matched
+1025,Libya,LBY,2011,Imputed,Country/Year matched
+1026,Libya,LBY,2012,Imputed,Country/Year matched
+1027,Libya,LBY,2013,Imputed,Country/Year matched
+1028,Libya,LBY,2014,Imputed,Country/Year matched
+1029,Libya,LBY,2015,Imputed,Country/Year matched
+1030,Libya,LBY,2016,Imputed,Country/Year matched
+1031,Libya,LBY,2017,Imputed,Country/Year matched
+1032,Libya,LBY,2018,Imputed,Country/Year matched
+1033,Libya,LBY,2019,Imputed,Country/Year matched
+1034,Libya,LBY,2020,Imputed,Country/Year matched
+1035,Libya,LBY,2021,Imputed,Country/Year matched
+1036,Libya,LBY,2022,Imputed,Country/Year matched
+1037,Libya,LBY,2023,Imputed,Country/Year matched
+1038,St. Lucia,LCA,2000,Country interpolated,Country/Year matched
+1039,St. Lucia,LCA,2001,Country interpolated,Country/Year matched
+1040,St. Lucia,LCA,2002,Country interpolated,Country/Year matched
+1041,St. Lucia,LCA,2003,Country interpolated,Country/Year matched
+1042,St. Lucia,LCA,2004,Country interpolated,Country/Year matched
+1043,St. Lucia,LCA,2005,Country interpolated,Country/Year matched
+1044,St. Lucia,LCA,2006,Country interpolated,Country/Year matched
+1045,St. Lucia,LCA,2007,Country interpolated,Country/Year matched
+1046,St. Lucia,LCA,2008,Country interpolated,Country/Year matched
+1047,St. Lucia,LCA,2009,Country interpolated,Country/Year matched
+1048,St. Lucia,LCA,2010,Country interpolated,Country/Year matched
+1049,St. Lucia,LCA,2011,Country interpolated,Country/Year matched
+1050,St. Lucia,LCA,2012,Country interpolated,Country/Year matched
+1051,St. Lucia,LCA,2013,Country interpolated,Country/Year matched
+1052,St. Lucia,LCA,2014,Country interpolated,Country/Year matched
+1053,St. Lucia,LCA,2016,Country interpolated,Country/Year matched
+1054,St. Lucia,LCA,2017,Country interpolated,Country/Year matched
+1055,St. Lucia,LCA,2018,Country interpolated,Country/Year matched
+1056,St. Lucia,LCA,2019,Country interpolated,Country/Year matched
+1057,St. Lucia,LCA,2020,Country interpolated,Country/Year matched
+1058,St. Lucia,LCA,2021,Country interpolated,Country/Year matched
+1059,St. Lucia,LCA,2022,Country interpolated,Country/Year matched
+1060,St. Lucia,LCA,2023,Country interpolated,Country/Year matched
+1061,Sri Lanka,LKA,2000,Country interpolated,Country/Year matched
+1062,Sri Lanka,LKA,2001,Country interpolated,Country/Year matched
+1063,Sri Lanka,LKA,2003,Country interpolated,Country/Year matched
+1064,Sri Lanka,LKA,2004,Country interpolated,Country/Year matched
+1065,Sri Lanka,LKA,2005,Country interpolated,Country/Year matched
+1066,Sri Lanka,LKA,2007,Country interpolated,Country/Year matched
+1067,Sri Lanka,LKA,2008,Country interpolated,Country/Year matched
+1068,Sri Lanka,LKA,2010,Country interpolated,Country/Year matched
+1069,Sri Lanka,LKA,2011,Country interpolated,Country/Year matched
+1070,Sri Lanka,LKA,2013,Country interpolated,Country/Year matched
+1071,Sri Lanka,LKA,2014,Country interpolated,Country/Year matched
+1072,Sri Lanka,LKA,2015,Country interpolated,Country/Year matched
+1073,Sri Lanka,LKA,2017,Country interpolated,Country/Year matched
+1074,Sri Lanka,LKA,2018,Country interpolated,Country/Year matched
+1075,Sri Lanka,LKA,2020,Country interpolated,Country/Year matched
+1076,Sri Lanka,LKA,2021,Country interpolated,Country/Year matched
+1077,Sri Lanka,LKA,2022,Country interpolated,Country/Year matched
+1078,Sri Lanka,LKA,2023,Country interpolated,Country/Year matched
+1079,Lesotho,LSO,2000,Country interpolated,Country/Year matched
+1080,Lesotho,LSO,2001,Country interpolated,Country/Year matched
+1081,Lesotho,LSO,2003,Country interpolated,Country/Year matched
+1082,Lesotho,LSO,2004,Country interpolated,Country/Year matched
+1083,Lesotho,LSO,2005,Country interpolated,Country/Year matched
+1084,Lesotho,LSO,2006,Country interpolated,Country/Year matched
+1085,Lesotho,LSO,2007,Country interpolated,Country/Year matched
+1086,Lesotho,LSO,2008,Country interpolated,Country/Year matched
+1087,Lesotho,LSO,2009,Country interpolated,Country/Year matched
+1088,Lesotho,LSO,2010,Country interpolated,Country/Year matched
+1089,Lesotho,LSO,2011,Country interpolated,Country/Year matched
+1090,Lesotho,LSO,2012,Country interpolated,Country/Year matched
+1091,Lesotho,LSO,2013,Country interpolated,Country/Year matched
+1092,Lesotho,LSO,2014,Country interpolated,Country/Year matched
+1093,Lesotho,LSO,2015,Country interpolated,Country/Year matched
+1094,Lesotho,LSO,2016,Country interpolated,Country/Year matched
+1095,Lesotho,LSO,2018,Country interpolated,Country/Year matched
+1096,Lesotho,LSO,2019,Country interpolated,Country/Year matched
+1097,Lesotho,LSO,2020,Country interpolated,Country/Year matched
+1098,Lesotho,LSO,2021,Country interpolated,Country/Year matched
+1099,Lesotho,LSO,2022,Country interpolated,Country/Year matched
+1100,Lesotho,LSO,2023,Country interpolated,Country/Year matched
+1101,Morocco,MAR,2001,Country interpolated,Country/Year matched
+1102,Morocco,MAR,2002,Country interpolated,Country/Year matched
+1103,Morocco,MAR,2003,Country interpolated,Country/Year matched
+1104,Morocco,MAR,2004,Country interpolated,Country/Year matched
+1105,Morocco,MAR,2005,Country interpolated,Country/Year matched
+1106,Morocco,MAR,2007,Country interpolated,Country/Year matched
+1107,Morocco,MAR,2008,Country interpolated,Country/Year matched
+1108,Morocco,MAR,2009,Country interpolated,Country/Year matched
+1109,Morocco,MAR,2010,Country interpolated,Country/Year matched
+1110,Morocco,MAR,2011,Country interpolated,Country/Year matched
+1111,Morocco,MAR,2012,Country interpolated,Country/Year matched
+1112,Morocco,MAR,2014,Country interpolated,Country/Year matched
+1113,Morocco,MAR,2015,Country interpolated,Country/Year matched
+1114,Morocco,MAR,2016,Country interpolated,Country/Year matched
+1115,Morocco,MAR,2017,Country interpolated,Country/Year matched
+1116,Morocco,MAR,2018,Country interpolated,Country/Year matched
+1117,Morocco,MAR,2019,Country interpolated,Country/Year matched
+1118,Morocco,MAR,2020,Country interpolated,Country/Year matched
+1119,Morocco,MAR,2021,Country interpolated,Country/Year matched
+1120,Morocco,MAR,2022,Country interpolated,Country/Year matched
+1121,Morocco,MAR,2023,Country interpolated,Country/Year matched
+1122,Madagascar,MDG,2000,Country interpolated,Country/Year matched
+1123,Madagascar,MDG,2002,Country interpolated,Country/Year matched
+1124,Madagascar,MDG,2003,Country interpolated,Country/Year matched
+1125,Madagascar,MDG,2004,Country interpolated,Country/Year matched
+1126,Madagascar,MDG,2006,Country interpolated,Country/Year matched
+1127,Madagascar,MDG,2007,Country interpolated,Country/Year matched
+1128,Madagascar,MDG,2008,Country interpolated,Country/Year matched
+1129,Madagascar,MDG,2009,Country interpolated,Country/Year matched
+1130,Madagascar,MDG,2011,Country interpolated,Country/Year matched
+1131,Madagascar,MDG,2013,Country interpolated,Country/Year matched
+1132,Madagascar,MDG,2014,Country interpolated,Country/Year matched
+1133,Madagascar,MDG,2015,Country interpolated,Country/Year matched
+1134,Madagascar,MDG,2016,Country interpolated,Country/Year matched
+1135,Madagascar,MDG,2017,Country interpolated,Country/Year matched
+1136,Madagascar,MDG,2018,Country interpolated,Country/Year matched
+1137,Madagascar,MDG,2019,Country interpolated,Country/Year matched
+1138,Madagascar,MDG,2020,Country interpolated,Country/Year matched
+1139,Madagascar,MDG,2022,Country interpolated,Country/Year matched
+1140,Madagascar,MDG,2023,Country interpolated,Country/Year matched
+1141,Maldives,MDV,2000,Country interpolated,Country/Year matched
+1142,Maldives,MDV,2001,Country interpolated,Country/Year matched
+1143,Maldives,MDV,2003,Country interpolated,Country/Year matched
+1144,Maldives,MDV,2004,Country interpolated,Country/Year matched
+1145,Maldives,MDV,2005,Country interpolated,Country/Year matched
+1146,Maldives,MDV,2006,Country interpolated,Country/Year matched
+1147,Maldives,MDV,2007,Country interpolated,Country/Year matched
+1148,Maldives,MDV,2008,Country interpolated,Country/Year matched
+1149,Maldives,MDV,2010,Country interpolated,Country/Year matched
+1150,Maldives,MDV,2011,Country interpolated,Country/Year matched
+1151,Maldives,MDV,2012,Country interpolated,Country/Year matched
+1152,Maldives,MDV,2013,Country interpolated,Country/Year matched
+1153,Maldives,MDV,2014,Country interpolated,Country/Year matched
+1154,Maldives,MDV,2015,Country interpolated,Country/Year matched
+1155,Maldives,MDV,2017,Country interpolated,Country/Year matched
+1156,Maldives,MDV,2018,Country interpolated,Country/Year matched
+1157,Maldives,MDV,2020,Country interpolated,Country/Year matched
+1158,Maldives,MDV,2021,Country interpolated,Country/Year matched
+1159,Maldives,MDV,2022,Country interpolated,Country/Year matched
+1160,Maldives,MDV,2023,Country interpolated,Country/Year matched
+1161,Mexico,MEX,2001,Country interpolated,Country/Year matched
+1162,Mexico,MEX,2003,Country interpolated,Country/Year matched
+1163,Mexico,MEX,2007,Country interpolated,Country/Year matched
+1164,Mexico,MEX,2009,Country interpolated,Country/Year matched
+1165,Mexico,MEX,2011,Country interpolated,Country/Year matched
+1166,Mexico,MEX,2013,Country interpolated,Country/Year matched
+1167,Mexico,MEX,2015,Country interpolated,Country/Year matched
+1168,Mexico,MEX,2017,Country interpolated,Country/Year matched
+1169,Mexico,MEX,2019,Country interpolated,Country/Year matched
+1170,Mexico,MEX,2021,Country interpolated,Country/Year matched
+1171,Mexico,MEX,2023,Country interpolated,Country/Year matched
+1172,Marshall Islands,MHL,2000,Country interpolated,Country/Year matched
+1173,Marshall Islands,MHL,2001,Country interpolated,Country/Year matched
+1174,Marshall Islands,MHL,2002,Country interpolated,Country/Year matched
+1175,Marshall Islands,MHL,2003,Country interpolated,Country/Year matched
+1176,Marshall Islands,MHL,2004,Country interpolated,Country/Year matched
+1177,Marshall Islands,MHL,2005,Country interpolated,Country/Year matched
+1178,Marshall Islands,MHL,2006,Country interpolated,Country/Year matched
+1179,Marshall Islands,MHL,2007,Country interpolated,Country/Year matched
+1180,Marshall Islands,MHL,2008,Country interpolated,Country/Year matched
+1181,Marshall Islands,MHL,2009,Country interpolated,Country/Year matched
+1182,Marshall Islands,MHL,2010,Country interpolated,Country/Year matched
+1183,Marshall Islands,MHL,2011,Country interpolated,Country/Year matched
+1184,Marshall Islands,MHL,2012,Country interpolated,Country/Year matched
+1185,Marshall Islands,MHL,2013,Country interpolated,Country/Year matched
+1186,Marshall Islands,MHL,2014,Country interpolated,Country/Year matched
+1187,Marshall Islands,MHL,2015,Country interpolated,Country/Year matched
+1188,Marshall Islands,MHL,2016,Country interpolated,Country/Year matched
+1189,Marshall Islands,MHL,2017,Country interpolated,Country/Year matched
+1190,Marshall Islands,MHL,2018,Country interpolated,Country/Year matched
+1191,Marshall Islands,MHL,2020,Country interpolated,Country/Year matched
+1192,Marshall Islands,MHL,2021,Country interpolated,Country/Year matched
+1193,Marshall Islands,MHL,2022,Country interpolated,Country/Year matched
+1194,Marshall Islands,MHL,2023,Country interpolated,Country/Year matched
+1195,North Macedonia,MKD,2001,Country interpolated,Country/Year matched
+1196,North Macedonia,MKD,2007,Country interpolated,Country/Year matched
+1197,North Macedonia,MKD,2020,Country interpolated,Country/Year matched
+1198,North Macedonia,MKD,2021,Country interpolated,Country/Year matched
+1199,North Macedonia,MKD,2022,Country interpolated,Country/Year matched
+1200,North Macedonia,MKD,2023,Country interpolated,Country/Year matched
+1201,Mali,MLI,2000,Country interpolated,Country/Year matched
+1202,Mali,MLI,2002,Country interpolated,Country/Year matched
+1203,Mali,MLI,2003,Country interpolated,Country/Year matched
+1204,Mali,MLI,2004,Country interpolated,Country/Year matched
+1205,Mali,MLI,2005,Country interpolated,Country/Year matched
+1206,Mali,MLI,2007,Country interpolated,Country/Year matched
+1207,Mali,MLI,2008,Country interpolated,Country/Year matched
+1208,Mali,MLI,2010,Country interpolated,Country/Year matched
+1209,Mali,MLI,2011,Country interpolated,Country/Year matched
+1210,Mali,MLI,2012,Country interpolated,Country/Year matched
+1211,Mali,MLI,2013,Country interpolated,Country/Year matched
+1212,Mali,MLI,2014,Country interpolated,Country/Year matched
+1213,Mali,MLI,2015,Country interpolated,Country/Year matched
+1214,Mali,MLI,2016,Country interpolated,Country/Year matched
+1215,Mali,MLI,2017,Country interpolated,Country/Year matched
+1216,Mali,MLI,2019,Country interpolated,Country/Year matched
+1217,Mali,MLI,2020,Country interpolated,Country/Year matched
+1218,Mali,MLI,2022,Country interpolated,Country/Year matched
+1219,Mali,MLI,2023,Country interpolated,Country/Year matched
+1220,Myanmar,MMR,2000,Country interpolated,Country/Year matched
+1221,Myanmar,MMR,2001,Country interpolated,Country/Year matched
+1222,Myanmar,MMR,2002,Country interpolated,Country/Year matched
+1223,Myanmar,MMR,2003,Country interpolated,Country/Year matched
+1224,Myanmar,MMR,2004,Country interpolated,Country/Year matched
+1225,Myanmar,MMR,2005,Country interpolated,Country/Year matched
+1226,Myanmar,MMR,2006,Country interpolated,Country/Year matched
+1227,Myanmar,MMR,2007,Country interpolated,Country/Year matched
+1228,Myanmar,MMR,2008,Country interpolated,Country/Year matched
+1229,Myanmar,MMR,2009,Country interpolated,Country/Year matched
+1230,Myanmar,MMR,2010,Country interpolated,Country/Year matched
+1231,Myanmar,MMR,2011,Country interpolated,Country/Year matched
+1232,Myanmar,MMR,2012,Country interpolated,Country/Year matched
+1233,Myanmar,MMR,2013,Country interpolated,Country/Year matched
+1234,Myanmar,MMR,2014,Country interpolated,Country/Year matched
+1235,Myanmar,MMR,2016,Country interpolated,Country/Year matched
+1236,Myanmar,MMR,2018,Country interpolated,Country/Year matched
+1237,Myanmar,MMR,2019,Country interpolated,Country/Year matched
+1238,Myanmar,MMR,2020,Country interpolated,Country/Year matched
+1239,Myanmar,MMR,2021,Country interpolated,Country/Year matched
+1240,Myanmar,MMR,2022,Country interpolated,Country/Year matched
+1241,Myanmar,MMR,2023,Country interpolated,Country/Year matched
+1242,Montenegro,MNE,2000,Country interpolated,Country/Year matched
+1243,Montenegro,MNE,2001,Country interpolated,Country/Year matched
+1244,Montenegro,MNE,2002,Country interpolated,Country/Year matched
+1245,Montenegro,MNE,2003,Country interpolated,Country/Year matched
+1246,Montenegro,MNE,2004,Country interpolated,Country/Year matched
+1247,Montenegro,MNE,2022,Country interpolated,Country/Year matched
+1248,Montenegro,MNE,2023,Country interpolated,Country/Year matched
+1249,Mongolia,MNG,2000,Country interpolated,Country/Year matched
+1250,Mongolia,MNG,2001,Country interpolated,Country/Year matched
+1251,Mongolia,MNG,2003,Country interpolated,Country/Year matched
+1252,Mongolia,MNG,2004,Country interpolated,Country/Year matched
+1253,Mongolia,MNG,2005,Country interpolated,Country/Year matched
+1254,Mongolia,MNG,2006,Country interpolated,Country/Year matched
+1255,Mongolia,MNG,2008,Country interpolated,Country/Year matched
+1256,Mongolia,MNG,2009,Country interpolated,Country/Year matched
+1257,Mongolia,MNG,2013,Country interpolated,Country/Year matched
+1258,Mongolia,MNG,2015,Country interpolated,Country/Year matched
+1259,Mongolia,MNG,2017,Country interpolated,Country/Year matched
+1260,Mongolia,MNG,2019,Country interpolated,Country/Year matched
+1261,Mongolia,MNG,2020,Country interpolated,Country/Year matched
+1262,Mongolia,MNG,2021,Country interpolated,Country/Year matched
+1263,Mongolia,MNG,2023,Country interpolated,Country/Year matched
+1264,Mozambique,MOZ,2000,Country interpolated,Country/Year matched
+1265,Mozambique,MOZ,2001,Country interpolated,Country/Year matched
+1266,Mozambique,MOZ,2003,Country interpolated,Country/Year matched
+1267,Mozambique,MOZ,2004,Country interpolated,Country/Year matched
+1268,Mozambique,MOZ,2005,Country interpolated,Country/Year matched
+1269,Mozambique,MOZ,2006,Country interpolated,Country/Year matched
+1270,Mozambique,MOZ,2007,Country interpolated,Country/Year matched
+1271,Mozambique,MOZ,2009,Country interpolated,Country/Year matched
+1272,Mozambique,MOZ,2010,Country interpolated,Country/Year matched
+1273,Mozambique,MOZ,2011,Country interpolated,Country/Year matched
+1274,Mozambique,MOZ,2012,Country interpolated,Country/Year matched
+1275,Mozambique,MOZ,2013,Country interpolated,Country/Year matched
+1276,Mozambique,MOZ,2015,Country interpolated,Country/Year matched
+1277,Mozambique,MOZ,2016,Country interpolated,Country/Year matched
+1278,Mozambique,MOZ,2017,Country interpolated,Country/Year matched
+1279,Mozambique,MOZ,2018,Country interpolated,Country/Year matched
+1280,Mozambique,MOZ,2020,Country interpolated,Country/Year matched
+1281,Mozambique,MOZ,2021,Country interpolated,Country/Year matched
+1282,Mozambique,MOZ,2023,Country interpolated,Country/Year matched
+1283,Mauritania,MRT,2001,Country interpolated,Country/Year matched
+1284,Mauritania,MRT,2002,Country interpolated,Country/Year matched
+1285,Mauritania,MRT,2003,Country interpolated,Country/Year matched
+1286,Mauritania,MRT,2005,Country interpolated,Country/Year matched
+1287,Mauritania,MRT,2006,Country interpolated,Country/Year matched
+1288,Mauritania,MRT,2007,Country interpolated,Country/Year matched
+1289,Mauritania,MRT,2009,Country interpolated,Country/Year matched
+1290,Mauritania,MRT,2010,Country interpolated,Country/Year matched
+1291,Mauritania,MRT,2011,Country interpolated,Country/Year matched
+1292,Mauritania,MRT,2012,Country interpolated,Country/Year matched
+1293,Mauritania,MRT,2013,Country interpolated,Country/Year matched
+1294,Mauritania,MRT,2015,Country interpolated,Country/Year matched
+1295,Mauritania,MRT,2016,Country interpolated,Country/Year matched
+1296,Mauritania,MRT,2017,Country interpolated,Country/Year matched
+1297,Mauritania,MRT,2018,Country interpolated,Country/Year matched
+1298,Mauritania,MRT,2020,Country interpolated,Country/Year matched
+1299,Mauritania,MRT,2021,Country interpolated,Country/Year matched
+1300,Mauritania,MRT,2022,Country interpolated,Country/Year matched
+1301,Mauritania,MRT,2023,Country interpolated,Country/Year matched
+1302,Mauritius,MUS,2000,Country interpolated,Country/Year matched
+1303,Mauritius,MUS,2001,Country interpolated,Country/Year matched
+1304,Mauritius,MUS,2002,Country interpolated,Country/Year matched
+1305,Mauritius,MUS,2003,Country interpolated,Country/Year matched
+1306,Mauritius,MUS,2004,Country interpolated,Country/Year matched
+1307,Mauritius,MUS,2005,Country interpolated,Country/Year matched
+1308,Mauritius,MUS,2007,Country interpolated,Country/Year matched
+1309,Mauritius,MUS,2008,Country interpolated,Country/Year matched
+1310,Mauritius,MUS,2009,Country interpolated,Country/Year matched
+1311,Mauritius,MUS,2010,Country interpolated,Country/Year matched
+1312,Mauritius,MUS,2011,Country interpolated,Country/Year matched
+1313,Mauritius,MUS,2013,Country interpolated,Country/Year matched
+1314,Mauritius,MUS,2014,Country interpolated,Country/Year matched
+1315,Mauritius,MUS,2015,Country interpolated,Country/Year matched
+1316,Mauritius,MUS,2016,Country interpolated,Country/Year matched
+1317,Mauritius,MUS,2018,Country interpolated,Country/Year matched
+1318,Mauritius,MUS,2019,Country interpolated,Country/Year matched
+1319,Mauritius,MUS,2020,Country interpolated,Country/Year matched
+1320,Mauritius,MUS,2021,Country interpolated,Country/Year matched
+1321,Mauritius,MUS,2022,Country interpolated,Country/Year matched
+1322,Mauritius,MUS,2023,Country interpolated,Country/Year matched
+1323,Malawi,MWI,2000,Country interpolated,Country/Year matched
+1324,Malawi,MWI,2001,Country interpolated,Country/Year matched
+1325,Malawi,MWI,2002,Country interpolated,Country/Year matched
+1326,Malawi,MWI,2003,Country interpolated,Country/Year matched
+1327,Malawi,MWI,2005,Country interpolated,Country/Year matched
+1328,Malawi,MWI,2006,Country interpolated,Country/Year matched
+1329,Malawi,MWI,2007,Country interpolated,Country/Year matched
+1330,Malawi,MWI,2008,Country interpolated,Country/Year matched
+1331,Malawi,MWI,2009,Country interpolated,Country/Year matched
+1332,Malawi,MWI,2011,Country interpolated,Country/Year matched
+1333,Malawi,MWI,2012,Country interpolated,Country/Year matched
+1334,Malawi,MWI,2013,Country interpolated,Country/Year matched
+1335,Malawi,MWI,2014,Country interpolated,Country/Year matched
+1336,Malawi,MWI,2015,Country interpolated,Country/Year matched
+1337,Malawi,MWI,2017,Country interpolated,Country/Year matched
+1338,Malawi,MWI,2018,Country interpolated,Country/Year matched
+1339,Malawi,MWI,2020,Country interpolated,Country/Year matched
+1340,Malawi,MWI,2021,Country interpolated,Country/Year matched
+1341,Malawi,MWI,2022,Country interpolated,Country/Year matched
+1342,Malawi,MWI,2023,Country interpolated,Country/Year matched
+1343,Malaysia,MYS,2000,Country interpolated,Country/Year matched
+1344,Malaysia,MYS,2001,Country interpolated,Country/Year matched
+1345,Malaysia,MYS,2002,Country interpolated,Country/Year matched
+1346,Malaysia,MYS,2004,Country interpolated,Country/Year matched
+1347,Malaysia,MYS,2005,Country interpolated,Country/Year matched
+1348,Malaysia,MYS,2007,Country interpolated,Country/Year matched
+1349,Malaysia,MYS,2009,Country interpolated,Country/Year matched
+1350,Malaysia,MYS,2010,Country interpolated,Country/Year matched
+1351,Malaysia,MYS,2012,Country interpolated,Country/Year matched
+1352,Malaysia,MYS,2014,Country interpolated,Country/Year matched
+1353,Malaysia,MYS,2016,Country interpolated,Country/Year matched
+1354,Malaysia,MYS,2017,Country interpolated,Country/Year matched
+1355,Malaysia,MYS,2019,Country interpolated,Country/Year matched
+1356,Malaysia,MYS,2020,Country interpolated,Country/Year matched
+1357,Malaysia,MYS,2022,Country interpolated,Country/Year matched
+1358,Malaysia,MYS,2023,Country interpolated,Country/Year matched
+1359,Namibia,NAM,2000,Country interpolated,Country/Year matched
+1360,Namibia,NAM,2001,Country interpolated,Country/Year matched
+1361,Namibia,NAM,2002,Country interpolated,Country/Year matched
+1362,Namibia,NAM,2004,Country interpolated,Country/Year matched
+1363,Namibia,NAM,2005,Country interpolated,Country/Year matched
+1364,Namibia,NAM,2006,Country interpolated,Country/Year matched
+1365,Namibia,NAM,2007,Country interpolated,Country/Year matched
+1366,Namibia,NAM,2008,Country interpolated,Country/Year matched
+1367,Namibia,NAM,2010,Country interpolated,Country/Year matched
+1368,Namibia,NAM,2011,Country interpolated,Country/Year matched
+1369,Namibia,NAM,2012,Country interpolated,Country/Year matched
+1370,Namibia,NAM,2013,Country interpolated,Country/Year matched
+1371,Namibia,NAM,2014,Country interpolated,Country/Year matched
+1372,Namibia,NAM,2016,Country interpolated,Country/Year matched
+1373,Namibia,NAM,2017,Country interpolated,Country/Year matched
+1374,Namibia,NAM,2018,Country interpolated,Country/Year matched
+1375,Namibia,NAM,2019,Country interpolated,Country/Year matched
+1376,Namibia,NAM,2020,Country interpolated,Country/Year matched
+1377,Namibia,NAM,2021,Country interpolated,Country/Year matched
+1378,Namibia,NAM,2022,Country interpolated,Country/Year matched
+1379,Namibia,NAM,2023,Country interpolated,Country/Year matched
+1380,Niger,NER,2000,Country interpolated,Country/Year matched
+1381,Niger,NER,2001,Country interpolated,Country/Year matched
+1382,Niger,NER,2002,Country interpolated,Country/Year matched
+1383,Niger,NER,2003,Country interpolated,Country/Year matched
+1384,Niger,NER,2004,Country interpolated,Country/Year matched
+1385,Niger,NER,2006,Country interpolated,Country/Year matched
+1386,Niger,NER,2008,Country interpolated,Country/Year matched
+1387,Niger,NER,2009,Country interpolated,Country/Year matched
+1388,Niger,NER,2010,Country interpolated,Country/Year matched
+1389,Niger,NER,2012,Country interpolated,Country/Year matched
+1390,Niger,NER,2013,Country interpolated,Country/Year matched
+1391,Niger,NER,2015,Country interpolated,Country/Year matched
+1392,Niger,NER,2016,Country interpolated,Country/Year matched
+1393,Niger,NER,2017,Country interpolated,Country/Year matched
+1394,Niger,NER,2019,Country interpolated,Country/Year matched
+1395,Niger,NER,2020,Country interpolated,Country/Year matched
+1396,Niger,NER,2022,Country interpolated,Country/Year matched
+1397,Niger,NER,2023,Country interpolated,Country/Year matched
+1398,Nigeria,NGA,2000,Country interpolated,Country interpolated
+1399,Nigeria,NGA,2001,Country interpolated,Country interpolated
+1400,Nigeria,NGA,2002,Country interpolated,Country interpolated
+1401,Nigeria,NGA,2003,Country/Year matched,Country interpolated
+1402,Nigeria,NGA,2004,Country interpolated,Country interpolated
+1403,Nigeria,NGA,2005,Country interpolated,Country interpolated
+1404,Nigeria,NGA,2006,Country interpolated,Country interpolated
+1405,Nigeria,NGA,2007,Country interpolated,Country interpolated
+1406,Nigeria,NGA,2008,Country interpolated,Country/Year matched
+1407,Nigeria,NGA,2009,Country interpolated,Country/Year matched
+1408,Nigeria,NGA,2011,Country interpolated,Country/Year matched
+1409,Nigeria,NGA,2013,Country interpolated,Country/Year matched
+1410,Nigeria,NGA,2014,Country interpolated,Country/Year matched
+1411,Nigeria,NGA,2016,Country interpolated,Country/Year matched
+1412,Nigeria,NGA,2017,Country interpolated,Country/Year matched
+1413,Nigeria,NGA,2019,Country interpolated,Country/Year matched
+1414,Nigeria,NGA,2020,Country interpolated,Country/Year matched
+1415,Nigeria,NGA,2021,Country interpolated,Country/Year matched
+1416,Nigeria,NGA,2023,Country interpolated,Country/Year matched
+1417,Nicaragua,NIC,2000,Country interpolated,Country/Year matched
+1418,Nicaragua,NIC,2002,Country interpolated,Country/Year matched
+1419,Nicaragua,NIC,2003,Country interpolated,Country/Year matched
+1420,Nicaragua,NIC,2004,Country interpolated,Country/Year matched
+1421,Nicaragua,NIC,2006,Country interpolated,Country/Year matched
+1422,Nicaragua,NIC,2007,Country interpolated,Country/Year matched
+1423,Nicaragua,NIC,2008,Country interpolated,Country/Year matched
+1424,Nicaragua,NIC,2010,Country interpolated,Country/Year matched
+1425,Nicaragua,NIC,2011,Country interpolated,Country/Year matched
+1426,Nicaragua,NIC,2012,Country interpolated,Country/Year matched
+1427,Nicaragua,NIC,2013,Country interpolated,Country/Year matched
+1428,Nicaragua,NIC,2015,Country interpolated,Country/Year matched
+1429,Nicaragua,NIC,2016,Country interpolated,Country/Year matched
+1430,Nicaragua,NIC,2017,Country interpolated,Country/Year matched
+1431,Nicaragua,NIC,2018,Country interpolated,Country/Year matched
+1432,Nicaragua,NIC,2019,Country interpolated,Country/Year matched
+1433,Nicaragua,NIC,2020,Country interpolated,Country/Year matched
+1434,Nicaragua,NIC,2021,Country interpolated,Country/Year matched
+1435,Nicaragua,NIC,2022,Country interpolated,Country/Year matched
+1436,Nicaragua,NIC,2023,Country interpolated,Country/Year matched
+1437,Nepal,NPL,2000,Country interpolated,Country/Year matched
+1438,Nepal,NPL,2001,Country interpolated,Country/Year matched
+1439,Nepal,NPL,2002,Country interpolated,Country/Year matched
+1440,Nepal,NPL,2004,Country interpolated,Country/Year matched
+1441,Nepal,NPL,2005,Country interpolated,Country/Year matched
+1442,Nepal,NPL,2006,Country interpolated,Country/Year matched
+1443,Nepal,NPL,2007,Country interpolated,Country/Year matched
+1444,Nepal,NPL,2008,Country interpolated,Country/Year matched
+1445,Nepal,NPL,2009,Country interpolated,Country/Year matched
+1446,Nepal,NPL,2011,Country interpolated,Country/Year matched
+1447,Nepal,NPL,2012,Country interpolated,Country/Year matched
+1448,Nepal,NPL,2013,Country interpolated,Country/Year matched
+1449,Nepal,NPL,2014,Country interpolated,Country/Year matched
+1450,Nepal,NPL,2015,Country interpolated,Country/Year matched
+1451,Nepal,NPL,2016,Country interpolated,Country/Year matched
+1452,Nepal,NPL,2017,Country interpolated,Country/Year matched
+1453,Nepal,NPL,2018,Country interpolated,Country/Year matched
+1454,Nepal,NPL,2019,Country interpolated,Country/Year matched
+1455,Nepal,NPL,2020,Country interpolated,Country/Year matched
+1456,Nepal,NPL,2021,Country interpolated,Country/Year matched
+1457,Nepal,NPL,2023,Country interpolated,Country/Year matched
+1458,Pakistan,PAK,2000,Country interpolated,Country/Year matched
+1459,Pakistan,PAK,2002,Country interpolated,Country/Year matched
+1460,Pakistan,PAK,2003,Country interpolated,Country/Year matched
+1461,Pakistan,PAK,2006,Country interpolated,Country/Year matched
+1462,Pakistan,PAK,2008,Country interpolated,Country/Year matched
+1463,Pakistan,PAK,2009,Country interpolated,Country/Year matched
+1464,Pakistan,PAK,2012,Country interpolated,Country/Year matched
+1465,Pakistan,PAK,2014,Country interpolated,Country/Year matched
+1466,Pakistan,PAK,2016,Country interpolated,Country/Year matched
+1467,Pakistan,PAK,2017,Country interpolated,Country/Year matched
+1468,Pakistan,PAK,2019,Country interpolated,Country/Year matched
+1469,Pakistan,PAK,2020,Country interpolated,Country/Year matched
+1470,Pakistan,PAK,2021,Country interpolated,Country/Year matched
+1471,Pakistan,PAK,2022,Country interpolated,Country/Year matched
+1472,Pakistan,PAK,2023,Country interpolated,Country/Year matched
+1473,Philippines,PHL,2001,Country interpolated,Country/Year matched
+1474,Philippines,PHL,2002,Country interpolated,Country/Year matched
+1475,Philippines,PHL,2004,Country interpolated,Country/Year matched
+1476,Philippines,PHL,2005,Country interpolated,Country/Year matched
+1477,Philippines,PHL,2007,Country interpolated,Country/Year matched
+1478,Philippines,PHL,2008,Country interpolated,Country/Year matched
+1479,Philippines,PHL,2010,Country interpolated,Country/Year matched
+1480,Philippines,PHL,2011,Country interpolated,Country/Year matched
+1481,Philippines,PHL,2013,Country interpolated,Country/Year matched
+1482,Philippines,PHL,2014,Country interpolated,Country/Year matched
+1483,Philippines,PHL,2016,Country interpolated,Country/Year matched
+1484,Philippines,PHL,2017,Country interpolated,Country/Year matched
+1485,Philippines,PHL,2019,Country interpolated,Country/Year matched
+1486,Philippines,PHL,2020,Country interpolated,Country/Year matched
+1487,Philippines,PHL,2022,Country interpolated,Country/Year matched
+1488,Papua New Guinea,PNG,2000,Country interpolated,Country/Year matched
+1489,Papua New Guinea,PNG,2001,Country interpolated,Country/Year matched
+1490,Papua New Guinea,PNG,2002,Country interpolated,Country/Year matched
+1491,Papua New Guinea,PNG,2003,Country interpolated,Country/Year matched
+1492,Papua New Guinea,PNG,2004,Country interpolated,Country/Year matched
+1493,Papua New Guinea,PNG,2005,Country interpolated,Country/Year matched
+1494,Papua New Guinea,PNG,2006,Country interpolated,Country/Year matched
+1495,Papua New Guinea,PNG,2007,Country interpolated,Country/Year matched
+1496,Papua New Guinea,PNG,2008,Country interpolated,Country/Year matched
+1497,Papua New Guinea,PNG,2010,Country interpolated,Country/Year matched
+1498,Papua New Guinea,PNG,2011,Country interpolated,Country/Year matched
+1499,Papua New Guinea,PNG,2012,Country interpolated,Country/Year matched
+1500,Papua New Guinea,PNG,2013,Country interpolated,Country/Year matched
+1501,Papua New Guinea,PNG,2014,Country interpolated,Country/Year matched
+1502,Papua New Guinea,PNG,2015,Country interpolated,Country/Year matched
+1503,Papua New Guinea,PNG,2016,Country interpolated,Country/Year matched
+1504,Papua New Guinea,PNG,2017,Country interpolated,Country/Year matched
+1505,Papua New Guinea,PNG,2018,Country interpolated,Country/Year matched
+1506,Papua New Guinea,PNG,2019,Country interpolated,Country/Year matched
+1507,Papua New Guinea,PNG,2020,Country interpolated,Country/Year matched
+1508,Papua New Guinea,PNG,2021,Country interpolated,Country/Year matched
+1509,Papua New Guinea,PNG,2022,Country interpolated,Country/Year matched
+1510,Papua New Guinea,PNG,2023,Country interpolated,Country/Year matched
+1511,"Korea, Dem. People's Rep.",PRK,2000,NA,Regional
+1512,"Korea, Dem. People's Rep.",PRK,2001,NA,Regional
+1513,"Korea, Dem. People's Rep.",PRK,2002,NA,Regional
+1514,"Korea, Dem. People's Rep.",PRK,2003,NA,Regional
+1515,"Korea, Dem. People's Rep.",PRK,2004,NA,Regional
+1516,"Korea, Dem. People's Rep.",PRK,2005,NA,Regional
+1517,"Korea, Dem. People's Rep.",PRK,2006,NA,Regional
+1518,"Korea, Dem. People's Rep.",PRK,2007,NA,Regional
+1519,"Korea, Dem. People's Rep.",PRK,2008,NA,Regional
+1520,"Korea, Dem. People's Rep.",PRK,2009,NA,Regional
+1521,"Korea, Dem. People's Rep.",PRK,2010,NA,Regional
+1522,"Korea, Dem. People's Rep.",PRK,2011,NA,Regional
+1523,"Korea, Dem. People's Rep.",PRK,2012,NA,Regional
+1524,"Korea, Dem. People's Rep.",PRK,2013,NA,Regional
+1525,"Korea, Dem. People's Rep.",PRK,2014,NA,Regional
+1526,"Korea, Dem. People's Rep.",PRK,2015,NA,Regional
+1527,"Korea, Dem. People's Rep.",PRK,2016,NA,Regional
+1528,"Korea, Dem. People's Rep.",PRK,2017,NA,Regional
+1529,"Korea, Dem. People's Rep.",PRK,2018,NA,Regional
+1530,"Korea, Dem. People's Rep.",PRK,2019,NA,Regional
+1531,"Korea, Dem. People's Rep.",PRK,2020,NA,Regional
+1532,"Korea, Dem. People's Rep.",PRK,2021,NA,Regional
+1533,"Korea, Dem. People's Rep.",PRK,2022,NA,Regional
+1534,"Korea, Dem. People's Rep.",PRK,2023,NA,Regional
+1535,Paraguay,PRY,2000,Country interpolated,Country/Year matched
+1536,West Bank and Gaza,PSE,2000,Country interpolated,Country/Year matched
+1537,West Bank and Gaza,PSE,2001,Country interpolated,Country/Year matched
+1538,West Bank and Gaza,PSE,2002,Country interpolated,Country/Year matched
+1539,West Bank and Gaza,PSE,2003,Country interpolated,Country/Year matched
+1540,West Bank and Gaza,PSE,2008,Country interpolated,Country/Year matched
+1541,West Bank and Gaza,PSE,2012,Country interpolated,Country/Year matched
+1542,West Bank and Gaza,PSE,2013,Country interpolated,Country/Year matched
+1543,West Bank and Gaza,PSE,2014,Country interpolated,Country/Year matched
+1544,West Bank and Gaza,PSE,2015,Country interpolated,Country/Year matched
+1545,West Bank and Gaza,PSE,2017,Country interpolated,Country/Year matched
+1546,West Bank and Gaza,PSE,2018,Country interpolated,Country/Year matched
+1547,West Bank and Gaza,PSE,2019,Country interpolated,Country/Year matched
+1548,West Bank and Gaza,PSE,2020,Country interpolated,Country/Year matched
+1549,West Bank and Gaza,PSE,2021,Country interpolated,Country/Year matched
+1550,West Bank and Gaza,PSE,2022,Country interpolated,Country/Year matched
+1551,Rwanda,RWA,2001,Country interpolated,Country/Year matched
+1552,Rwanda,RWA,2002,Country interpolated,Country/Year matched
+1553,Rwanda,RWA,2003,Country interpolated,Country/Year matched
+1554,Rwanda,RWA,2004,Country interpolated,Country/Year matched
+1555,Rwanda,RWA,2006,Country interpolated,Country/Year matched
+1556,Rwanda,RWA,2007,Country interpolated,Country/Year matched
+1557,Rwanda,RWA,2008,Country interpolated,Country/Year matched
+1558,Rwanda,RWA,2009,Country interpolated,Country/Year matched
+1559,Rwanda,RWA,2011,Country interpolated,Country/Year matched
+1560,Rwanda,RWA,2012,Country interpolated,Country/Year matched
+1561,Rwanda,RWA,2014,Country interpolated,Country/Year matched
+1562,Rwanda,RWA,2015,Country interpolated,Country/Year matched
+1563,Rwanda,RWA,2017,Country interpolated,Country/Year matched
+1564,Rwanda,RWA,2018,Country interpolated,Country/Year matched
+1565,Rwanda,RWA,2019,Country interpolated,Country/Year matched
+1566,Rwanda,RWA,2020,Country interpolated,Country/Year matched
+1567,Rwanda,RWA,2021,Country interpolated,Country/Year matched
+1568,Rwanda,RWA,2022,Country interpolated,Country/Year matched
+1569,Sudan,SDN,2000,Country interpolated,Country/Year matched
+1570,Sudan,SDN,2001,Country interpolated,Country/Year matched
+1571,Sudan,SDN,2002,Country interpolated,Country/Year matched
+1572,Sudan,SDN,2003,Country interpolated,Country/Year matched
+1573,Sudan,SDN,2004,Country interpolated,Country/Year matched
+1574,Sudan,SDN,2005,Country interpolated,Country/Year matched
+1575,Sudan,SDN,2006,Country interpolated,Country/Year matched
+1576,Sudan,SDN,2007,Country interpolated,Country/Year matched
+1577,Sudan,SDN,2008,Country interpolated,Country/Year matched
+1578,Sudan,SDN,2010,Country interpolated,Country/Year matched
+1579,Sudan,SDN,2011,Country interpolated,Country/Year matched
+1580,Sudan,SDN,2012,Country interpolated,Country/Year matched
+1581,Sudan,SDN,2013,Country interpolated,Country/Year matched
+1582,Sudan,SDN,2015,Country interpolated,Country/Year matched
+1583,Sudan,SDN,2016,Country interpolated,Country/Year matched
+1584,Sudan,SDN,2017,Country interpolated,Country/Year matched
+1585,Sudan,SDN,2018,Country interpolated,Country/Year matched
+1586,Sudan,SDN,2019,Country interpolated,Country/Year matched
+1587,Sudan,SDN,2020,Country interpolated,Country/Year matched
+1588,Sudan,SDN,2021,Country interpolated,Country/Year matched
+1589,Sudan,SDN,2022,Country interpolated,Country/Year matched
+1590,Sudan,SDN,2023,Country interpolated,Country/Year matched
+1591,Senegal,SEN,2000,Country interpolated,Country/Year matched
+1592,Senegal,SEN,2002,Country interpolated,Country/Year matched
+1593,Senegal,SEN,2003,Country interpolated,Country/Year matched
+1594,Senegal,SEN,2004,Country interpolated,Country/Year matched
+1595,Senegal,SEN,2006,Country interpolated,Country/Year matched
+1596,Senegal,SEN,2007,Country interpolated,Country/Year matched
+1597,Senegal,SEN,2008,Country interpolated,Country/Year matched
+1598,Senegal,SEN,2009,Country interpolated,Country/Year matched
+1599,Senegal,SEN,2010,Country interpolated,Country/Year matched
+1600,Senegal,SEN,2012,Country interpolated,Country/Year matched
+1601,Senegal,SEN,2013,Country interpolated,Country/Year matched
+1602,Senegal,SEN,2014,Country interpolated,Country/Year matched
+1603,Senegal,SEN,2015,Country interpolated,Country/Year matched
+1604,Senegal,SEN,2016,Country interpolated,Country/Year matched
+1605,Senegal,SEN,2017,Country interpolated,Country/Year matched
+1606,Senegal,SEN,2019,Country interpolated,Country/Year matched
+1607,Senegal,SEN,2020,Country interpolated,Country/Year matched
+1608,Senegal,SEN,2022,Country interpolated,Country/Year matched
+1609,Senegal,SEN,2023,Country interpolated,Country/Year matched
+1610,Solomon Islands,SLB,2000,Country interpolated,Country/Year matched
+1611,Solomon Islands,SLB,2001,Country interpolated,Country/Year matched
+1612,Solomon Islands,SLB,2002,Country interpolated,Country/Year matched
+1613,Solomon Islands,SLB,2003,Country interpolated,Country/Year matched
+1614,Solomon Islands,SLB,2004,Country interpolated,Country/Year matched
+1615,Solomon Islands,SLB,2006,Country interpolated,Country/Year matched
+1616,Solomon Islands,SLB,2007,Country interpolated,Country/Year matched
+1617,Solomon Islands,SLB,2008,Country interpolated,Country/Year matched
+1618,Solomon Islands,SLB,2009,Country interpolated,Country/Year matched
+1619,Solomon Islands,SLB,2010,Country interpolated,Country/Year matched
+1620,Solomon Islands,SLB,2011,Country interpolated,Country/Year matched
+1621,Solomon Islands,SLB,2013,Country interpolated,Country/Year matched
+1622,Solomon Islands,SLB,2014,Country interpolated,Country/Year matched
+1623,Solomon Islands,SLB,2015,Country interpolated,Country/Year matched
+1624,Solomon Islands,SLB,2016,Country interpolated,Country/Year matched
+1625,Solomon Islands,SLB,2017,Country interpolated,Country/Year matched
+1626,Solomon Islands,SLB,2018,Country interpolated,Country/Year matched
+1627,Solomon Islands,SLB,2019,Country interpolated,Country/Year matched
+1628,Solomon Islands,SLB,2020,Country interpolated,Country/Year matched
+1629,Solomon Islands,SLB,2021,Country interpolated,Country/Year matched
+1630,Solomon Islands,SLB,2022,Country interpolated,Country/Year matched
+1631,Solomon Islands,SLB,2023,Country interpolated,Country/Year matched
+1632,Sierra Leone,SLE,2000,Country interpolated,Country/Year matched
+1633,Sierra Leone,SLE,2001,Country interpolated,Country/Year matched
+1634,Sierra Leone,SLE,2002,Country interpolated,Country/Year matched
+1635,Sierra Leone,SLE,2004,Country interpolated,Country/Year matched
+1636,Sierra Leone,SLE,2005,Country interpolated,Country/Year matched
+1637,Sierra Leone,SLE,2006,Country interpolated,Country/Year matched
+1638,Sierra Leone,SLE,2007,Country interpolated,Country/Year matched
+1639,Sierra Leone,SLE,2008,Country interpolated,Country/Year matched
+1640,Sierra Leone,SLE,2009,Country interpolated,Country/Year matched
+1641,Sierra Leone,SLE,2010,Country interpolated,Country/Year matched
+1642,Sierra Leone,SLE,2012,Country interpolated,Country/Year matched
+1643,Sierra Leone,SLE,2013,Country interpolated,Country/Year matched
+1644,Sierra Leone,SLE,2014,Country interpolated,Country/Year matched
+1645,Sierra Leone,SLE,2015,Country interpolated,Country/Year matched
+1646,Sierra Leone,SLE,2016,Country interpolated,Country/Year matched
+1647,Sierra Leone,SLE,2017,Country interpolated,Country/Year matched
+1648,Sierra Leone,SLE,2019,Country interpolated,Country/Year matched
+1649,Sierra Leone,SLE,2020,Country interpolated,Country/Year matched
+1650,Sierra Leone,SLE,2021,Country interpolated,Country/Year matched
+1651,Sierra Leone,SLE,2022,Country interpolated,Country/Year matched
+1652,Sierra Leone,SLE,2023,Country interpolated,Country/Year matched
+1653,El Salvador,SLV,2020,Country interpolated,Country/Year matched
+1654,"Somalia, Fed. Rep.",SOM,2000,Imputed,Country/Year matched
+1655,"Somalia, Fed. Rep.",SOM,2001,Imputed,Country/Year matched
+1656,"Somalia, Fed. Rep.",SOM,2002,Imputed,Country/Year matched
+1657,"Somalia, Fed. Rep.",SOM,2003,Imputed,Country/Year matched
+1658,"Somalia, Fed. Rep.",SOM,2004,Imputed,Country/Year matched
+1659,"Somalia, Fed. Rep.",SOM,2005,Imputed,Country/Year matched
+1660,"Somalia, Fed. Rep.",SOM,2006,Imputed,Country/Year matched
+1661,"Somalia, Fed. Rep.",SOM,2007,Imputed,Country/Year matched
+1662,"Somalia, Fed. Rep.",SOM,2008,Imputed,Country/Year matched
+1663,"Somalia, Fed. Rep.",SOM,2009,Imputed,Country/Year matched
+1664,"Somalia, Fed. Rep.",SOM,2010,Imputed,Country/Year matched
+1665,"Somalia, Fed. Rep.",SOM,2011,Imputed,Country/Year matched
+1666,"Somalia, Fed. Rep.",SOM,2012,Imputed,Country/Year matched
+1667,"Somalia, Fed. Rep.",SOM,2013,Imputed,Country/Year matched
+1668,"Somalia, Fed. Rep.",SOM,2014,Imputed,Country/Year matched
+1669,"Somalia, Fed. Rep.",SOM,2015,Imputed,Country/Year matched
+1670,"Somalia, Fed. Rep.",SOM,2016,Imputed,Country/Year matched
+1671,"Somalia, Fed. Rep.",SOM,2017,Imputed,Country/Year matched
+1672,"Somalia, Fed. Rep.",SOM,2018,Imputed,Country/Year matched
+1673,"Somalia, Fed. Rep.",SOM,2019,Imputed,Country/Year matched
+1674,"Somalia, Fed. Rep.",SOM,2020,Imputed,Country/Year matched
+1675,"Somalia, Fed. Rep.",SOM,2021,Imputed,Country/Year matched
+1676,"Somalia, Fed. Rep.",SOM,2022,Imputed,Country/Year matched
+1677,"Somalia, Fed. Rep.",SOM,2023,Imputed,Country/Year matched
+1678,Serbia,SRB,2000,Country interpolated,Country/Year matched
+1679,Serbia,SRB,2001,Country interpolated,Country/Year matched
+1680,Serbia,SRB,2011,Country interpolated,Country/Year matched
+1681,South Sudan,SSD,2000,Country interpolated,Country interpolated
+1682,South Sudan,SSD,2001,Country interpolated,Country interpolated
+1683,South Sudan,SSD,2002,Country interpolated,Country interpolated
+1684,South Sudan,SSD,2003,Country interpolated,Country interpolated
+1685,South Sudan,SSD,2004,Country interpolated,Country interpolated
+1686,South Sudan,SSD,2005,Country interpolated,Country interpolated
+1687,South Sudan,SSD,2006,Country interpolated,Country interpolated
+1688,South Sudan,SSD,2007,Country interpolated,Country interpolated
+1689,South Sudan,SSD,2008,Country interpolated,Country interpolated
+1690,South Sudan,SSD,2009,Country/Year matched,Country interpolated
+1691,South Sudan,SSD,2010,Country interpolated,Country interpolated
+1692,South Sudan,SSD,2011,Country interpolated,Country/Year matched
+1693,South Sudan,SSD,2012,Country interpolated,Country/Year matched
+1694,South Sudan,SSD,2013,Country interpolated,Country/Year matched
+1695,South Sudan,SSD,2014,Country interpolated,Country/Year matched
+1696,South Sudan,SSD,2015,Country interpolated,Country/Year matched
+1697,South Sudan,SSD,2016,Country/Year matched,Country interpolated
+1698,South Sudan,SSD,2017,Country interpolated,Country interpolated
+1699,South Sudan,SSD,2018,Country interpolated,Country interpolated
+1700,South Sudan,SSD,2019,Country interpolated,Country interpolated
+1701,South Sudan,SSD,2020,Country interpolated,Country interpolated
+1702,South Sudan,SSD,2021,Country interpolated,Country interpolated
+1703,South Sudan,SSD,2022,Country interpolated,Country interpolated
+1704,South Sudan,SSD,2023,Country interpolated,Country interpolated
+1705,Sao Tome and Principe,STP,2001,Country interpolated,Country/Year matched
+1706,Sao Tome and Principe,STP,2002,Country interpolated,Country/Year matched
+1707,Sao Tome and Principe,STP,2003,Country interpolated,Country/Year matched
+1708,Sao Tome and Principe,STP,2004,Country interpolated,Country/Year matched
+1709,Sao Tome and Principe,STP,2005,Country interpolated,Country/Year matched
+1710,Sao Tome and Principe,STP,2006,Country interpolated,Country/Year matched
+1711,Sao Tome and Principe,STP,2007,Country interpolated,Country/Year matched
+1712,Sao Tome and Principe,STP,2008,Country interpolated,Country/Year matched
+1713,Sao Tome and Principe,STP,2009,Country interpolated,Country/Year matched
+1714,Sao Tome and Principe,STP,2011,Country interpolated,Country/Year matched
+1715,Sao Tome and Principe,STP,2012,Country interpolated,Country/Year matched
+1716,Sao Tome and Principe,STP,2013,Country interpolated,Country/Year matched
+1717,Sao Tome and Principe,STP,2014,Country interpolated,Country/Year matched
+1718,Sao Tome and Principe,STP,2015,Country interpolated,Country/Year matched
+1719,Sao Tome and Principe,STP,2016,Country interpolated,Country/Year matched
+1720,Sao Tome and Principe,STP,2018,Country interpolated,Country/Year matched
+1721,Sao Tome and Principe,STP,2019,Country interpolated,Country/Year matched
+1722,Sao Tome and Principe,STP,2020,Country interpolated,Country/Year matched
+1723,Sao Tome and Principe,STP,2021,Country interpolated,Country/Year matched
+1724,Sao Tome and Principe,STP,2022,Country interpolated,Country/Year matched
+1725,Sao Tome and Principe,STP,2023,Country interpolated,Country/Year matched
+1726,Suriname,SUR,2000,Country interpolated,Country/Year matched
+1727,Suriname,SUR,2001,Country interpolated,Country/Year matched
+1728,Suriname,SUR,2002,Country interpolated,Country/Year matched
+1729,Suriname,SUR,2003,Country interpolated,Country/Year matched
+1730,Suriname,SUR,2004,Country interpolated,Country/Year matched
+1731,Suriname,SUR,2005,Country interpolated,Country/Year matched
+1732,Suriname,SUR,2006,Country interpolated,Country/Year matched
+1733,Suriname,SUR,2007,Country interpolated,Country/Year matched
+1734,Suriname,SUR,2008,Country interpolated,Country/Year matched
+1735,Suriname,SUR,2009,Country interpolated,Country/Year matched
+1736,Suriname,SUR,2010,Country interpolated,Country/Year matched
+1737,Suriname,SUR,2011,Country interpolated,Country/Year matched
+1738,Suriname,SUR,2012,Country interpolated,Country/Year matched
+1739,Suriname,SUR,2013,Country interpolated,Country/Year matched
+1740,Suriname,SUR,2014,Country interpolated,Country/Year matched
+1741,Suriname,SUR,2015,Country interpolated,Country/Year matched
+1742,Suriname,SUR,2016,Country interpolated,Country/Year matched
+1743,Suriname,SUR,2017,Country interpolated,Country/Year matched
+1744,Suriname,SUR,2018,Country interpolated,Country/Year matched
+1745,Suriname,SUR,2019,Country interpolated,Country/Year matched
+1746,Suriname,SUR,2020,Country interpolated,Country/Year matched
+1747,Suriname,SUR,2021,Country interpolated,Country/Year matched
+1748,Suriname,SUR,2023,Country interpolated,Country/Year matched
+1749,Eswatini,SWZ,2001,Country interpolated,Country/Year matched
+1750,Eswatini,SWZ,2002,Country interpolated,Country/Year matched
+1751,Eswatini,SWZ,2003,Country interpolated,Country/Year matched
+1752,Eswatini,SWZ,2004,Country interpolated,Country/Year matched
+1753,Eswatini,SWZ,2005,Country interpolated,Country/Year matched
+1754,Eswatini,SWZ,2006,Country interpolated,Country/Year matched
+1755,Eswatini,SWZ,2007,Country interpolated,Country/Year matched
+1756,Eswatini,SWZ,2008,Country interpolated,Country/Year matched
+1757,Eswatini,SWZ,2010,Country interpolated,Country/Year matched
+1758,Eswatini,SWZ,2011,Country interpolated,Country/Year matched
+1759,Eswatini,SWZ,2012,Country interpolated,Country/Year matched
+1760,Eswatini,SWZ,2013,Country interpolated,Country/Year matched
+1761,Eswatini,SWZ,2014,Country interpolated,Country/Year matched
+1762,Eswatini,SWZ,2015,Country interpolated,Country/Year matched
+1763,Eswatini,SWZ,2017,Country interpolated,Country/Year matched
+1764,Eswatini,SWZ,2018,Country interpolated,Country/Year matched
+1765,Eswatini,SWZ,2019,Country interpolated,Country/Year matched
+1766,Eswatini,SWZ,2020,Country interpolated,Country/Year matched
+1767,Eswatini,SWZ,2021,Country interpolated,Country/Year matched
+1768,Eswatini,SWZ,2022,Country interpolated,Country/Year matched
+1769,Eswatini,SWZ,2023,Country interpolated,Country/Year matched
+1770,Syrian Arab Republic,SYR,2000,Country interpolated,Country/Year matched
+1771,Syrian Arab Republic,SYR,2001,Country interpolated,Country/Year matched
+1772,Syrian Arab Republic,SYR,2002,Country interpolated,Country/Year matched
+1773,Syrian Arab Republic,SYR,2004,Country interpolated,Country/Year matched
+1774,Syrian Arab Republic,SYR,2005,Country interpolated,Country/Year matched
+1775,Syrian Arab Republic,SYR,2007,Country interpolated,Country/Year matched
+1776,Syrian Arab Republic,SYR,2008,Country interpolated,Country/Year matched
+1777,Syrian Arab Republic,SYR,2010,Country interpolated,Country/Year matched
+1778,Syrian Arab Republic,SYR,2011,Country interpolated,Country/Year matched
+1779,Syrian Arab Republic,SYR,2012,Country interpolated,Country/Year matched
+1780,Syrian Arab Republic,SYR,2013,Country interpolated,Country/Year matched
+1781,Syrian Arab Republic,SYR,2014,Country interpolated,Country/Year matched
+1782,Syrian Arab Republic,SYR,2015,Country interpolated,Country/Year matched
+1783,Syrian Arab Republic,SYR,2016,Country interpolated,Country/Year matched
+1784,Syrian Arab Republic,SYR,2017,Country interpolated,Country/Year matched
+1785,Syrian Arab Republic,SYR,2018,Country interpolated,Country/Year matched
+1786,Syrian Arab Republic,SYR,2019,Country interpolated,Country/Year matched
+1787,Syrian Arab Republic,SYR,2020,Country interpolated,Country/Year matched
+1788,Syrian Arab Republic,SYR,2021,Country interpolated,Country/Year matched
+1789,Syrian Arab Republic,SYR,2023,Country interpolated,Country interpolated
+1790,Chad,TCD,2000,Country interpolated,Country/Year matched
+1791,Chad,TCD,2001,Country interpolated,Country/Year matched
+1792,Chad,TCD,2002,Country interpolated,Country/Year matched
+1793,Chad,TCD,2004,Country interpolated,Country/Year matched
+1794,Chad,TCD,2005,Country interpolated,Country/Year matched
+1795,Chad,TCD,2006,Country interpolated,Country/Year matched
+1796,Chad,TCD,2007,Country interpolated,Country/Year matched
+1797,Chad,TCD,2008,Country interpolated,Country/Year matched
+1798,Chad,TCD,2009,Country interpolated,Country/Year matched
+1799,Chad,TCD,2010,Country interpolated,Country/Year matched
+1800,Chad,TCD,2012,Country interpolated,Country/Year matched
+1801,Chad,TCD,2013,Country interpolated,Country/Year matched
+1802,Chad,TCD,2014,Country interpolated,Country/Year matched
+1803,Chad,TCD,2015,Country interpolated,Country/Year matched
+1804,Chad,TCD,2016,Country interpolated,Country/Year matched
+1805,Chad,TCD,2017,Country interpolated,Country/Year matched
+1806,Chad,TCD,2019,Country interpolated,Country/Year matched
+1807,Chad,TCD,2020,Country interpolated,Country/Year matched
+1808,Chad,TCD,2021,Country interpolated,Country/Year matched
+1809,Chad,TCD,2023,Country interpolated,Country/Year matched
+1810,Togo,TGO,2000,Country interpolated,Country/Year matched
+1811,Togo,TGO,2001,Country interpolated,Country/Year matched
+1812,Togo,TGO,2002,Country interpolated,Country/Year matched
+1813,Togo,TGO,2003,Country interpolated,Country/Year matched
+1814,Togo,TGO,2004,Country interpolated,Country/Year matched
+1815,Togo,TGO,2005,Country interpolated,Country/Year matched
+1816,Togo,TGO,2007,Country interpolated,Country/Year matched
+1817,Togo,TGO,2008,Country interpolated,Country/Year matched
+1818,Togo,TGO,2009,Country interpolated,Country/Year matched
+1819,Togo,TGO,2010,Country interpolated,Country/Year matched
+1820,Togo,TGO,2012,Country interpolated,Country/Year matched
+1821,Togo,TGO,2013,Country interpolated,Country/Year matched
+1822,Togo,TGO,2014,Country interpolated,Country/Year matched
+1823,Togo,TGO,2016,Country interpolated,Country/Year matched
+1824,Togo,TGO,2017,Country interpolated,Country/Year matched
+1825,Togo,TGO,2019,Country interpolated,Country/Year matched
+1826,Togo,TGO,2020,Country interpolated,Country/Year matched
+1827,Togo,TGO,2022,Country interpolated,Country/Year matched
+1828,Togo,TGO,2023,Country interpolated,Country/Year matched
+1829,Thailand,THA,2001,Country interpolated,Country/Year matched
+1830,Thailand,THA,2003,Country interpolated,Country/Year matched
+1831,Thailand,THA,2005,Country interpolated,Country/Year matched
+1832,Tajikistan,TJK,2000,Country interpolated,Country/Year matched
+1833,Tajikistan,TJK,2001,Country interpolated,Country/Year matched
+1834,Tajikistan,TJK,2002,Country interpolated,Country/Year matched
+1835,Tajikistan,TJK,2005,Country interpolated,Country/Year matched
+1836,Tajikistan,TJK,2006,Country interpolated,Country/Year matched
+1837,Tajikistan,TJK,2008,Country interpolated,Country/Year matched
+1838,Tajikistan,TJK,2010,Country interpolated,Country/Year matched
+1839,Tajikistan,TJK,2011,Country interpolated,Country/Year matched
+1840,Tajikistan,TJK,2012,Country interpolated,Country/Year matched
+1841,Tajikistan,TJK,2013,Country interpolated,Country/Year matched
+1842,Tajikistan,TJK,2014,Country interpolated,Country/Year matched
+1843,Tajikistan,TJK,2016,Country interpolated,Country/Year matched
+1844,Tajikistan,TJK,2017,Country interpolated,Country/Year matched
+1845,Tajikistan,TJK,2018,Country interpolated,Country/Year matched
+1846,Tajikistan,TJK,2019,Country interpolated,Country/Year matched
+1847,Tajikistan,TJK,2020,Country interpolated,Country/Year matched
+1848,Turkmenistan,TKM,2000,Imputed,Country/Year matched
+1849,Turkmenistan,TKM,2001,Imputed,Country/Year matched
+1850,Turkmenistan,TKM,2002,Imputed,Country/Year matched
+1851,Turkmenistan,TKM,2003,Imputed,Country/Year matched
+1852,Turkmenistan,TKM,2004,Imputed,Country/Year matched
+1853,Turkmenistan,TKM,2005,Imputed,Country/Year matched
+1854,Turkmenistan,TKM,2006,Imputed,Country/Year matched
+1855,Turkmenistan,TKM,2007,Imputed,Country/Year matched
+1856,Turkmenistan,TKM,2008,Imputed,Country/Year matched
+1857,Turkmenistan,TKM,2009,Imputed,Country/Year matched
+1858,Turkmenistan,TKM,2010,Imputed,Country/Year matched
+1859,Turkmenistan,TKM,2011,Imputed,Country/Year matched
+1860,Turkmenistan,TKM,2012,Imputed,Country/Year matched
+1861,Turkmenistan,TKM,2013,Imputed,Country/Year matched
+1862,Turkmenistan,TKM,2014,Imputed,Country/Year matched
+1863,Turkmenistan,TKM,2015,Imputed,Country/Year matched
+1864,Turkmenistan,TKM,2016,Imputed,Country/Year matched
+1865,Turkmenistan,TKM,2017,Imputed,Country/Year matched
+1866,Turkmenistan,TKM,2018,Imputed,Country/Year matched
+1867,Turkmenistan,TKM,2019,Imputed,Country/Year matched
+1868,Turkmenistan,TKM,2020,Imputed,Country/Year matched
+1869,Turkmenistan,TKM,2021,Imputed,Country/Year matched
+1870,Turkmenistan,TKM,2022,Imputed,Country/Year matched
+1871,Turkmenistan,TKM,2023,Imputed,Country/Year matched
+1872,Timor-Leste,TLS,2000,Country interpolated,Country/Year matched
+1873,Timor-Leste,TLS,2002,Country interpolated,Country/Year matched
+1874,Timor-Leste,TLS,2003,Country interpolated,Country/Year matched
+1875,Timor-Leste,TLS,2004,Country interpolated,Country/Year matched
+1876,Timor-Leste,TLS,2005,Country interpolated,Country/Year matched
+1877,Timor-Leste,TLS,2006,Country interpolated,Country/Year matched
+1878,Timor-Leste,TLS,2008,Country interpolated,Country/Year matched
+1879,Timor-Leste,TLS,2009,Country interpolated,Country/Year matched
+1880,Timor-Leste,TLS,2010,Country interpolated,Country/Year matched
+1881,Timor-Leste,TLS,2011,Country interpolated,Country/Year matched
+1882,Timor-Leste,TLS,2012,Country interpolated,Country/Year matched
+1883,Timor-Leste,TLS,2013,Country interpolated,Country/Year matched
+1884,Timor-Leste,TLS,2015,Country interpolated,Country/Year matched
+1885,Timor-Leste,TLS,2016,Country interpolated,Country/Year matched
+1886,Timor-Leste,TLS,2017,Country interpolated,Country/Year matched
+1887,Timor-Leste,TLS,2018,Country interpolated,Country/Year matched
+1888,Timor-Leste,TLS,2019,Country interpolated,Country/Year matched
+1889,Timor-Leste,TLS,2020,Country interpolated,Country/Year matched
+1890,Timor-Leste,TLS,2021,Country interpolated,Country/Year matched
+1891,Timor-Leste,TLS,2022,Country interpolated,Country/Year matched
+1892,Timor-Leste,TLS,2023,Country interpolated,Country/Year matched
+1893,Tonga,TON,2001,Country interpolated,Country/Year matched
+1894,Tonga,TON,2002,Country interpolated,Country/Year matched
+1895,Tonga,TON,2003,Country interpolated,Country/Year matched
+1896,Tonga,TON,2004,Country interpolated,Country/Year matched
+1897,Tonga,TON,2005,Country interpolated,Country/Year matched
+1898,Tonga,TON,2006,Country interpolated,Country/Year matched
+1899,Tonga,TON,2007,Country interpolated,Country/Year matched
+1900,Tonga,TON,2008,Country interpolated,Country/Year matched
+1901,Tonga,TON,2010,Country interpolated,Country/Year matched
+1902,Tonga,TON,2011,Country interpolated,Country/Year matched
+1903,Tonga,TON,2012,Country interpolated,Country/Year matched
+1904,Tonga,TON,2013,Country interpolated,Country/Year matched
+1905,Tonga,TON,2014,Country interpolated,Country/Year matched
+1906,Tonga,TON,2016,Country interpolated,Country/Year matched
+1907,Tonga,TON,2017,Country interpolated,Country/Year matched
+1908,Tonga,TON,2018,Country interpolated,Country/Year matched
+1909,Tonga,TON,2019,Country interpolated,Country/Year matched
+1910,Tonga,TON,2020,Country interpolated,Country/Year matched
+1911,Tonga,TON,2022,Country interpolated,Country/Year matched
+1912,Tonga,TON,2023,Country interpolated,Country/Year matched
+1913,Tunisia,TUN,2001,Country interpolated,Country/Year matched
+1914,Tunisia,TUN,2002,Country interpolated,Country/Year matched
+1915,Tunisia,TUN,2003,Country interpolated,Country/Year matched
+1916,Tunisia,TUN,2004,Country interpolated,Country/Year matched
+1917,Tunisia,TUN,2006,Country interpolated,Country/Year matched
+1918,Tunisia,TUN,2007,Country interpolated,Country/Year matched
+1919,Tunisia,TUN,2008,Country interpolated,Country/Year matched
+1920,Tunisia,TUN,2009,Country interpolated,Country/Year matched
+1921,Tunisia,TUN,2011,Country interpolated,Country/Year matched
+1922,Tunisia,TUN,2012,Country interpolated,Country/Year matched
+1923,Tunisia,TUN,2013,Country interpolated,Country/Year matched
+1924,Tunisia,TUN,2014,Country interpolated,Country/Year matched
+1925,Tunisia,TUN,2016,Country interpolated,Country/Year matched
+1926,Tunisia,TUN,2017,Country interpolated,Country/Year matched
+1927,Tunisia,TUN,2018,Country interpolated,Country/Year matched
+1928,Tunisia,TUN,2019,Country interpolated,Country/Year matched
+1929,Tunisia,TUN,2020,Country interpolated,Country/Year matched
+1930,Tunisia,TUN,2022,Country interpolated,Country/Year matched
+1931,Tunisia,TUN,2023,Country interpolated,Country/Year matched
+1932,Turkiye,TUR,2000,Country interpolated,Country/Year matched
+1933,Turkiye,TUR,2001,Country interpolated,Country/Year matched
+1934,Tuvalu,TUV,2000,Country interpolated,Country/Year matched
+1935,Tuvalu,TUV,2001,Country interpolated,Country/Year matched
+1936,Tuvalu,TUV,2002,Country interpolated,Country/Year matched
+1937,Tuvalu,TUV,2003,Country interpolated,Country/Year matched
+1938,Tuvalu,TUV,2004,Country interpolated,Country/Year matched
+1939,Tuvalu,TUV,2005,Country interpolated,Country/Year matched
+1940,Tuvalu,TUV,2006,Country interpolated,Country/Year matched
+1941,Tuvalu,TUV,2007,Country interpolated,Country/Year matched
+1942,Tuvalu,TUV,2008,Country interpolated,Country/Year matched
+1943,Tuvalu,TUV,2009,Country interpolated,Country/Year matched
+1944,Tuvalu,TUV,2011,Country interpolated,Country/Year matched
+1945,Tuvalu,TUV,2012,Country interpolated,Country/Year matched
+1946,Tuvalu,TUV,2013,Country interpolated,Country/Year matched
+1947,Tuvalu,TUV,2014,Country interpolated,Country/Year matched
+1948,Tuvalu,TUV,2015,Country interpolated,Country/Year matched
+1949,Tuvalu,TUV,2016,Country interpolated,Country/Year matched
+1950,Tuvalu,TUV,2017,Country interpolated,Country/Year matched
+1951,Tuvalu,TUV,2018,Country interpolated,Country/Year matched
+1952,Tuvalu,TUV,2019,Country interpolated,Country/Year matched
+1953,Tuvalu,TUV,2020,Country interpolated,Country/Year matched
+1954,Tuvalu,TUV,2021,Country interpolated,Country/Year matched
+1955,Tuvalu,TUV,2022,Country interpolated,Country/Year matched
+1956,Tuvalu,TUV,2023,Country interpolated,Country/Year matched
+1957,Tanzania,TZA,2001,Country interpolated,Country/Year matched
+1958,Tanzania,TZA,2002,Country interpolated,Country/Year matched
+1959,Tanzania,TZA,2003,Country interpolated,Country/Year matched
+1960,Tanzania,TZA,2004,Country interpolated,Country/Year matched
+1961,Tanzania,TZA,2005,Country interpolated,Country/Year matched
+1962,Tanzania,TZA,2006,Country interpolated,Country/Year matched
+1963,Tanzania,TZA,2008,Country interpolated,Country/Year matched
+1964,Tanzania,TZA,2009,Country interpolated,Country/Year matched
+1965,Tanzania,TZA,2010,Country interpolated,Country/Year matched
+1966,Tanzania,TZA,2012,Country interpolated,Country/Year matched
+1967,Tanzania,TZA,2013,Country interpolated,Country/Year matched
+1968,Tanzania,TZA,2014,Country interpolated,Country/Year matched
+1969,Tanzania,TZA,2015,Country interpolated,Country/Year matched
+1970,Tanzania,TZA,2016,Country interpolated,Country/Year matched
+1971,Tanzania,TZA,2017,Country interpolated,Country/Year matched
+1972,Tanzania,TZA,2019,Country interpolated,Country/Year matched
+1973,Tanzania,TZA,2020,Country interpolated,Country/Year matched
+1974,Tanzania,TZA,2021,Country interpolated,Country/Year matched
+1975,Tanzania,TZA,2022,Country interpolated,Country/Year matched
+1976,Tanzania,TZA,2023,Country interpolated,Country/Year matched
+1977,Uganda,UGA,2000,Country interpolated,Country/Year matched
+1978,Uganda,UGA,2001,Country interpolated,Country/Year matched
+1979,Uganda,UGA,2003,Country interpolated,Country/Year matched
+1980,Uganda,UGA,2004,Country interpolated,Country/Year matched
+1981,Uganda,UGA,2006,Country interpolated,Country/Year matched
+1982,Uganda,UGA,2007,Country interpolated,Country/Year matched
+1983,Uganda,UGA,2008,Country interpolated,Country/Year matched
+1984,Uganda,UGA,2010,Country interpolated,Country/Year matched
+1985,Uganda,UGA,2011,Country interpolated,Country/Year matched
+1986,Uganda,UGA,2013,Country interpolated,Country/Year matched
+1987,Uganda,UGA,2014,Country interpolated,Country/Year matched
+1988,Uganda,UGA,2015,Country interpolated,Country/Year matched
+1989,Uganda,UGA,2017,Country interpolated,Country/Year matched
+1990,Uganda,UGA,2018,Country interpolated,Country/Year matched
+1991,Uganda,UGA,2020,Country interpolated,Country/Year matched
+1992,Uganda,UGA,2021,Country interpolated,Country/Year matched
+1993,Uganda,UGA,2022,Country interpolated,Country/Year matched
+1994,Uganda,UGA,2023,Country interpolated,Country/Year matched
+1995,Ukraine,UKR,2000,Country interpolated,Country/Year matched
+1996,Ukraine,UKR,2001,Country interpolated,Country/Year matched
+1997,Ukraine,UKR,2021,Country interpolated,Country/Year matched
+1998,Ukraine,UKR,2022,Country interpolated,Country/Year matched
+1999,Ukraine,UKR,2023,Country interpolated,Country/Year matched
+2000,Uzbekistan,UZB,2001,Country interpolated,Country/Year matched
+2001,Uzbekistan,UZB,2004,Country interpolated,Country/Year matched
+2002,Uzbekistan,UZB,2005,Country interpolated,Country/Year matched
+2003,Uzbekistan,UZB,2006,Country interpolated,Country/Year matched
+2004,Uzbekistan,UZB,2007,Country interpolated,Country/Year matched
+2005,Uzbekistan,UZB,2008,Country interpolated,Country/Year matched
+2006,Uzbekistan,UZB,2009,Country interpolated,Country/Year matched
+2007,Uzbekistan,UZB,2010,Country interpolated,Country/Year matched
+2008,Uzbekistan,UZB,2011,Country interpolated,Country/Year matched
+2009,Uzbekistan,UZB,2012,Country interpolated,Country/Year matched
+2010,Uzbekistan,UZB,2013,Country interpolated,Country/Year matched
+2011,Uzbekistan,UZB,2014,Country interpolated,Country/Year matched
+2012,Uzbekistan,UZB,2015,Country interpolated,Country/Year matched
+2013,Uzbekistan,UZB,2016,Country interpolated,Country/Year matched
+2014,Uzbekistan,UZB,2017,Country interpolated,Country/Year matched
+2015,Uzbekistan,UZB,2018,Country interpolated,Country/Year matched
+2016,Uzbekistan,UZB,2019,Country interpolated,Country/Year matched
+2017,Uzbekistan,UZB,2020,Country interpolated,Country/Year matched
+2018,St. Vincent and the Grenadines,VCT,2000,Imputed,Country/Year matched
+2019,St. Vincent and the Grenadines,VCT,2001,Imputed,Country/Year matched
+2020,St. Vincent and the Grenadines,VCT,2002,Imputed,Country/Year matched
+2021,St. Vincent and the Grenadines,VCT,2003,Imputed,Country/Year matched
+2022,St. Vincent and the Grenadines,VCT,2004,Imputed,Country/Year matched
+2023,St. Vincent and the Grenadines,VCT,2005,Imputed,Country/Year matched
+2024,St. Vincent and the Grenadines,VCT,2006,Imputed,Country/Year matched
+2025,St. Vincent and the Grenadines,VCT,2007,Imputed,Country/Year matched
+2026,St. Vincent and the Grenadines,VCT,2008,Imputed,Country/Year matched
+2027,St. Vincent and the Grenadines,VCT,2009,Imputed,Country/Year matched
+2028,St. Vincent and the Grenadines,VCT,2010,Imputed,Country/Year matched
+2029,St. Vincent and the Grenadines,VCT,2011,Imputed,Country/Year matched
+2030,St. Vincent and the Grenadines,VCT,2012,Imputed,Country/Year matched
+2031,St. Vincent and the Grenadines,VCT,2013,Imputed,Country/Year matched
+2032,St. Vincent and the Grenadines,VCT,2014,Imputed,Country/Year matched
+2033,St. Vincent and the Grenadines,VCT,2015,Imputed,Country/Year matched
+2034,St. Vincent and the Grenadines,VCT,2016,Imputed,Country/Year matched
+2035,St. Vincent and the Grenadines,VCT,2017,Imputed,Country/Year matched
+2036,St. Vincent and the Grenadines,VCT,2018,Imputed,Country/Year matched
+2037,St. Vincent and the Grenadines,VCT,2019,Imputed,Country/Year matched
+2038,St. Vincent and the Grenadines,VCT,2020,Imputed,Country/Year matched
+2039,St. Vincent and the Grenadines,VCT,2021,Imputed,Country/Year matched
+2040,St. Vincent and the Grenadines,VCT,2022,Imputed,Country/Year matched
+2041,St. Vincent and the Grenadines,VCT,2023,Imputed,Country/Year matched
+2042,"Venezuela, RB",VEN,2000,Country interpolated,Country/Year matched
+2043,"Venezuela, RB",VEN,2007,Country interpolated,Country/Year matched
+2044,"Venezuela, RB",VEN,2008,Country interpolated,Country/Year matched
+2045,"Venezuela, RB",VEN,2009,Country interpolated,Country/Year matched
+2046,"Venezuela, RB",VEN,2010,Country interpolated,Country/Year matched
+2047,"Venezuela, RB",VEN,2011,Country interpolated,Country/Year matched
+2048,"Venezuela, RB",VEN,2012,Country interpolated,Country/Year matched
+2049,"Venezuela, RB",VEN,2013,Country interpolated,Country/Year matched
+2050,"Venezuela, RB",VEN,2014,Country interpolated,Country/Year matched
+2051,"Venezuela, RB",VEN,2015,Country interpolated,Country/Year matched
+2052,"Venezuela, RB",VEN,2016,Country interpolated,Country/Year matched
+2053,"Venezuela, RB",VEN,2017,Country interpolated,Country/Year matched
+2054,"Venezuela, RB",VEN,2018,Country interpolated,Country/Year matched
+2055,"Venezuela, RB",VEN,2019,Country interpolated,Country/Year matched
+2056,"Venezuela, RB",VEN,2020,Country interpolated,Country/Year matched
+2057,"Venezuela, RB",VEN,2021,Country interpolated,Country/Year matched
+2058,"Venezuela, RB",VEN,2022,Country interpolated,Country/Year matched
+2059,"Venezuela, RB",VEN,2023,Country interpolated,Country/Year matched
+2060,Viet Nam,VNM,2000,Country interpolated,Country/Year matched
+2061,Viet Nam,VNM,2001,Country interpolated,Country/Year matched
+2062,Viet Nam,VNM,2003,Country interpolated,Country/Year matched
+2063,Viet Nam,VNM,2005,Country interpolated,Country/Year matched
+2064,Viet Nam,VNM,2007,Country interpolated,Country/Year matched
+2065,Viet Nam,VNM,2009,Country interpolated,Country/Year matched
+2066,Viet Nam,VNM,2011,Country interpolated,Country/Year matched
+2067,Viet Nam,VNM,2013,Country interpolated,Country/Year matched
+2068,Viet Nam,VNM,2015,Country interpolated,Country/Year matched
+2069,Viet Nam,VNM,2017,Country interpolated,Country/Year matched
+2070,Viet Nam,VNM,2019,Country interpolated,Country/Year matched
+2071,Viet Nam,VNM,2021,Country interpolated,Country/Year matched
+2072,Viet Nam,VNM,2023,Country interpolated,Country/Year matched
+2073,Vanuatu,VUT,2000,Country interpolated,Country/Year matched
+2074,Vanuatu,VUT,2001,Country interpolated,Country/Year matched
+2075,Vanuatu,VUT,2002,Country interpolated,Country/Year matched
+2076,Vanuatu,VUT,2003,Country interpolated,Country/Year matched
+2077,Vanuatu,VUT,2004,Country interpolated,Country/Year matched
+2078,Vanuatu,VUT,2005,Country interpolated,Country/Year matched
+2079,Vanuatu,VUT,2006,Country interpolated,Country/Year matched
+2080,Vanuatu,VUT,2007,Country interpolated,Country/Year matched
+2081,Vanuatu,VUT,2008,Country interpolated,Country/Year matched
+2082,Vanuatu,VUT,2009,Country interpolated,Country/Year matched
+2083,Vanuatu,VUT,2011,Country interpolated,Country/Year matched
+2084,Vanuatu,VUT,2012,Country interpolated,Country/Year matched
+2085,Vanuatu,VUT,2013,Country interpolated,Country/Year matched
+2086,Vanuatu,VUT,2014,Country interpolated,Country/Year matched
+2087,Vanuatu,VUT,2015,Country interpolated,Country/Year matched
+2088,Vanuatu,VUT,2016,Country interpolated,Country/Year matched
+2089,Vanuatu,VUT,2017,Country interpolated,Country/Year matched
+2090,Vanuatu,VUT,2018,Country interpolated,Country/Year matched
+2091,Vanuatu,VUT,2020,Country interpolated,Country/Year matched
+2092,Vanuatu,VUT,2021,Country interpolated,Country/Year matched
+2093,Vanuatu,VUT,2022,Country interpolated,Country/Year matched
+2094,Vanuatu,VUT,2023,Country interpolated,Country/Year matched
+2095,Samoa,WSM,2000,Country interpolated,Country/Year matched
+2096,Samoa,WSM,2001,Country interpolated,Country/Year matched
+2097,Samoa,WSM,2003,Country interpolated,Country/Year matched
+2098,Samoa,WSM,2004,Country interpolated,Country/Year matched
+2099,Samoa,WSM,2005,Country interpolated,Country/Year matched
+2100,Samoa,WSM,2006,Country interpolated,Country/Year matched
+2101,Samoa,WSM,2007,Country interpolated,Country/Year matched
+2102,Samoa,WSM,2009,Country interpolated,Country/Year matched
+2103,Samoa,WSM,2010,Country interpolated,Country/Year matched
+2104,Samoa,WSM,2011,Country interpolated,Country/Year matched
+2105,Samoa,WSM,2012,Country interpolated,Country/Year matched
+2106,Samoa,WSM,2014,Country interpolated,Country/Year matched
+2107,Samoa,WSM,2015,Country interpolated,Country/Year matched
+2108,Samoa,WSM,2016,Country interpolated,Country/Year matched
+2109,Samoa,WSM,2017,Country interpolated,Country/Year matched
+2110,Samoa,WSM,2018,Country interpolated,Country/Year matched
+2111,Samoa,WSM,2019,Country interpolated,Country/Year matched
+2112,Samoa,WSM,2020,Country interpolated,Country/Year matched
+2113,Samoa,WSM,2021,Country interpolated,Country/Year matched
+2114,Samoa,WSM,2022,Country interpolated,Country/Year matched
+2115,Samoa,WSM,2023,Country interpolated,Country/Year matched
+2116,Kosovo,XKX,2000,Country interpolated,Country interpolated
+2117,Kosovo,XKX,2001,Country interpolated,Country interpolated
+2118,Kosovo,XKX,2002,Country interpolated,Country interpolated
+2119,Kosovo,XKX,2003,Country/Year matched,Country interpolated
+2120,Kosovo,XKX,2004,Country interpolated,Country interpolated
+2121,Kosovo,XKX,2005,Country/Year matched,Country interpolated
+2122,Kosovo,XKX,2006,Country/Year matched,Country interpolated
+2123,Kosovo,XKX,2007,Country interpolated,Country interpolated
+2124,Kosovo,XKX,2008,Country interpolated,Country interpolated
+2125,Kosovo,XKX,2009,Country/Year matched,Country interpolated
+2126,Kosovo,XKX,2023,Country interpolated,Country/Year matched
+2127,"Yemen, Rep.",YEM,2000,Country interpolated,Country/Year matched
+2128,"Yemen, Rep.",YEM,2001,Country interpolated,Country/Year matched
+2129,"Yemen, Rep.",YEM,2002,Country interpolated,Country/Year matched
+2130,"Yemen, Rep.",YEM,2003,Country interpolated,Country/Year matched
+2131,"Yemen, Rep.",YEM,2004,Country interpolated,Country/Year matched
+2132,"Yemen, Rep.",YEM,2006,Country interpolated,Country/Year matched
+2133,"Yemen, Rep.",YEM,2007,Country interpolated,Country/Year matched
+2134,"Yemen, Rep.",YEM,2008,Country interpolated,Country/Year matched
+2135,"Yemen, Rep.",YEM,2009,Country interpolated,Country/Year matched
+2136,"Yemen, Rep.",YEM,2010,Country interpolated,Country/Year matched
+2137,"Yemen, Rep.",YEM,2011,Country interpolated,Country/Year matched
+2138,"Yemen, Rep.",YEM,2012,Country interpolated,Country/Year matched
+2139,"Yemen, Rep.",YEM,2013,Country interpolated,Country/Year matched
+2140,"Yemen, Rep.",YEM,2015,Country interpolated,Country/Year matched
+2141,"Yemen, Rep.",YEM,2016,Country interpolated,Country/Year matched
+2142,"Yemen, Rep.",YEM,2017,Country interpolated,Country/Year matched
+2143,"Yemen, Rep.",YEM,2018,Country interpolated,Country/Year matched
+2144,"Yemen, Rep.",YEM,2019,Country interpolated,Country interpolated
+2145,"Yemen, Rep.",YEM,2020,Country interpolated,Country interpolated
+2146,"Yemen, Rep.",YEM,2021,Country interpolated,Country interpolated
+2147,"Yemen, Rep.",YEM,2022,Country interpolated,Country interpolated
+2148,"Yemen, Rep.",YEM,2023,Country interpolated,Country interpolated
+2149,South Africa,ZAF,2001,Country interpolated,Country/Year matched
+2150,South Africa,ZAF,2002,Country interpolated,Country/Year matched
+2151,South Africa,ZAF,2003,Country interpolated,Country/Year matched
+2152,South Africa,ZAF,2004,Country interpolated,Country/Year matched
+2153,South Africa,ZAF,2006,Country interpolated,Country/Year matched
+2154,South Africa,ZAF,2007,Country interpolated,Country/Year matched
+2155,South Africa,ZAF,2009,Country interpolated,Country/Year matched
+2156,South Africa,ZAF,2011,Country interpolated,Country/Year matched
+2157,South Africa,ZAF,2012,Country interpolated,Country/Year matched
+2158,South Africa,ZAF,2013,Country interpolated,Country/Year matched
+2159,South Africa,ZAF,2015,Country interpolated,Country/Year matched
+2160,South Africa,ZAF,2016,Country interpolated,Country/Year matched
+2161,South Africa,ZAF,2017,Country interpolated,Country/Year matched
+2162,South Africa,ZAF,2018,Country interpolated,Country/Year matched
+2163,South Africa,ZAF,2019,Country interpolated,Country/Year matched
+2164,South Africa,ZAF,2020,Country interpolated,Country/Year matched
+2165,South Africa,ZAF,2021,Country interpolated,Country/Year matched
+2166,South Africa,ZAF,2023,Country interpolated,Country/Year matched
+2167,Zambia,ZMB,2000,Country interpolated,Country/Year matched
+2168,Zambia,ZMB,2001,Country interpolated,Country/Year matched
+2169,Zambia,ZMB,2003,Country interpolated,Country/Year matched
+2170,Zambia,ZMB,2005,Country interpolated,Country/Year matched
+2171,Zambia,ZMB,2007,Country interpolated,Country/Year matched
+2172,Zambia,ZMB,2008,Country interpolated,Country/Year matched
+2173,Zambia,ZMB,2009,Country interpolated,Country/Year matched
+2174,Zambia,ZMB,2011,Country interpolated,Country/Year matched
+2175,Zambia,ZMB,2012,Country interpolated,Country/Year matched
+2176,Zambia,ZMB,2013,Country interpolated,Country/Year matched
+2177,Zambia,ZMB,2014,Country interpolated,Country/Year matched
+2178,Zambia,ZMB,2016,Country interpolated,Country/Year matched
+2179,Zambia,ZMB,2017,Country interpolated,Country/Year matched
+2180,Zambia,ZMB,2018,Country interpolated,Country/Year matched
+2181,Zambia,ZMB,2019,Country interpolated,Country/Year matched
+2182,Zambia,ZMB,2020,Country interpolated,Country/Year matched
+2183,Zambia,ZMB,2021,Country interpolated,Country/Year matched
+2184,Zambia,ZMB,2023,Country interpolated,Country/Year matched
+2185,Zimbabwe,ZWE,2000,Country interpolated,Country/Year matched
+2186,Zimbabwe,ZWE,2001,Country interpolated,Country/Year matched
+2187,Zimbabwe,ZWE,2002,Country interpolated,Country/Year matched
+2188,Zimbabwe,ZWE,2003,Country interpolated,Country/Year matched
+2189,Zimbabwe,ZWE,2004,Country interpolated,Country/Year matched
+2190,Zimbabwe,ZWE,2005,Country interpolated,Country/Year matched
+2191,Zimbabwe,ZWE,2006,Country interpolated,Country/Year matched
+2192,Zimbabwe,ZWE,2007,Country interpolated,Country/Year matched
+2193,Zimbabwe,ZWE,2008,Country interpolated,Country/Year matched
+2194,Zimbabwe,ZWE,2009,Country interpolated,Country/Year matched
+2195,Zimbabwe,ZWE,2010,Country interpolated,Country/Year matched
+2196,Zimbabwe,ZWE,2012,Country interpolated,Country/Year matched
+2197,Zimbabwe,ZWE,2013,Country interpolated,Country/Year matched
+2198,Zimbabwe,ZWE,2014,Country interpolated,Country/Year matched
+2199,Zimbabwe,ZWE,2015,Country interpolated,Country/Year matched
+2200,Zimbabwe,ZWE,2016,Country interpolated,Country/Year matched
+2201,Zimbabwe,ZWE,2018,Country interpolated,Country/Year matched
+2202,Zimbabwe,ZWE,2020,Country interpolated,Country/Year matched
+2203,Zimbabwe,ZWE,2021,Country interpolated,Country/Year matched
+2204,Zimbabwe,ZWE,2022,Country interpolated,Country/Year matched
+2205,Zimbabwe,ZWE,2023,Country interpolated,Country/Year matched
