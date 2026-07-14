@@ -179,63 +179,63 @@ transformed parameters {
     for (n in 1:N){
             mu[n] =  exp(beta_dme_prediag + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dme_prediag * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_dme_prediag * sigma_year + beta_year_overall)  * survey_year[n]) *
                 dme_prediag[n]  +
                 
                 exp(beta_dnme_prediag + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dnme_prediag * sigma_drtb + beta_drtb_overall)  * drtb_ind[n]) *
                 // exp((beta_year_dnme_prediag * sigma_year + beta_year_overall)  * survey_year[n]) *
                 dnme_prediag[n] +
                 
                 exp(beta_ie_prediag + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_ie_prediag * sigma_drtb + beta_drtb_overall)  * drtb_ind[n]) *
                 // exp((beta_year_ie_prediag * sigma_year + beta_year_overall)  * survey_year[n]) *
                 ie_prediag[n]  +
                 
                 exp(beta_dme_intsvtx + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dme_intsvtx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_dme_intsvtx * sigma_year + beta_year_overall)  * survey_year[n]) *
                 dme_intsvtx[n]  +
                 
                 exp(beta_dnme_intsvtx + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dnme_intsvtx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_dnme_intsvtx * sigma_year + beta_year_overall)  * survey_year[n]) *
                 dnme_intsvtx[n] +
                 
                 exp(beta_ie_intsvtx + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_ie_intsvtx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_ie_intsvtx * sigma_year + beta_year_overall)  * survey_year[n]) *
                 ie_intsvtx[n]   +
                 
                 exp(beta_dme_contntx + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dme_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_dme_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
                 dme_contntx[n]  +
                 
                 exp(beta_dnme_contntx + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dnme_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_dnme_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
                 dnme_contntx[n] +
                 
                 exp(beta_ie_contntx + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
-                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) +
+                        (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_ie_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_ie_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
                 ie_contntx[n];// * 
