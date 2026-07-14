@@ -176,8 +176,173 @@ ggplot(data=newBasicModEstC2) +
     geom_point(aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
     theme_minimal() +
     coord_flip() + theme(legend.position = "none") + 
-    ggtitle("Country-level estimates from basic model")
-
-# scale_color_manual(values=c("blue", "green"))
+    ggtitle("Country-level estimates from basic model 3")
 
 
+
+betas <- tidybayes::spread_draws(basicModEstTEST,
+                                 beta_dme_prediag,
+                                 beta_dnme_prediag,
+                                 beta_ie_prediag,
+                                 beta_dme_intsvtx,
+                                 beta_dnme_intsvtx,
+                                 beta_ie_intsvtx,
+                                 beta_dme_contntx,
+                                 beta_dnme_contntx,
+                                 beta_ie_contntx,
+                                 ndraws = 1000, seed = tbPtntCstSeed) %>% 
+    mean_qi()
+
+sum(exp(betas[,seq(1,27,3)]))
+
+##############################################################################|
+##############################################################################|
+##############################################################################|
+##############################################################################|
+### Run basic linear model 
+##############################################################################|
+
+# basicLinearModel <- stan_model("code/inst/basicLinearModel.stan") 
+# 
+# basicLinearModelData <- basicModelData 
+# basicLinearModelData[["prior_sigma"]] <- round(exp(basicModelData[["prior_sigma"]]))
+# 
+# basicLinearModEst <- rstan::sampling(
+#                     basicLinearModel, basicLinearModelData,
+#                     chains = 2, cores = 4,
+#                     warmup = tbPtntCstWarmup/2,
+#                     iter = tbPtntCstIter/4,
+#                     control=list(max_treedepth=14),
+#                     refresh = 0, seed = tbPtntCstSeed
+# )
+# 
+# stan(file = "code/inst/basicLinearModel.stan",
+#      data = basicLinearModelData,
+#      iter = tbPtntCstIter/4, chains = 2,
+#      warmup=tbPtntCstWarmup/2,
+#      control=list(max_treedepth=14), 
+#      seed = tbPtntCstSeed)
+# 
+# 
+# basicLinearModSamps <- tidybayes::spread_draws(basicLinearModEst,
+#                                                dstb_total_cost_data[id.numb],
+#                                                ndraws = 1000, seed = tbPtntCstSeed);
+# 
+# basicLinearModEst<- cbind(basicLinearModSamps  %>%
+#                           group_by(id.numb) %>%
+#                            mean_qi(dstb_total_cost_data) %>%
+#                            select(! c(.width, .point, .interval)),
+#                        modelData %>% 
+#                            select(whoSurv, study.country, study.end.year, survey.id) %>%
+#                            distinct()) %>%
+#     mutate(who.survey = ifelse(whoSurv==1, "Yes", "No"))
+# 
+# 
+# ggplot(data=basicLinearModEst) + 
+#     geom_point(aes(x=survey.id, y=`dstb_total_cost_data`, shape = who.survey, color=study.country), size=2) +
+#     theme_minimal() +
+#     coord_flip() + theme(legend.position = "none")  + 
+#     ggtitle("Survey-level estimates from basic linear model ")
+# 
+# 
+# 
+# basicLinearModSampsCntry <- tidybayes::spread_draws(basicLinearModEst,
+#                                            dstb_total_cost_country[country.id],
+#                                            ndraws = 1000, seed = tbPtntCstSeed);
+# 
+# basicLinearModEstCntry<- left_join(basicLinearModSampsCntry  %>%
+#                                  group_by(country.id) %>%
+#                                  mean_qi(dstb_total_cost_country) %>%
+#                                  select(! c(.width, .point, .interval)),
+#                              modelData %>% select(study.country, country.id) %>% distinct()) %>% 
+#     arrange(dstb_total_cost_country) %>% 
+#     mutate(study.country=factor(study.country, levels=study.country))
+# 
+# ggplot(data=basicLinearModEstCntry) + 
+#     geom_point(aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
+#     theme_minimal() +
+#     coord_flip() + theme(legend.position = "none") + 
+#     ggtitle("Country-level estimates from basic linear model")
+
+
+
+##############################################################################|
+##############################################################################|
+##############################################################################|
+##############################################################################|
+### Run basic models in R
+##############################################################################|
+##############################################################################|
+
+library(lme4)
+
+### Use LM to run basic linear model with no random effects in R
+basicLinearModel <- lm(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
+                                  dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
+                                  dme.contntx + dnme.contntx + ie.contntx + drtb.wt , 
+                                  data=modelData  %>% filter(cost > 0)); basicLinearModel
+
+### DSTB estimates 
+sum(basicLinearModel$coefficients[-10])
+### DRTB estimates 
+sum(basicLinearModel$coefficients)
+
+### Use LMER to run basic linear model with random effects in R
+basicLinearMixedModel <-lmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
+                        dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
+                        dme.contntx + dnme.contntx + ie.contntx + drtb.wt + 
+                        (1 | country.id) + (1 |survey.id), 
+                        data=modelData  %>% filter(cost > 0)); basicLinearMixedModel
+
+basicLinearMixedModel <-lmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
+                                 dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
+                                 dme.contntx + dnme.contntx + ie.contntx + drtb.wt + 
+                                 (1 | country.id) + (1 |survey.id), 
+                             data=modelData  %>% filter(cost > 0)); basicLinearMixedModel
+
+### DSTB estimates 
+sum(summary(basicLinearMixedModel)[["coefficients"]][-10,1])
+### DRTB estimates 
+sum(summary(basicLinearMixedModel)[["coefficients"]][,1])
+
+
+### Use GLMER to run basic linear model with random effects in R 
+### using gamma family 
+basicGammaMixedModel <-glmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
+          dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
+          dme.contntx + dnme.contntx + ie.contntx + drtb.wt + 
+          (1 | country.id) + (1 |survey.id), 
+      data=modelData %>% filter(cost > 0), family = Gamma(link = "identity")); basicGammaMixedModel
+
+### DSTB estimates 
+sum(summary(basicGammaMixedModel)[["coefficients"]][-10,1])
+### DRTB estimates 
+sum(summary(basicGammaMixedModel)[["coefficients"]][,1]) 
+
+### Use GLMER to run basic linear model with random effects in R 
+### using gamma family 
+basicGammaMixedModelLL <-glmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
+                                          dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
+                                          dme.contntx + dnme.contntx + ie.contntx + drtb.wt + 
+                                         (1 | country.id) + (1 | survey.id), 
+                             data=modelData %>% filter(cost > 0), family = Gamma(link = "log")); basicGammaMixedModelLL
+
+prod(exp(summary(basicGammaMixedModelLL)[["coefficients"]][-10,1]))
+prod(exp(summary(basicGammaMixedModelLL)[["coefficients"]][,1]))
+
+### Bayes model 
+
+betas <- tidybayes::spread_draws(basicModEstTEST,
+                                 beta_dme_prediag,
+                                 beta_dnme_prediag,
+                                 beta_ie_prediag,
+                                 beta_dme_intsvtx,
+                                 beta_dnme_intsvtx,
+                                 beta_ie_intsvtx,
+                                 beta_dme_contntx,
+                                 beta_dnme_contntx,
+                                 beta_ie_contntx,
+                                 ndraws = 1000, seed = tbPtntCstSeed) %>% 
+    mean_qi()
+
+sum(exp(betas[,seq(1,27,3)]))
