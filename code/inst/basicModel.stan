@@ -64,7 +64,7 @@ data {
     // real uhc_index_new[N_country_new];
     real pred_year;
 
-    
+    real tau_scalar[N]; 
 }
 
 transformed data {
@@ -145,7 +145,7 @@ parameters {
     // real beta_natRep; 
     
     // Additional variance parameter
-    real<lower=0> tau;
+    real<lower=0> tau_overall;
     
     
     ///////////////////////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ parameters {
 transformed parameters {
     // Mean cost estimate
     vector<lower=0>[N] mu;
-    // vector[N] eta;
+    vector<lower=0>[N] tau;
     vector<upper=0>[N] theta;
     
     ///////////////////////////////////////////////////////////////////////////
@@ -257,6 +257,9 @@ transformed parameters {
                         beta_theta_dme_contntx  * dme_contntx[n] +
                         beta_theta_dnme_contntx * dnme_contntx[n] +
                         beta_theta_ie_contntx   * ie_contntx[n];
+                        
+            tau[n] = tau_overall * tau_scalar[n];
+
             }
 }
 
@@ -318,7 +321,7 @@ model {
 
 
     // Priors for dispersion parameter
-    tau ~ exponential(1); 
+    tau_overall ~ exponential(1); 
     
     // Priors for hurdle predictors  
     beta_theta_dme_prediag ~  normal(log(prob_cost_zero), 1);
@@ -346,7 +349,7 @@ model {
                 // First the hurdle (non-zero) indicator:
                 target += log1m_exp(theta[n]) + 
                 // Then the gamma density (no truncation needed):
-                          alt_gamma_lpdf(cost_n | tau, mu_n);
+                          alt_gamma_lpdf(cost_n | tau[n], mu_n);
         }
     } //}
 }
@@ -364,10 +367,11 @@ generated quantities {
             } else {
                 vector[1] cost_n = [cost[n]]';
                 vector[1] mu_n = [mu[n]]';
+
                 // First the hurdle (non-zero) indicator:
                 log_lik[n] = log1m_exp(theta[n]) +
                 // Then the gamma density truncated at 0:
-                             alt_gamma_lpdf(cost_n | tau, mu_n);
+                             alt_gamma_lpdf(cost_n | tau[n], mu_n);
         }
     /// Calculate the unconditional mean 
     uncndtl_mu[n] = mu[n] * (1-exp(theta[n])); 

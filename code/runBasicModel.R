@@ -28,7 +28,6 @@ LMIC <- read.csv(here("data/LMIC2025.csv")) %>%
     rename(study.country = country.name) %>%
     select(! class25)
 
-# modelData <- modelData  %>% filter(cost > 0)
 basicModelData <- list(
     N = length(modelData$cost),
     cost = modelData$cost,
@@ -65,7 +64,8 @@ basicModelData <- list(
     uhc_index_new = (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
     prior_sigma = 2, 
     prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData),
-    natrep_id = modelData$whoSurv
+    natrep_id = modelData$whoSurv, 
+    tau_scalar = 1 / sqrt(modelData$n.participants)
 )
 
 basicModEst <- rstan::sampling(
@@ -86,7 +86,8 @@ newBasicModEst<- cbind(basicModSamps  %>%
                        mean_qi(dstb_total_cost_data) %>%
                        select(! c(.width, .point, .interval)),
                        modelData %>% 
-                           select(whoSurv, study.country, study.end.year, survey.id, median.income) %>%
+                           select(whoSurv, study.country, study.end.year, survey.id, median.income, n.participants) %>%
+                           summarise(n.participants = sum(n.participants), .by = c(whoSurv, study.country, study.end.year, survey.id, median.income)) %>%
                            distinct()) %>%
     mutate(who.survey = ifelse(whoSurv==1, "Yes", "No"))
 
@@ -105,6 +106,14 @@ ggplot() +
     geom_point(data= newBasicModEst %>% select(study.country, study.end.year, median.income, survey.id, dstb_total_cost_data) %>% 
                    filter(study.country == "China"), aes(x=dstb_total_cost_data, y=median.income), color = "red")  + 
     theme_minimal() + coord_flip()
+
+ggplot(data=newBasicModEst) + 
+    geom_point(aes(x=n.participants, y=`dstb_total_cost_data`, shape = who.survey, color=study.country), size=2) +
+    theme_minimal() +
+    coord_flip() + 
+    theme(legend.position = "none")  +
+    # ggpubr::ggtext(aes(x=survey.id, y=`dstb_total_cost_data`, label = study.county)) + 
+    ggtitle("Survey-level estimates from basic model ")
 
 
 basicModSampsC2 <- tidybayes::spread_draws(basicModEst,
