@@ -28,6 +28,7 @@ LMIC <- read.csv(here("data/LMIC2025.csv")) %>%
     rename(study.country = country.name) %>%
     select(! class25)
 
+# modelData <- modelData  %>% filter(cost > 0)
 basicModelData <- list(
     N = length(modelData$cost),
     cost = modelData$cost,
@@ -63,10 +64,11 @@ basicModelData <- list(
     oop_perc_che_new = (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che), 
     uhc_index_new = (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
     prior_sigma = 2, 
-    prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
+    prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData),
+    natrep_id = modelData$whoSurv
 )
 
-basicModEstTEST <- rstan::sampling(
+basicModEst <- rstan::sampling(
     basicModel, basicModelData,
     chains = 2, cores = 4,
     warmup = tbPtntCstWarmup/2,
@@ -75,47 +77,7 @@ basicModEstTEST <- rstan::sampling(
     refresh = 0, seed = tbPtntCstSeed
 )
 
-# basicModEstTEST<- stan(file = "code/inst/basicModel.stan",
-#         data = basicModelData,
-#         iter = tbPtntCstIter/4, chains = 2,
-#         warmup = tbPtntCstWarmup/2,
-#         control=list(max_treedepth=14), 
-#         seed = tbPtntCstSeed)
-
-# basicModelRes  <- get_posterior_mean(basicModEst)[,"mean-all chains"]
-# 
-# ### Create indexes for the models
-# indexA <- which(names(basicModelRes) == "mu[1]"):which(names(basicModelRes) == "mu[439]")
-# basicModelRes[indexA]
-# 
-# modelEstComp <- data.frame("study.country" = modelData$study.country,
-#                            "study.end.year" = modelData$study.end.year,
-#                            "who.survey" = modelData$whoSurv, 
-#                            "pop.id" = modelData$pop.id, 
-#                            "label" = paste(modelData$study.country, modelData$study.end.year),
-#                            "basic.model" = basicModelRes[indexA],
-#                            "cost.id" = 1:(nrow(modelData))#, 
-#                            # dme.pretx = modelData$dme.prediag, 
-#                            # dnme.pretx = modelData$dnme.prediag, 
-#                            # ind.pretx = modelData$ie.prediag, 
-#                            # dme.intsvtx = modelData$dme.intsvtx, 
-#                            # dnme.intsvtx = modelData$dnme.intsvtx, 
-#                            # ind.intsvtx = modelData$ie.intsvtx, 
-#                            # dme.contntx = modelData$dme.contntx, 
-#                            # dnme.contntx = modelData$dnme.contntx, 
-#                            # ind.contntx = modelData$ie.contntx
-#                            ) %>% 
-#     mutate(pop.id = ifelse(pop.id %in% c("GenPopTotal", "wgtTotal"), "Total", pop.id),
-#            who.survey = ifelse(who.survey==1, "Yes", "No"))
-# 
-# ggplot(data = modelEstComp) + 
-#        geom_point(aes(x=label, y=`basic.model`, color = who.survey)) + 
-#        theme_minimal() + 
-#        facet_wrap(facets=vars(pop.id)) + coord_flip()
-
-
-
-basicModSamps <- tidybayes::spread_draws(basicModEstTEST,
+basicModSamps <- tidybayes::spread_draws(basicModEst,
                                          dstb_total_cost_data[id.numb],
                                          ndraws = 1000, seed = tbPtntCstSeed);
 
@@ -124,43 +86,28 @@ newBasicModEst<- cbind(basicModSamps  %>%
                        mean_qi(dstb_total_cost_data) %>%
                        select(! c(.width, .point, .interval)),
                        modelData %>% 
-                           select(whoSurv, study.country, study.end.year, survey.id) %>%
+                           select(whoSurv, study.country, study.end.year, survey.id, median.income) %>%
                            distinct()) %>%
     mutate(who.survey = ifelse(whoSurv==1, "Yes", "No"))
-
 
 ggplot(data=newBasicModEst) + 
        geom_point(aes(x=survey.id, y=`dstb_total_cost_data`, shape = who.survey, color=study.country), size=2) +
        theme_minimal() +
-       coord_flip() + theme(legend.position = "none")  + 
+       coord_flip() + 
+    theme(legend.position = "none")  +
+    # ggpubr::ggtext(aes(x=survey.id, y=`dstb_total_cost_data`, label = study.county)) + 
     ggtitle("Survey-level estimates from basic model ")
 
 
+ggplot() +
+    geom_point(data = newBasicModEst %>% 
+                   select(study.country, study.end.year, median.income, survey.id, dstb_total_cost_data), aes(x=dstb_total_cost_data, y=median.income))  + 
+    geom_point(data= newBasicModEst %>% select(study.country, study.end.year, median.income, survey.id, dstb_total_cost_data) %>% 
+                   filter(study.country == "China"), aes(x=dstb_total_cost_data, y=median.income), color = "red")  + 
+    theme_minimal() + coord_flip()
 
 
-basicModSampsC <- tidybayes::spread_draws(basicModEstTEST,
-                                          dstb_total_cost_country[cnty.numb],
-                                         ndraws = 1000, seed = tbPtntCstSeed);
-
-newBasicModEstC<- cbind(basicModSampsC  %>%
-                           group_by(cnty.numb) %>%
-                           mean_qi(dstb_total_cost_country) %>%
-                           select(! c(.width, .point, .interval)),
-                       modelData %>% 
-                           select(study.country) %>%
-                           distinct()) %>% 
-    arrange(dstb_total_cost_country) %>% 
-    mutate(study.country=factor(study.country, study.country))
-
-
-ggplot(data=newBasicModEstC) + 
-    geom_point(aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
-    theme_minimal() +
-    coord_flip() + theme(legend.position = "none") + 
-    ggtitle("Country-level estimates from basic model")
-
-
-basicModSampsC2 <- tidybayes::spread_draws(basicModEstTEST,
+basicModSampsC2 <- tidybayes::spread_draws(basicModEst,
                                           dstb_total_cost_country[country.id],
                                           ndraws = 1000, seed = tbPtntCstSeed);
 
@@ -176,11 +123,12 @@ ggplot(data=newBasicModEstC2) +
     geom_point(aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
     theme_minimal() +
     coord_flip() + theme(legend.position = "none") + 
-    ggtitle("Country-level estimates from basic model 3")
+    ggtitle("Country-level estimates from basic model")
 
+##############################################################################|
+##############################################################################|
 
-
-betas <- tidybayes::spread_draws(basicModEstTEST,
+betas<- tidybayes::spread_draws(basicModEst,
                                  beta_dme_prediag,
                                  beta_dnme_prediag,
                                  beta_ie_prediag,
@@ -190,81 +138,58 @@ betas <- tidybayes::spread_draws(basicModEstTEST,
                                  beta_dme_contntx,
                                  beta_dnme_contntx,
                                  beta_ie_contntx,
-                                 ndraws = 1000, seed = tbPtntCstSeed) %>% 
-    mean_qi()
-
-sum(exp(betas[,seq(1,27,3)]))
-
-##############################################################################|
-##############################################################################|
-##############################################################################|
-##############################################################################|
-### Run basic linear model 
-##############################################################################|
-
-# basicLinearModel <- stan_model("code/inst/basicLinearModel.stan") 
-# 
-# basicLinearModelData <- basicModelData 
-# basicLinearModelData[["prior_sigma"]] <- round(exp(basicModelData[["prior_sigma"]]))
-# 
-# basicLinearModEst <- rstan::sampling(
-#                     basicLinearModel, basicLinearModelData,
-#                     chains = 2, cores = 4,
-#                     warmup = tbPtntCstWarmup/2,
-#                     iter = tbPtntCstIter/4,
-#                     control=list(max_treedepth=14),
-#                     refresh = 0, seed = tbPtntCstSeed
-# )
-# 
-# stan(file = "code/inst/basicLinearModel.stan",
-#      data = basicLinearModelData,
-#      iter = tbPtntCstIter/4, chains = 2,
-#      warmup=tbPtntCstWarmup/2,
-#      control=list(max_treedepth=14), 
-#      seed = tbPtntCstSeed)
-# 
-# 
-# basicLinearModSamps <- tidybayes::spread_draws(basicLinearModEst,
-#                                                dstb_total_cost_data[id.numb],
-#                                                ndraws = 1000, seed = tbPtntCstSeed);
-# 
-# basicLinearModEst<- cbind(basicLinearModSamps  %>%
-#                           group_by(id.numb) %>%
-#                            mean_qi(dstb_total_cost_data) %>%
-#                            select(! c(.width, .point, .interval)),
-#                        modelData %>% 
-#                            select(whoSurv, study.country, study.end.year, survey.id) %>%
-#                            distinct()) %>%
-#     mutate(who.survey = ifelse(whoSurv==1, "Yes", "No"))
-# 
-# 
-# ggplot(data=basicLinearModEst) + 
-#     geom_point(aes(x=survey.id, y=`dstb_total_cost_data`, shape = who.survey, color=study.country), size=2) +
-#     theme_minimal() +
-#     coord_flip() + theme(legend.position = "none")  + 
-#     ggtitle("Survey-level estimates from basic linear model ")
-# 
-# 
-# 
-# basicLinearModSampsCntry <- tidybayes::spread_draws(basicLinearModEst,
-#                                            dstb_total_cost_country[country.id],
-#                                            ndraws = 1000, seed = tbPtntCstSeed);
-# 
-# basicLinearModEstCntry<- left_join(basicLinearModSampsCntry  %>%
-#                                  group_by(country.id) %>%
-#                                  mean_qi(dstb_total_cost_country) %>%
-#                                  select(! c(.width, .point, .interval)),
-#                              modelData %>% select(study.country, country.id) %>% distinct()) %>% 
-#     arrange(dstb_total_cost_country) %>% 
-#     mutate(study.country=factor(study.country, levels=study.country))
-# 
-# ggplot(data=basicLinearModEstCntry) + 
-#     geom_point(aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
-#     theme_minimal() +
-#     coord_flip() + theme(legend.position = "none") + 
-#     ggtitle("Country-level estimates from basic linear model")
+                                 mult_drtb_dme_prediag,
+                                 mult_drtb_dnme_prediag,
+                                 mult_drtb_ie_prediag, 
+                                 mult_drtb_dme_intsvtx,
+                                 mult_drtb_dnme_intsvtx,
+                                 mult_drtb_ie_intsvtx,
+                                 mult_drtb_dme_contntx,
+                                 mult_drtb_dnme_contntx,
+                                 mult_drtb_ie_contntx,
+                                 mult_who,
+                                 ndraws = 1000, seed = tbPtntCstSeed) 
+betas %>% 
+    mutate(totalDS = (exp(beta_dme_prediag) +
+                          exp(beta_dnme_prediag) +
+                          exp(beta_ie_prediag) +
+                          exp(beta_dme_intsvtx) +
+                          exp(beta_dnme_intsvtx) +
+                          exp(beta_ie_intsvtx) +
+                          exp(beta_dme_contntx) +
+                          exp(beta_dnme_contntx) +
+                          exp(beta_ie_contntx)), 
+           totalDSWHO = (exp(beta_dme_prediag) +
+                          exp(beta_dnme_prediag) +
+                          exp(beta_ie_prediag) +
+                          exp(beta_dme_intsvtx) +
+                          exp(beta_dnme_intsvtx) +
+                          exp(beta_ie_intsvtx) +
+                          exp(beta_dme_contntx) +
+                          exp(beta_dnme_contntx) +
+                          exp(beta_ie_contntx)) * exp(mult_who),
+           totalDR = (exp(beta_dme_prediag + mult_drtb_dme_prediag) + 
+                          exp(beta_dnme_prediag + mult_drtb_dnme_prediag) +
+                          exp(beta_ie_prediag + mult_drtb_ie_prediag) +
+                          exp(beta_dme_intsvtx + mult_drtb_dme_intsvtx) +
+                          exp(beta_dnme_intsvtx + mult_drtb_dnme_intsvtx) +
+                          exp(beta_ie_intsvtx + mult_drtb_ie_intsvtx) +
+                          exp(beta_dme_contntx + mult_drtb_dme_contntx) +
+                          exp(beta_dnme_contntx + mult_drtb_dnme_contntx) +
+                          exp(beta_ie_contntx + mult_drtb_ie_contntx)),
+           totalDRWHO = (exp(beta_dme_prediag + mult_drtb_dme_prediag) + 
+                          exp(beta_dnme_prediag + mult_drtb_dnme_prediag) +
+                          exp(beta_ie_prediag + mult_drtb_ie_prediag) +
+                          exp(beta_dme_intsvtx + mult_drtb_dme_intsvtx) +
+                          exp(beta_dnme_intsvtx + mult_drtb_dnme_intsvtx) +
+                          exp(beta_ie_intsvtx + mult_drtb_ie_intsvtx) +
+                          exp(beta_dme_contntx + mult_drtb_dme_contntx) +
+                          exp(beta_dnme_contntx + mult_drtb_dnme_contntx) +
+                          exp(beta_ie_contntx + mult_drtb_ie_contntx)) * exp(mult_who)) %>% 
+    mean_qi(totalDS, totalDSWHO, totalDR, totalDRWHO) %>% t()
 
 
+betas %>% mean_qi(mult_who) %>% select(! c(.width, .point, .interval)) %>% exp() %>% t()
 
 ##############################################################################|
 ##############################################################################|
@@ -277,33 +202,81 @@ sum(exp(betas[,seq(1,27,3)]))
 library(lme4)
 
 ### Use LM to run basic linear model with no random effects in R
-basicLinearModel <- lm(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
-                                  dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
-                                  dme.contntx + dnme.contntx + ie.contntx + drtb.wt , 
+basicLinearModel <- lm(cost ~ 0 + dme.prediag * drtb.wt + 
+                                  dnme.prediag * drtb.wt + 
+                                  ie.prediag * drtb.wt+
+                                  dme.intsvtx * drtb.wt + 
+                                  dnme.intsvtx * drtb.wt + 
+                                  ie.intsvtx * drtb.wt + 
+                                  dme.contntx * drtb.wt + 
+                                  dnme.contntx * drtb.wt + 
+                                  ie.contntx * drtb.wt, 
                                   data=modelData  %>% filter(cost > 0)); basicLinearModel
 
 ### DSTB estimates 
-sum(basicLinearModel$coefficients[-10])
+sum(basicLinearModel$coefficients[c(1,3:10)])
 ### DRTB estimates 
 sum(basicLinearModel$coefficients)
 
-### Use LMER to run basic linear model with random effects in R
-basicLinearMixedModel <-lmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
-                        dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
-                        dme.contntx + dnme.contntx + ie.contntx + drtb.wt + 
-                        (1 | country.id) + (1 |survey.id), 
-                        data=modelData  %>% filter(cost > 0)); basicLinearMixedModel
-
-basicLinearMixedModel <-lmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.prediag +
-                                 dme.intsvtx + dnme.intsvtx + ie.intsvtx + 
-                                 dme.contntx + dnme.contntx + ie.contntx + drtb.wt + 
-                                 (1 | country.id) + (1 |survey.id), 
-                             data=modelData  %>% filter(cost > 0)); basicLinearMixedModel
+basicLinearModelWHO <- lm(cost ~ 0 + dme.prediag * drtb.wt + 
+                           dnme.prediag * drtb.wt + 
+                           ie.prediag * drtb.wt+
+                           dme.intsvtx * drtb.wt + 
+                           dnme.intsvtx * drtb.wt + 
+                           ie.intsvtx * drtb.wt + 
+                           dme.contntx * drtb.wt + 
+                           dnme.contntx * drtb.wt + 
+                           ie.contntx * drtb.wt + 
+                           whoSurv, 
+                       data=modelData  %>% filter(cost > 0) %>% 
+                       mutate(whoSurv = as.factor(whoSurv))); basicLinearModelWHO
 
 ### DSTB estimates 
-sum(summary(basicLinearMixedModel)[["coefficients"]][-10,1])
+sum(basicLinearModelWHO$coefficients[c(1,3:11)])
+sum(basicLinearModelWHO$coefficients[c(1,3:10, 12)])
+### DRTB estimates 
+sum(basicLinearModelWHO$coefficients[-12])
+sum(basicLinearModelWHO$coefficients[-11])
+
+### Use LMER to run basic linear model with random effects in R
+basicLinearMixedModel <-lmer(cost ~ 0 + dme.prediag * drtb.wt + 
+                                        dnme.prediag * drtb.wt + 
+                                        ie.prediag * drtb.wt+
+                                        dme.intsvtx * drtb.wt + 
+                                        dnme.intsvtx * drtb.wt + 
+                                        ie.intsvtx * drtb.wt + 
+                                        dme.contntx * drtb.wt + 
+                                        dnme.contntx * drtb.wt + 
+                                        ie.contntx * drtb.wt + 
+                                       (1 | country.id) + (1 |survey.id), 
+                              data=modelData  %>% 
+                                   filter(cost > 0)); basicLinearMixedModel
+
+### DSTB estimates 
+sum(summary(basicLinearMixedModel)[["coefficients"]][c(1,3:10),1])
 ### DRTB estimates 
 sum(summary(basicLinearMixedModel)[["coefficients"]][,1])
+
+basicLinearMixedModelWHO <-lmer(cost ~ 0 + dme.prediag * drtb.wt + 
+                                 dnme.prediag * drtb.wt + 
+                                 ie.prediag * drtb.wt+
+                                 dme.intsvtx * drtb.wt + 
+                                 dnme.intsvtx * drtb.wt + 
+                                 ie.intsvtx * drtb.wt + 
+                                 dme.contntx * drtb.wt + 
+                                 dnme.contntx * drtb.wt + 
+                                 ie.contntx * drtb.wt + 
+                                 whoSurv +
+                                 (1 | country.id) + (1 |survey.id), 
+                                 data=modelData  %>% filter(cost > 0) %>% 
+                                      mutate(whoSurv = as.factor(whoSurv))); basicLinearMixedModelWHO
+
+### DSTB estimates 
+sum(summary(basicLinearMixedModelWHO)[["coefficients"]][c(1,3:11),1])
+sum(summary(basicLinearMixedModelWHO)[["coefficients"]][c(1,3:10, 12),1])
+### DRTB estimates 
+sum(summary(basicLinearMixedModelWHO)[["coefficients"]][-12,1])
+sum(summary(basicLinearMixedModelWHO)[["coefficients"]][-11,1])
 
 
 ### Use GLMER to run basic linear model with random effects in R 
@@ -330,19 +303,20 @@ basicGammaMixedModelLL <-glmer(cost ~ 0 + dme.prediag + dnme.prediag + ie.predia
 prod(exp(summary(basicGammaMixedModelLL)[["coefficients"]][-10,1]))
 prod(exp(summary(basicGammaMixedModelLL)[["coefficients"]][,1]))
 
-### Bayes model 
+### Use GLMER to run basic linear model with random effects in R 
+### using gamma family 
+basicGammaMixedModelLL2 <-glmer(cost ~ 0 + 
+                                      (dme.prediag +  (1 | country.id) + (1 | survey.id) + drtb.wt) + 
+                                      (dnme.prediag + (1 | country.id) + (1 | survey.id) + drtb.wt) +
+                                      (ie.prediag + (1 | country.id) + (1 | survey.id) + drtb.wt) +
+                                      (dme.intsvtx +  (1 | country.id) + (1 | survey.id) + drtb.wt) + 
+                                      (dnme.intsvtx + (1 | country.id) + (1 | survey.id) + drtb.wt) +
+                                      (ie.intsvtx + (1 | country.id) + (1 | survey.id) + drtb.wt) +
+                                      (dme.contntx +  (1 | country.id) + (1 | survey.id) + drtb.wt) + 
+                                      (dnme.contntx + (1 | country.id) + (1 | survey.id) + drtb.wt) +
+                                      (ie.contntx + (1 | country.id) + (1 | survey.id) + drtb.wt) , 
+                               data=modelData %>% filter(cost > 0), family = Gamma(link = "log")); basicGammaMixedModelLL2
 
-betas <- tidybayes::spread_draws(basicModEstTEST,
-                                 beta_dme_prediag,
-                                 beta_dnme_prediag,
-                                 beta_ie_prediag,
-                                 beta_dme_intsvtx,
-                                 beta_dnme_intsvtx,
-                                 beta_ie_intsvtx,
-                                 beta_dme_contntx,
-                                 beta_dnme_contntx,
-                                 beta_ie_contntx,
-                                 ndraws = 1000, seed = tbPtntCstSeed) %>% 
-    mean_qi()
+prod(exp(summary(basicGammaMixedModelLL2)[["coefficients"]][-10,1]))
+prod(exp(summary(basicGammaMixedModelLL2)[["coefficients"]][,1]))
 
-sum(exp(betas[,seq(1,27,3)]))

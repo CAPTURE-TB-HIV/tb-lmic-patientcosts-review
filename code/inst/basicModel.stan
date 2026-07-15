@@ -34,8 +34,7 @@ data {
     int survey_id[N];        // Survey identifiers
     int N_country;           // Number of countries
     int country_id[N];       // Country identifier
-    // int N_natrep;            // Number of nationally representative surveys
-    // int natrep_id[N];         // Nationally representative survey identifier
+    int natrep_id[N];         // Nationally representative survey identifier
     
     // gives us a simple way to look up the association between country and survey
     int id_matrix[N_survey, 2];
@@ -92,13 +91,15 @@ parameters {
     real randeff_country[N_country];
     
     // nationally-rep-level
-    // real randeff_natrep[N_country];
+    real randeff_natrep;
     
     // dispersion of survey-level random effects 
     real<lower=0> sigma_randeff_survey;
     
     // dispersion of country-level random effects 
     real<lower=0> sigma_randeff_country;
+    
+    real<lower=0> sigma_randeff_natrep; 
     
     // Covariates 
     // We are going to use a random effect setup 
@@ -177,7 +178,7 @@ transformed parameters {
     // Calculate mean cost estimate 
     ///////////////////////////////////////////////////////////////////////////
     for (n in 1:N){
-            mu[n] =  exp(beta_dme_prediag + 
+            mu[n] =  (exp(beta_dme_prediag + 
                         (randeff_country[country_id[n]] * sigma_randeff_country) +
                         (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_dme_prediag * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
@@ -238,7 +239,9 @@ transformed parameters {
                         (randeff_survey[survey_id[n]] * sigma_randeff_survey)) *
                 exp((beta_drtb_ie_contntx * sigma_drtb + beta_drtb_overall) * drtb_ind[n]) *
                 // exp((beta_year_ie_contntx * sigma_year + beta_year_overall)  * survey_year[n]) *
-                ie_contntx[n];// * 
+                ie_contntx[n]) *
+                
+                exp(randeff_natrep * sigma_randeff_natrep * natrep_id[n]); 
                 
             /// fixed effects with only a single effect:
                 // exp(beta_natRep * natrep_id[n]); 
@@ -302,7 +305,7 @@ model {
     // Priors for random slopes  
     randeff_survey ~ normal(0, 1);
     randeff_country ~ normal(0, 1);
-    // randeff_natrep ~ normal(0, 1);
+    randeff_natrep ~ normal(0, 1);
     
     // Priors for covariate sigmas 
     sigma_drtb ~ normal(0, prior_sigma);
@@ -311,6 +314,8 @@ model {
     // Priors for dispersion of random effects
     sigma_randeff_survey   ~ student_t(3, 0, 2.5); 
     sigma_randeff_country  ~ student_t(3, 0, 2.5); 
+    sigma_randeff_natrep  ~ student_t(3, 0, 2.5); 
+
 
     // Priors for dispersion parameter
     tau ~ exponential(1); 
@@ -327,6 +332,7 @@ model {
     beta_theta_dme_contntx  ~ normal(log(prob_cost_zero), 1);
     beta_theta_dnme_contntx ~ normal(log(prob_cost_zero), 1);
     beta_theta_ie_contntx   ~ normal(log(prob_cost_zero), 1);
+
     
     /// Calculate the likelihood
     for(n in 1:N){
@@ -424,8 +430,10 @@ generated quantities {
     real mult_drtb_ie_contntx;
     // real mult_year_ie_contntx;
     
+    real mult_who; 
     
-            // Covariate real multipliers
+    
+       // Covariate real multipliers
         mult_drtb_dme_prediag = beta_drtb_dme_prediag * sigma_drtb + beta_drtb_overall;
         // mult_year_dme_prediag = beta_year_dme_prediag * sigma_year + beta_year_overall;
 
@@ -455,7 +463,7 @@ generated quantities {
         mult_drtb_ie_contntx = beta_drtb_ie_contntx * sigma_drtb + beta_drtb_overall;
         // mult_year_ie_contntx = beta_year_ie_contntx * sigma_year + beta_year_overall;
     
-             
+        mult_who =  randeff_natrep * sigma_randeff_natrep; 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
