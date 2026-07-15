@@ -169,17 +169,17 @@ for (t in sort(unique(covariatesTime$study.end.year))) {
        oop_perc_che_new = (covariateFilt$oop.perc.che.trunc - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
        uhc_index_new = (covariateFilt$uhc.index.trunc - mean(modelData$UHCindex)) / sd(modelData$UHCindex), 
        prior_sigma = 2, 
-       prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData)
+       prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData), 
+       natrep_id = modelData$whoSurv
    )
    
    lmicSampsTime[[as.character(t)]] <- rstan::sampling(
-       predModel, predDataFilt,
-       chains = 2, cores = 4,
-       warmup = tbPtntCstWarmup,
-       iter = tbPtntCstIter/2,
-       control=list(max_treedepth=14),
-       refresh = 0, seed = tbPtntCstSeed
-   )
+           predModel, 
+           data = predDataFilt,
+           iter = tbPtntCstIter/4, chains = 2,
+           warmup = tbPtntCstWarmup/2,
+           control=list(max_treedepth=14), 
+           seed = tbPtntCstSeed)
    
 }
 
