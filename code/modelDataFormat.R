@@ -802,9 +802,12 @@ modelData <- left_join(modelData,
 modelData <-left_join(modelData, medianIncome %>%
                           rename(country.code = Country.Code) %>%
                           mutate(study.end.year = as.numeric(study.end.year)) %>%
-                          select(country.code, study.end.year, median.income.calc.usd), 
+                          select(country.code, study.end.year, 
+                                 median.income.calc.intd,
+                                 median.income.calc.intd.hh), 
                       by = c("study.end.year", "country.code")) %>%
-            rename(median.income = median.income.calc.usd) %>%
+            rename(median.income = median.income.calc.intd, 
+                   median.income.hh = median.income.calc.intd.hh) %>%
             mutate(oop.perc.che = as.numeric(oop.perc.che))
 
 
@@ -1028,7 +1031,8 @@ length(unique(modelData$covidence.id))
 ##############################################################################|
 
 modelData <- modelData %>% 
-             mutate(log.median.income = log(median.income))
+             mutate(log.median.income = log(median.income), 
+                    log.median.income.hh = log(median.income.hh))
 
 ##############################################################################|
 ### Add nat rep

@@ -444,14 +444,14 @@ ggplot(hh_income %>%
 #### Create per household income estimates 
 
 medianAllIncomes <- hh_income %>%
-                    mutate(GNI.LCU.calc.HH  = GNI.LCU.calc  * hh.size.calc,
-                           GNI.USD.calc.HH  = GNI.USD.calc  * hh.size.calc,
-                           GNI.INTD.calc.HH = GNI.INTD.calc * hh.size.calc)
+                    mutate(median.income.calc.lcu.hh  = median.income.calc.lcu  * hh.size.calc,
+                           median.income.calc.usd.hh  = median.income.calc.usd  * hh.size.calc,
+                           median.income.calc.intd.hh = median.income.calc.intd * hh.size.calc)
 
 
 ggplot(medianAllIncomes %>% 
            filter(Country.Code %in% unique(LMIC$country.code[67:132]))) + #%>%
-    geom_line(aes(x=study.end.year, y=GNI.INTD.calc.HH), color="salmon") + theme_minimal() +
+    geom_line(aes(x=study.end.year, y=median.income.calc.intd.hh), color="salmon") + theme_minimal() +
     facet_wrap(facets=vars(study.country)) + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
     expand_limits(y=0)
@@ -460,7 +460,7 @@ ggplot(medianAllIncomes %>%
 ##### SAVE THE FULL DATASET  ##################################################
 # write.csv(medianIndividualIncomeDF, "data/medianIncome.csv")
 ##### UNCOMMENT ME!!!!! #####
-# saveRDS(medianAllIncomes, here("data/covariateData/medianIncome.rds"), version =2)
+saveRDS(medianAllIncomes, here("data/covariateData/medianIncome.rds"), version =2)
 saveRDS(medianAllIncomes, here("data/covariateData/medianIncomePrediction.rds"), version =2)
 ##############################################################################|
 
