@@ -1022,22 +1022,6 @@ modelData <- modelData %>% filter(rprsnt == "All")
 length(unique(modelData$covidence.id))
 
 
-
-##############################################################################|
-### Add study and country-level identifier into the model data              ###
-##############################################################################|
-modelData <- modelData %>%
-    ungroup() %>%
-    group_by(covidence.id) %>%
-    mutate(survey.id = cur_group_id()) %>% 
-    ungroup() %>% 
-    group_by(country.code) %>% 
-    mutate(country.id = cur_group_id()) %>% ungroup() %>% 
-    ### Force these weights to be 1 or 0
-    mutate(drtb.wt = ifelse(pop.id == "DRTB", 1, 
-                             ifelse(pop.id == "DSTB", 0, drtb.wt)))
-
-
 ##############################################################################|
 ### Add log median income into the model        ###
 ##############################################################################|
@@ -1056,3 +1040,43 @@ modelData <- left_join(modelData, dataInds %>% select(covidence.id, natRep)) %>%
                                              8270, 9620, 7443,7355, 7919, 9422,
                                              8310, 9585, 8634, 8677, 9301), 1, 0))
 ##############################################################################|
+
+##############################################################################|
+### Add missing participant numbers
+##############################################################################|
+##############################################################################|
+
+modelData <- modelData %>% 
+              mutate(n.participants = case_when(covidence.id == 9627 & pop.id == "DSTB" ~ 118,
+                                                     covidence.id == 9627 & pop.id == "DRTB" ~ 143,
+                                                     covidence.id == 9323 ~ 126,
+                                                     covidence.id == 9035 ~ 425,
+                                                     covidence.id == 7643 ~ 260,
+                                                     covidence.id == 8634 & pop.id == "DSTB" ~ 1134,
+                                                     covidence.id == 8634 & pop.id == "DRTB" ~ 44, 
+                                                     covidence.id == 7959 ~ 175, ## could be different for pre-tx cost
+                     .default = n.participants), 
+##############################################################################|
+### Add sample standard error relationship
+##############################################################################|
+                    stnd.err.wgt = 1 / sqrt (n.participants))
+
+##############################################################################|
+### Remove those without pop size 
+##############################################################################|
+
+modelData <- modelData %>% filter(!is.na(n.participants))
+
+##############################################################################|
+### Add study and country-level identifier into the model data              ###
+##############################################################################|
+modelData <- modelData %>%
+    ungroup() %>%
+    group_by(covidence.id) %>%
+    mutate(survey.id = cur_group_id()) %>% 
+    ungroup() %>% 
+    group_by(country.code) %>% 
+    mutate(country.id = cur_group_id()) %>% ungroup() %>% 
+    ### Force these weights to be 1 or 0
+    mutate(drtb.wt = ifelse(pop.id == "DRTB", 1, 
+                            ifelse(pop.id == "DSTB", 0, drtb.wt)))
