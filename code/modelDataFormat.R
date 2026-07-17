@@ -763,7 +763,7 @@ modelData <- tmpBoth
 ##############################################################################|
 covIDs <- modelData %>% filter(cost > 25000) %>% select(covidence.id) %>%
     unique() %>% unlist() %>% as.vector()
-print(paste("Survey number",covIDs,  "has a cost listed at higher than 25000 USD:"))
+print(paste("Survey number",covIDs,  "has a cost listed at higher than 25000 INTD:"))
 
 ## Remove for now
 modelData <- modelData %>% filter(!covidence.id %in% covIDs)
@@ -800,6 +800,7 @@ modelData <- left_join(modelData,
                            select(country.code, study.end.year, oop.perc.che))
 
 modelData <-left_join(modelData, medianIncome %>%
+                          rename(country.code = Country.Code) %>%
                           mutate(study.end.year = as.numeric(study.end.year)) %>%
                           select(country.code, study.end.year, median.income.calc.usd), 
                       by = c("study.end.year", "country.code")) %>%

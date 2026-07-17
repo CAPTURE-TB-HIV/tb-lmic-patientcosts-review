@@ -30,6 +30,7 @@ rawData <- readRDS(here("data/reviewData/fullDataRaw.rds"))
 
 ##### Economic data ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
 toUSDcf   <- readRDS(here("data/monetaryConversion/toUSDconversionFactors.rds"))
+toINTDcf   <- readRDS(here("data/monetaryConversion/toINTDconversionFactors.rds"))
 fromUSDcf <- readRDS(here("data/monetaryConversion/fromUSDconversionFactors.rds"))
 inflation <- readRDS(here("data/monetaryConversion/inflationLocalFactors.rds"))
 
@@ -55,7 +56,7 @@ lineDataList <- line_data(cleanData = cleanData,
 ##############################################################################|
 econData <- data.frame(covidence.id = lineDataList$descriptive$covidence.id, 
                        fromUSD = as.numeric(fromUSDcf),
-                       toUSD = as.numeric(toUSDcf),
+                       toINTD = as.numeric(toINTDcf),
                        inflate = as.numeric(inflation))
 
 costData <- lineDataList$data %>% 
@@ -74,7 +75,7 @@ econData <- costData %>% select(covidence.id) %>% left_join(econData)
 
 updatedCosts <- costData[,c(-(which(colnames(costData) %in% c("pop.id", colnames(econData)))))]
 updatedCosts <- as.data.frame(sapply( updatedCosts, as.numeric)) *
-                econData[,"fromUSD"] * econData[,"inflate"] * econData[,"toUSD"]
+                econData[,"fromUSD"] * econData[,"inflate"] / econData[,"toINTD"]
 
 # sum(is.na(updatedCosts))
 
