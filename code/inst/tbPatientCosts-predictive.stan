@@ -439,7 +439,7 @@ model {
     sigma_randeff_natrep   ~ student_t(3, 0, 2.5);
     
     // Priors for dispersion parameter
-    tau ~ exponential(1); 
+    tau_overall ~ exponential(1); 
     
     // Priors for hurdle predictors  
     beta_theta_dme_prediag ~  normal(log(prob_cost_zero), 1);
