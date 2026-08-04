@@ -12,6 +12,7 @@ library(tidybayes)
 library(scales)
 library(forcats)
 library(ggplot2)
+library(rnaturalearth)
 
 incRate <- read.csv("~/Downloads/TB_burden_countries_2026-04-13.csv") %>% 
     filter(year == 2024) %>% 
@@ -39,12 +40,14 @@ dataDesc <- cbind(dplyr::left_join(dataList$descriptive, regionWHO) %>%
     select(! study.quality.risk.of.bias) 
 
 ### Add in the covariates for the prediction 
-covariates <- readRDS(here("data/covariates.rds"))
+# covariates <- readRDS(here("data/covariates.rds"))
 covariatesTime <- readRDS(here("data/covariatesTime.rds"))
+covariates <- covariatesTime %>% filter(study.end.year == 2024)
 
 ### Load in the samples 
-lmicSampsAll <- readRDS(here("output/allYears_06-09.rds"))
-lmicSamps <- lmicSampsAll[[16]]
+lmicSampsAll <- readRDS(here("output/allYears_07-30.rds"))
+# lmicSamps <- lmicSampsAll[[16]]
+lmicSamps <- readRDS(here("output/mainEst2024_07-30.rds"))
 
 ### Create a vector of the Top 30 TB burden countries 
 top30 <- c("Brazil", "Central African Republic", "Congo", "Ethiopia", 
@@ -57,6 +60,39 @@ top30 <- c("Brazil", "Central African Republic", "Congo", "Ethiopia",
 
 
 tbPtntCstSeed <- 513
+
+### Read in notification data and format
+notif <- read.csv(here("data/TB_notifications_2025-12-19.csv")) %>% 
+    filter(year < 2025, year > 2008) %>%
+    select(country, iso3, g_whoregion, year, new_sp, new_sn, new_su, new_ep, new_oth, 
+           newrel_m014, newrel_m15plus, newrel_mu,
+           newrel_f014, newrel_f15plus, newrel_fu,
+           newrel_sexunk014, newrel_sexunk15plus, newrel_sexunkageunk) %>%
+    rowwise() %>% 
+    mutate(
+        oldCasesAll = ifelse(!is.na(new_sp) | !is.na(new_sn) | !is.na(new_su) | !is.na(new_ep) | !is.na(new_oth), 
+                             sum(new_sp, new_sn, new_su, new_ep, new_oth, na.rm = TRUE),
+                             NA), 
+        # oldCases = ifelse(!is.na(new_sp) | !is.na(new_sn) | !is.na(new_su), 
+        #                   sum(new_sp, new_sn, new_su, na.rm = TRUE),
+        #                   NA), 
+        newCases = ifelse(!is.na(newrel_m014) | !is.na(newrel_m15plus) | !is.na(newrel_mu) |
+                              !is.na(newrel_f014) | !is.na(newrel_f15plus) | !is.na(newrel_fu) | 
+                              !is.na(newrel_sexunk014) | !is.na(newrel_sexunk15plus) | !is.na(newrel_sexunkageunk),      
+                          sum(newrel_m014, newrel_m15plus, newrel_mu,
+                              newrel_f014, newrel_f15plus, newrel_fu,
+                              newrel_sexunk014, newrel_sexunk15plus, newrel_sexunkageunk, na.rm = TRUE),
+                          NA), 
+        # notifSmall = ifelse(is.na(newCases), 
+        #                oldCases, newCases),
+        notif = ifelse(is.na(newCases), 
+                       as.numeric(oldCasesAll), 
+                       as.numeric(newCases))) %>% 
+    select(iso3, g_whoregion, year, notif) %>%
+    rename(country.code = iso3, 
+           study.end.year = year, 
+           who.region=g_whoregion) %>% 
+    filter(country.code %in% covariates$country.code) %>% ungroup()
 
 ##############################################################################|
 ##### Total surveys (included not modeled)       ##############################
@@ -195,7 +231,7 @@ countryEst <- left_join(covariates,
                                      dstb_dme_contntx_cost_country[country.id.new],
                                      dstb_dnme_contntx_cost_country[country.id.new],
                                      dstb_ie_contntx_cost_country[country.id.new],
-                                     dstb_total_cost_country[country.id.new], 
+                                     dstb_total_cost_country[country.id.new],
                                      ### RR/MDR-TB
                                      drtb_dme_prediag_cost_country[country.id.new],
                                      drtb_dnme_prediag_cost_country[country.id.new],
@@ -206,9 +242,18 @@ countryEst <- left_join(covariates,
                                      drtb_dme_contntx_cost_country[country.id.new],
                                      drtb_dnme_contntx_cost_country[country.id.new],
                                      drtb_ie_contntx_cost_country[country.id.new],
-                                     drtb_total_cost_country[country.id.new], 
+                                     drtb_total_cost_country[country.id.new],
                                      ndraws = 1000, seed = tbPtntCstSeed) %>% 
                             group_by(country.id.new) %>% 
+                            # mutate(dstb_total_cost_country =dstb_dme_prediag_cost_country +
+                            #            dstb_dnme_prediag_cost_country +
+                            #            dstb_ie_prediag_cost_country +
+                            #            dstb_dme_intsvtx_cost_country +
+                            #            dstb_dnme_intsvtx_cost_country +
+                            #            dstb_ie_intsvtx_cost_country+
+                            #            dstb_dme_contntx_cost_country +
+                            #            dstb_dnme_contntx_cost_country +
+                            #            dstb_ie_contntx_cost_country) %>%
                             mean_qi(dstb_dme_prediag_cost_country, 
                                       dstb_dnme_prediag_cost_country, 
                                       dstb_ie_prediag_cost_country,
@@ -219,26 +264,34 @@ countryEst <- left_join(covariates,
                                       dstb_dnme_contntx_cost_country, 
                                       dstb_ie_contntx_cost_country,
                                       dstb_total_cost_country,
-                                      drtb_dme_prediag_cost_country, 
-                                      drtb_dnme_prediag_cost_country, 
+                                      drtb_dme_prediag_cost_country,
+                                      drtb_dnme_prediag_cost_country,
                                       drtb_ie_prediag_cost_country,
-                                      drtb_dme_intsvtx_cost_country, 
-                                      drtb_dnme_intsvtx_cost_country, 
+                                      drtb_dme_intsvtx_cost_country,
+                                      drtb_dnme_intsvtx_cost_country,
                                       drtb_ie_intsvtx_cost_country,
-                                      drtb_dme_contntx_cost_country, 
-                                      drtb_dnme_contntx_cost_country, 
+                                      drtb_dme_contntx_cost_country,
+                                      drtb_dnme_contntx_cost_country,
                                       drtb_ie_contntx_cost_country,
-                                      drtb_total_cost_country), 
+                                      drtb_total_cost_country
+                                      ), 
                         join_by(country.id.new)) %>% 
     select(study.country, in.review, country.id.new,
            median.income, 
            log.median.income, 
            median.income.trunc,
            log.median.income.trunc,
+           median.income.hh,
+           log.median.income.hh, 
+           median.income.hh.trunc,
+           log.median.income.hh.trunc,
+           
            oop.perc.che, 
            oop.perc.che.trunc,
            uhc.index, 
            uhc.index.trunc,
+           # cdr.rate, 
+           cdr.trunc,
            dstb_dme_prediag_cost_country, 
            dstb_dnme_prediag_cost_country, 
            dstb_ie_prediag_cost_country,
@@ -249,16 +302,17 @@ countryEst <- left_join(covariates,
            dstb_dnme_contntx_cost_country, 
            dstb_ie_contntx_cost_country,
            dstb_total_cost_country,
-           drtb_dme_prediag_cost_country, 
-           drtb_dnme_prediag_cost_country, 
+           drtb_dme_prediag_cost_country,
+           drtb_dnme_prediag_cost_country,
            drtb_ie_prediag_cost_country,
-           drtb_dme_intsvtx_cost_country, 
-           drtb_dnme_intsvtx_cost_country, 
+           drtb_dme_intsvtx_cost_country,
+           drtb_dnme_intsvtx_cost_country,
            drtb_ie_intsvtx_cost_country,
-           drtb_dme_contntx_cost_country, 
-           drtb_dnme_contntx_cost_country, 
+           drtb_dme_contntx_cost_country,
+           drtb_dnme_contntx_cost_country,
            drtb_ie_contntx_cost_country,
-           drtb_total_cost_country) %>% 
+           drtb_total_cost_country
+           ) %>% 
     ungroup() %>% 
     arrange(dstb_total_cost_country) %>% 
     mutate(cntry_order = 1:n()) 
@@ -358,11 +412,19 @@ countryEst <- left_join(countryEst, covariatesAll)
 ### Panel A - Global distribution of surveys used in the quantitative 
 ### analysis. 
 
-nCountry <- modelData %>% select(study.country, covidence.id) %>% 
-    distinct() %>% count(study.country)
+nCountry0 <- modelData %>% select(country.code, covidence.id) %>% 
+    distinct() %>% count(country.code)
+
+nCountry <-  ne_countries() %>% 
+    filter(sovereignt != "Antarctica") %>% 
+    select(sovereignt, iso_a3, geometry) %>% 
+    rename(country.code = iso_a3) %>% 
+    left_join(nCountry0) 
 
 world_map <- map_data("world")
 world_map <- subset(world_map, region != "Antarctica")
+nCountry0 <- modelData %>% select(study.country, covidence.id) %>% 
+    distinct() %>% count(study.country)
 
 centroids <- world_map %>% 
     group_by(region) %>% 
@@ -375,21 +437,99 @@ centroids[which(centroids$study.country ==
                     "Democratic Republic of the Congo"), "study.country"] <- "DR Congo"
 centroids[which(centroids$study.country == "Swaziland"), "study.country"] <- "Eswatini"
 
-nCountriesGeo <- left_join(nCountry, centroids)
+nCountriesGeo <- left_join(nCountry0, centroids) %>% 
+    mutate(lat = ifelse(study.country == "South Africa", 
+                        lat -7, lat),
+           lon = ifelse(study.country == "Peru", 
+                        lon -1, lon),
+           lon = ifelse(study.country == "South Africa", 
+                        lon +8, lon),
+           lon = ifelse(study.country == "Indonesia", 
+                        lon-15, lon),
+           lat = ifelse(study.country == "Indonesia", 
+                        lat+11, lat), 
+           lon = ifelse(study.country == "Papua New Guinea", 
+                        lon-2, lon),
+           lat = ifelse(study.country == "Papua New Guinea", 
+                        lat+1.5, lat), 
+           lon = ifelse(study.country == "Lao PDR", 
+                        lon-1, lon),
+           lat = ifelse(study.country == "Lao PDR",
+                        lat+1, lat), 
+           lon = ifelse(study.country == "Philippines", 
+                        lon+6, lon),
+           lon = ifelse(study.country == "Solomon Islands", 
+                        lon+1, lon), 
+           lat = ifelse(study.country == "Solomon Islands", 
+                        lat+3, lat), 
+           lon = ifelse(study.country == "Fiji", 
+                        lon+3, lon),
+           lon = ifelse(study.country == "Viet Nam", 
+                        lon+2, lon), 
+           lat = ifelse(study.country == "Viet Nam", 
+                        lat-3, lat), 
+           lon = ifelse(study.country == "Gambia", 
+                        lon-3, lon), 
+           lon = ifelse(study.country == "Eswatini", 
+                        lon+2.2, lon), 
+           lon = ifelse(study.country == "Malawi", 
+                        lon-.5, lon),
+           lon = ifelse(study.country == "Molova", 
+                        lon-1, lon),
+           )
 
-plot2a <- ggplot(nCountry) +
-    geom_map(
-        dat = world_map, map = world_map, aes(map_id = region),
-        fill = "grey95", color = "black", size = 0.25) +
-    geom_map(map = world_map, aes(map_id = study.country, fill = n)) +
-    scale_fill_gradient(low = "darkolivegreen1", high = "darkolivegreen",
-                        name = "Number of patient costs surveys") +
-    expand_limits(x = world_map$long, y = world_map$lat) + 
-    theme_void(base_size = 18) + theme(legend.position = "inside",
-                                       legend.position.inside = c(.15,.2)) + 
-    with(nCountriesGeo, annotate(geom="text", x = lon, y=lat, label = n, size = 5))
+plot2a <- ggplot() + 
+    geom_sf(data = nCountry, mapping=aes(geometry=geometry, fill=n), color="grey30") + 
+    scale_fill_binned(na.value = "grey60", 
+                      breaks = c(1,2,4,15), 
+                     label =c("                       1-2",
+                              "                       3-4",
+                              "                       5-15",
+                              "                       16+"),
+                     # palette = c("#DCE6F5", "#8CADDD", "#6EA6F9", "#496DA4"),
+                     palette = c("#B9CEEB", "#8CADDD", "#6EA6F9", "#496DA4"),
+                     name = "Number of patient\ncosts studies") +
+    with(nCountriesGeo, annotate(geom="text", x = lon, y=lat, label = n, size = 3, fontface = "bold")) + 
+    coord_sf(xlim = c(-85.328611, 185),  expand = FALSE) + 
+    theme_void(base_size = 18) + theme(legend.position = "inside", 
+                                       legend.direction = "horizontal", 
+                                       legend.key.width = unit(1, "in"),
+                                       panel.background = element_rect(fill = "white"),
+                                       legend.background = element_rect(fill="white"),
+                                       legend.position.inside = c(.5, .05)); plot2a
 
-ggsave(plot2a, file=here("output/figures/figure2a.pdf"), height=8, width = 12, units="in")
+ggsave(plot2a, file=here("output/figures/figure2a.pdf"), height=7, width = 12, units="in")
+
+
+# plot2a <- ggplot() + 
+#     geom_sf(data = nCountry, mapping=aes(geometry=geometry, fill=n)) + 
+#     scale_fill_binned(na.value = "grey90", breaks = c(1,2,5,15), n.breaks=4,
+#                       labels =c("1-2","3-4", "5-15", "16+"),
+#                       palette = rev(c("#E2EFFF", "#8CADDD", "#6EA6F9", "#496DA4")),
+#                       name = "Number of patient\ncosts studies") +
+#     with(nCountriesGeo, annotate(geom="text", x = lon, y=lat, label = n, size = 3)) + 
+#     coord_sf(xlim = c(-85.328611, 185),  expand = FALSE) + 
+#     theme_void(base_size = 18) + theme(legend.position = "inside", 
+#                                        panel.background = element_rect(fill = "white"),
+#                                        legend.background = element_rect(fill="white"),
+#                                        legend.position.inside = c(.94, .12)); plot2a
+
+
+# plot2a <- ggplot() + 
+#     geom_sf(data = nCountry, mapping=aes(geometry=geometry, fill=n)) + 
+#     scale_fill_binned(na.value = "white", breaks = c(1,2,5,15), n.breaks=4,
+#                       labels =c("1-2","3-4", "5-15", "16+"),
+#                       palette = c("#E2EFFF", "#8CADDD", "#6EA6F9", "#496DA4"),
+#                       name = "Number of patient\ncosts studies") +
+#     with(nCountriesGeo, annotate(geom="text", x = lon, y=lat, label = n, size = 3)) + 
+#     theme_void(base_size = 18) + theme(legend.position = "inside", 
+#                                        panel.background = element_rect(fill = "grey90"),
+#                                        legend.background = element_rect(fill="grey90"),
+#                                        legend.position.inside = c(.2, .2)); plot2a
+# 
+
+
+
 
 ### Panel B - Surveys over time, country, and  ???
 nCountryYearRep <- modelData %>% select(study.country, study.end.year, 
@@ -415,7 +555,7 @@ nCountryYear2 <- left_join(nCountryYearRep, nCountryYear) %>%
 plot2b <- ggplot() + 
     geom_point(data=nCountryYear2, aes(x = study.end.year, y=reorder(study.country, totalCount), size=yearCount, color=rep2)) +
     geom_point(data=nCountryYear2 %>% filter(Rep == "Nationally representative"), 
-               aes(x = study.end.year, y=study.country, color=Rep, size=repCount), shape=21, fill="light grey") + 
+               aes(x = study.end.year, y=study.country, color=Rep, size=repCount), shape=21, fill="#6EA6F9") + 
     theme_minimal(base_size = 16) +
     scale_x_continuous(breaks = seq(2008, 2025, 1)) +
     theme(
@@ -433,7 +573,7 @@ plot2b <- ggplot() +
     geom_text(data=nCountryYear2, 
               aes(x=study.end.year, y=reorder(study.country, totalCount), label=yearCount),
               hjust = 0, nudge_x = 0.2,# nudge_y=.2,
-              colour = "black", size=3); plot2b
+              colour = "black", size=4, fontface="bold"); plot2b
 
 ggsave(plot2b, file=here("output/figures/figure2b.pdf"), height=8, width = 12, units="in")
 
@@ -464,22 +604,22 @@ allIncludedSurveys <- dataDesc %>% mutate(figure.id = paste0(study.country, " ("
 ##### Model data                                     ##########################
 ##############################################################################|   
 
-modelDataFormatted <- modelData %>% 
-    select(covidence.id, 
-           study.country, 
-           study.end.year, 
-           pop.id, 
-           cost, 
-           contains("dme"),
-           contains("dnme"), 
-           contains("ie"), 
-           drtb.wt, 
-           median.income, 
-           oop.perc.che,
-           UHCindex)
-
-write.csv(modelDataFormatted,
-          file=here("output/supplement/modelData.csv"))
+# modelDataFormatted <- modelData %>% 
+#     select(covidence.id, 
+#            study.country, 
+#            study.end.year, 
+#            pop.id, 
+#            cost, 
+#            contains("dme"),
+#            contains("dnme"), 
+#            contains("ie"), 
+#            drtb.wt, 
+#            median.income, 
+#            oop.perc.che,
+#            UHCindex)
+# 
+# write.csv(modelDataFormatted,
+#           file=here("output/supplement/modelData.csv"))
 
 ##############################################################################|
 #### Risk of bias plot ####
@@ -582,7 +722,7 @@ ggplot() +
 #     geom_point(aes(x=log.median.income.trunc, y=dstb_total_cost_country)) + 
 #     theme_minimal(base_size=18) + expand_limits(y=0) +
 #     ggtitle("non-RR/MDR TB household costs by log median income") + 
-#     ylab("Total household costs (2024 USD)")  + xlab("log median income") 
+#     ylab("Total household costs (2025 INTD)")  + xlab("log median income") 
 
 # ggplot(data=countryEst) + 
 #     geom_point(aes(x=median.income.trunc, y=dstb_total_cost_country), alpha=.75, size=1) +
@@ -591,17 +731,17 @@ ggplot() +
 #     ggrepel::geom_text_repel(aes(x=median.income.trunc, y=dstb_total_cost_country, label=country.code), size=4) + 
 #     ggtitle("non-RR/MDR TB household costs by median income") + 
 #     scale_y_log10() + 
-#     ylab("Total household costs (2024 USD)")  + xlab("Median income")  
+#     ylab("Total household costs (2025 INTD)")  + xlab("Median income")  
 
 ggplot(data=countryEst) + 
     geom_point(aes(x=median.income.trunc, y=dstb_total_cost_country), alpha=.75, size=1) +
     theme_minimal(base_size=18) + expand_limits(y=0) +
-    expand_limits(y=c(0, 30000), x=c(0,12000)) +
-    scale_x_continuous(breaks=seq(0,12000,2000)) +
-    scale_y_continuous(breaks=seq(0,30000,5000)) + 
+    expand_limits(y=c(0, 10000), x=c(0,26000)) +
+    scale_x_continuous(breaks=seq(0,25000,5000)) +
+    scale_y_continuous(breaks=seq(0,10000,2000)) + 
     ggrepel::geom_text_repel(aes(x=median.income.trunc, y=dstb_total_cost_country, label=country.code), size=4) + 
-    ggtitle("non-RR/MDR TB household costs by median income") + 
-    ylab("Total household costs (2024 USD)")  + xlab("Median income")  
+    ggtitle("non-RR/MDR TB household costs by household median income") + 
+    ylab("Total household costs (2025 INTD)")  + xlab("Median income")  
 
 ggsave(plot=get_last_plot(), 
        file=here("output/supplement/costByMedianIncome.pdf"), 
@@ -609,12 +749,12 @@ ggsave(plot=get_last_plot(),
 
 ggplot(data=countryEst) + 
     geom_point(aes(x=oop.perc.che.trunc, y=dstb_total_cost_country), alpha=.75, size=1) +
-    theme_minimal(base_size=18) + expand_limits(y=c(0, 30000), x=c(0,90)) +
+    theme_minimal(base_size=18) + expand_limits(y=c(0, 10000), x=c(0,90)) +
     scale_x_continuous(breaks=seq(0,90,10)) + 
-    scale_y_continuous(breaks=seq(0,30000,5000)) + 
+    scale_y_continuous(breaks=seq(0,10000,2000)) + 
     ggrepel::geom_text_repel(aes(x=oop.perc.che.trunc, y=dstb_total_cost_country, label=country.code), size=4) +
     ggtitle("non-RR/MDR TB household costs by out-of-pocket costs as percentage of current health expenditures") +
-    ylab("Total household costs (2024 USD)") + 
+    ylab("Total household costs (2025 INTD)") + 
     xlab("Out-of-pocket costs as percentage of current health expenditures\n(for all healthcare)") 
 
 ggsave(plot=get_last_plot(), 
@@ -623,22 +763,36 @@ ggsave(plot=get_last_plot(),
 
 ggplot(data=countryEst) + 
     geom_point(aes(x=uhc.index.trunc, y=dstb_total_cost_country), alpha=.75, size=1) +
-    theme_minimal(base_size=18) + expand_limits(y=c(0, 30000), x=c(0,90)) +
+    theme_minimal(base_size=18) + expand_limits(y=c(0, 10000), x=c(0,90)) +
     scale_x_continuous(breaks=seq(0,90,10)) + 
-    scale_y_continuous(breaks=seq(0,30000,5000)) + 
+    scale_y_continuous(breaks=seq(0,10000,2000)) + 
     ggrepel::geom_text_repel(aes(x=uhc.index.trunc, y=dstb_total_cost_country, label=country.code), size=4) +
     ggtitle("non-RR/MDR TB household costs by Universal Healthcare Coverage (UHC) index") +
-    ylab("Total household costs (2024 USD)")  + xlab("UHC index")
+    ylab("Total household costs (2025 INTD)")  + xlab("UHC index")
 
 ggsave(plot=get_last_plot(), 
        file=here("output/supplement/costByUHC.pdf"), 
+       height = 7.5, width=11, units="in")
+
+
+ggplot(data=countryEst) + 
+    geom_point(aes(x=cdr.trunc, y=dstb_total_cost_country), alpha=.75, size=1) +
+    theme_minimal(base_size=18) + expand_limits(y=c(0, 10000)) +
+    scale_x_continuous(breaks=seq(20,100,10)) + 
+    scale_y_continuous(breaks=seq(0,10000,2000)) + 
+    ggrepel::geom_text_repel(aes(x=cdr.trunc, y=dstb_total_cost_country, label=country.code), size=4) +
+    ggtitle("non-RR/MDR TB household costs by TB case detection rate") +
+    ylab("Total household costs (2025 INTD)")  + xlab("Case detection rate")
+
+ggsave(plot=get_last_plot(), 
+       file=here("output/supplement/costByCDR.pdf"), 
        height = 7.5, width=11, units="in")
 
 # ggplot(data=countryEst) + 
 #     geom_point(aes(x=uhc.index.trunc, y=dstb_total_cost_country, color=median.income.trunc)) + 
 #     theme_minimal(base_size=18) + expand_limits(y=0) +
 #     ggtitle("non-RR/MDR TB household costs by Universal Health Care Index") + 
-#     ylab("Total household costs (2024 USD)")  + xlab("UHC index")  +
+#     ylab("Total household costs (2025 INTD)")  + xlab("UHC index")  +
 #     theme(legend.position = "bottom") + 
 #     labs(color="Median income")
 
@@ -739,22 +893,39 @@ rbind(
         exp() %>%
         round(digits = 2) %>% 
         matrix(nrow=9, byrow = TRUE) ,
+    
     spread_draws(lmicSamps, 
-                 mult_uhc_dme_prediag, 
-                 mult_uhc_dnme_prediag, 
-                 mult_uhc_ie_prediag, 
-                 mult_uhc_dme_intsvtx, 
-                 mult_uhc_dnme_intsvtx, 
-                 mult_uhc_ie_intsvtx,
-                 mult_uhc_dme_contntx, 
-                 mult_uhc_dnme_contntx, 
-                 mult_uhc_ie_contntx,
+                 mult_cdr_dme_prediag, 
+                 mult_cdr_dnme_prediag, 
+                 mult_cdr_ie_prediag, 
+                 mult_cdr_dme_intsvtx, 
+                 mult_cdr_dnme_intsvtx, 
+                 mult_cdr_ie_intsvtx,
+                 mult_cdr_dme_contntx, 
+                 mult_cdr_dnme_contntx, 
+                 mult_cdr_ie_contntx,
                  ndraws = 1000, seed = tbPtntCstSeed)%>% 
         mean_qi() %>% 
         select(! c(.width, .point, .interval)) %>% 
         exp() %>%
         round(digits = 2) %>% 
         matrix(nrow=9, byrow = TRUE) 
+    # spread_draws(lmicSamps, 
+    #              mult_uhc_dme_prediag, 
+    #              mult_uhc_dnme_prediag, 
+    #              mult_uhc_ie_prediag, 
+    #              mult_uhc_dme_intsvtx, 
+    #              mult_uhc_dnme_intsvtx, 
+    #              mult_uhc_ie_intsvtx,
+    #              mult_uhc_dme_contntx, 
+    #              mult_uhc_dnme_contntx, 
+    #              mult_uhc_ie_contntx,
+    #              ndraws = 1000, seed = tbPtntCstSeed)%>% 
+    #     mean_qi() %>% 
+    #     select(! c(.width, .point, .interval)) %>% 
+    #     exp() %>%
+    #     round(digits = 2) %>% 
+    #     matrix(nrow=9, byrow = TRUE) 
 ) %>% 
     ##### Save as a CSV  ###########################################|
     write.csv(here("output/tables/covariateCoefsNew.csv"))
@@ -763,7 +934,7 @@ rbind(
 
 ##### Random effects for countries not included in review
 spread_draws(lmicSamps, 
-             randeff_country_pred[country.id.new],
+             randeff_country_predC[country.id.new],
              ndraws = 1000, seed = tbPtntCstSeed) %>% 
              group_by(country.id.new) %>% 
              mean_qi() %>% 
@@ -772,26 +943,26 @@ spread_draws(lmicSamps,
 write.csv(here("output/tables/randomEffectCountry.csv"))
 
 
-full_join(spread_draws(lmicSamps, 
-                       randeff_country_pred[country.id.new],
-                 ndraws = 1000, seed = tbPtntCstSeed) %>% 
-        filter(country.id.new == 32), 
-spread_draws(lmicSamps, 
-             beta_dme_prediag,
-             mult_med_income_dme_prediag,
-             mult_oop_perc_che_dme_prediag,
-             mult_uhc_dme_prediag,
-             mult_drtb_dme_prediag, 
-             mult_year_dme_prediag,
-             ndraws = 1000, seed = tbPtntCstSeed)) %>% 
-    mutate(tempCost = exp(beta_dme_prediag + randeff_country_pred +
-                          mult_med_income_dme_prediag * 0.585286708 + 
-                          mult_oop_perc_che_dme_prediag * 1.07898964 +
-                          mult_uhc_dme_prediag * 0.607630897) * 
-               exp(mult_year_dme_prediag * 1.991117) * 
-               (1-0.04328018)) %>% 
-              mean_qi(tempCost) %>% 
-              select(! c(.width, .point, .interval)) %>% t()
+# full_join(spread_draws(lmicSamps, 
+#                        randeff_country_pred[country.id.new],
+#                  ndraws = 1000, seed = tbPtntCstSeed) %>% 
+#         filter(country.id.new == 32), 
+# spread_draws(lmicSamps, 
+#              beta_dme_prediag,
+#              mult_med_income_dme_prediag,
+#              mult_oop_perc_che_dme_prediag,
+#              mult_uhc_dme_prediag,
+#              mult_drtb_dme_prediag, 
+#              mult_year_dme_prediag,
+#              ndraws = 1000, seed = tbPtntCstSeed)) %>% 
+#     mutate(tempCost = exp(beta_dme_prediag + randeff_country_pred +
+#                           mult_med_income_dme_prediag * 0.585286708 + 
+#                           mult_oop_perc_che_dme_prediag * 1.07898964 +
+#                           mult_uhc_dme_prediag * 0.607630897) * 
+#                exp(mult_year_dme_prediag * 1.991117) * 
+#                (1-0.04328018)) %>% 
+#               mean_qi(tempCost) %>% 
+#               select(! c(.width, .point, .interval)) %>% t()
 
 ##############################################################################|
 ##### Figure X                                       ##########################
@@ -1195,9 +1366,9 @@ lmicDSTBPred_plot <- left_join(covariates,
                                    group_by(country.id.new) %>% 
                                    mean_qi(dstb_total_cost_country), 
                                join_by(country.id.new)) %>% 
-    select(country.code, in.review, dstb_total_cost_country, median.income) %>% 
+    select(country.code, in.review, dstb_total_cost_country, median.income.hh) %>% 
     mutate(in.review = ifelse(in.review == 0, "No", "Yes"), 
-           dstb_total_medInc = dstb_total_cost_country/median.income)
+           dstb_total_medInc = dstb_total_cost_country/median.income.hh)
 
 lmicDRTBPred_plot <- left_join(covariates, 
                                spread_draws(lmicSamps, 
@@ -1206,72 +1377,97 @@ lmicDRTBPred_plot <- left_join(covariates,
                                    group_by(country.id.new) %>% 
                                    mean_qi(drtb_total_cost_country), 
                                join_by(country.id.new)) %>% 
-    select(country.code, in.review, drtb_total_cost_country,median.income) %>% 
+    select(country.code, in.review, drtb_total_cost_country ,median.income.hh) %>% 
     mutate(in.review = ifelse(in.review == 0, "No", "Yes"), 
-           drtb_total_medInc = drtb_total_cost_country/median.income)
+           drtb_total_medInc = drtb_total_cost_country/median.income.hh)
 
 
 world_dstb <-  ne_countries() %>% 
     filter(sovereignt != "Antarctica") %>% 
-    select(sovereignt, sov_a3, geometry) %>% 
-    rename(country.code = sov_a3) %>% 
+    select(sovereignt, iso_a3, geometry) %>% 
+    rename(country.code = iso_a3) %>% 
     left_join(lmicDSTBPred_plot) 
 
 world_drtb <-  ne_countries() %>% 
     filter(sovereignt != "Antarctica") %>% 
-    select(sovereignt, sov_a3, geometry) %>% 
-    rename(country.code = sov_a3) %>% 
+    select(sovereignt, iso_a3, geometry) %>% 
+    rename(country.code = iso_a3) %>% 
     left_join(lmicDRTBPred_plot)
 
 dstbCarePlot <- ggplot() +
-    geom_sf(data = world_dstb, fill="grey85") + 
     geom_sf(data = world_dstb, mapping=aes(geometry=geometry, fill=dstb_total_cost_country)) + 
-    scale_fill_gradient(low = "darkolivegreen1", 
-                        high = "darkolivegreen", 
-                        na.value = "grey85", name = "Total household cost of TB", 
-                        breaks=c(1000, 3000, 5000, 7000)) +
-    theme_void() + theme(legend.position = "inside",
-                           legend.position.inside = c(.15,.2)) + 
-    expand_limits(fill=7000)   +
+    scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
+                        na.value = "grey60", name = "Total household\ncost of TB\n(2025 INTD)", 
+                        breaks=c(2000, 4000, 6000, 8000, 10000), 
+                      label= c("0-1,999                        ", 
+                               "2,000-3,999                       ", 
+                               "4,000-5,999                       ", 
+                               "6,000-7,999                      ", 
+                               "8,000-10,000                      ")) +
+    theme_void(base_size = 14) + 
+    theme(legend.position = "inside", 
+            legend.direction = "horizontal", 
+            legend.key.width = unit(1, "in"),
+            panel.background = element_rect(fill = "white"),
+            legend.background = element_rect(fill="white"),
+            legend.position.inside = c(.5, .05)) +
+    coord_sf(xlim = c(-132, 185),  expand = FALSE) + 
     
-    # ggtitle("non-RR/MDR-TB care costs")+ 
-    guides(pattern = guide_legend(override.aes = list(fill = c("darkolivegreen1")))); dstbCarePlot
+    # theme(legend.position = "inside",
+    #       legend.position.inside = c(.15,.2)) + 
+    expand_limits(fill=10000); dstbCarePlot
 
 
 ggsave(plot = dstbCarePlot, filename = here("output/figures/dstbCostMap.pdf"), width =13, height = 6)
 
 ##### Scale non-RR/MDRTB costs by median income        ########################
 dstbCareScldPlot <- ggplot() +
-    geom_sf(data = world_dstb, fill="grey85") + 
     geom_sf(data = world_dstb, mapping=aes(geometry=geometry, fill=dstb_total_medInc)) + 
-    scale_fill_gradient(low = "darkolivegreen1", 
-                        high = "darkolivegreen", 
-                        na.value = "grey85", 
-                        name = "Ratio of TB care cost\nto median income") +
-    theme_void() + 
-    expand_limits(fill=5) + 
-    # ggtitle("non-RR/MDR-TB care costs") +
-    theme(legend.position = "inside",
-          legend.position.inside = c(.15,.2)); dstbCareScldPlot
-    # guides(pattern = guide_legend(override.aes = list(fill = c("darkolivegreen1")))) +
+    scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C", "black"),
+                      na.value = "grey60", 
+                        name = "Household cost of TB\nas percentage of\nmedian income", 
+                        breaks=c(.10, .20, .40, .80, 1.2), 
+                      label= c("0-9%                         ", 
+                               "10-19%                       ", 
+                               "20-39%                       ", 
+                               "40-79%                       ", 
+                               "80-120%                      ")) +
+    theme_void(base_size = 14) + 
+    expand_limits(fill=1.2) +
+    theme(legend.position = "inside", 
+          legend.direction = "horizontal", 
+          legend.key.width = unit(1, "in"),
+          panel.background = element_rect(fill = "white"),
+          legend.background = element_rect(fill="white"),
+          legend.position.inside = c(.5, .07)) +
+    coord_sf(xlim = c(-132, 185),  expand = FALSE); dstbCareScldPlot
+    # guides(pattern = guide_legend(override.aes = list(fill = c("#d0dfc8")))) +
     
-    
-
 ggsave(plot = dstbCareScldPlot, filename = here("output/figures/dstbCostMapMedInc.pdf"), width =13, height = 6)
+###############################################################################
+##### DRTB WORLD PLOTS 
 
 drtbCarePlot <- ggplot() +
     geom_sf(data = world_drtb, fill="grey85") + 
     geom_sf(data = world_drtb, mapping=aes(geometry=geometry, fill=drtb_total_cost_country)) + 
-    scale_fill_gradient(low = "darkolivegreen1", 
-                        high = "darkolivegreen", 
-                        na.value = "grey85", name = "Total household cost of TB", 
-                        breaks=c(0,10000, 20000, 30000, 40000)) +
-    theme_void() + 
-    theme(legend.position = "inside",
-          legend.position.inside = c(.15,.2)) + 
-    # ggtitle("RR/MDR-TB care costs") + 
-    expand_limits(fill=40000) + 
-    guides(pattern = guide_legend(override.aes = list(fill = c("darkolivegreen1")))); drtbCarePlot
+        scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
+                        na.value = "grey60", name = "Total household\ncost of TB\n(2025 INTD)", 
+                        breaks=c(10000, 20000, 30000, 40000, 60000),
+                        label= c("0-9,999                         ", 
+                                 "10,000-19,999                          ", 
+                                 "20,000-29,999                         ", 
+                                 "30,000-39,999                         ",
+                                 "40,000-59,999                        ")) +
+    theme_void(base_size=12) + 
+    theme(legend.position = "inside", 
+            legend.direction = "horizontal", 
+            legend.key.width = unit(1, "in"),
+            panel.background = element_rect(fill = "white"),
+            legend.background = element_rect(fill="white"),
+            legend.position.inside = c(.5, .05)) +
+    coord_sf(xlim = c(-132, 185),  expand = FALSE) +  
+    expand_limits(fill=60000) +
+    guides(pattern = guide_legend(override.aes = list(fill = c("#d0dfc8")))); drtbCarePlot
 
 ggsave(plot = drtbCarePlot, filename = here("output/figures/drtbCostMap.pdf"), width =13, height = 6)
 
@@ -1279,15 +1475,25 @@ ggsave(plot = drtbCarePlot, filename = here("output/figures/drtbCostMap.pdf"), w
 drtbCareScldPlot <- ggplot() +
     geom_sf(data = world_drtb, fill="grey85") + 
     geom_sf(data = world_drtb, mapping=aes(geometry=geometry, fill=drtb_total_medInc)) + 
-    scale_fill_gradient(low = "darkolivegreen1", 
-                        high = "darkolivegreen", 
-                        na.value = "grey85", name = "Ratio of TB care costs\nto median income") +
-    theme_void() + 
-    expand_limits(fill=40)+
-    # ggtitle("RR/MDR-TB care costs") + 
-    theme(legend.position = "inside",
-          legend.position.inside = c(.15,.2))    ; drtbCareScldPlot 
-    # guides(pattern = guide_legend(override.aes = list(fill = c("darkolivegreen1")))) +    
+    scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
+                      na.value = "grey60", 
+                      name = "Household cost of TB\nas percentage of\nmedian income", 
+                      breaks=c(0.5, 1, 2, 4, 6.5), 
+                      label= c("0-49%                          ", 
+                               "50-99%                           ", 
+                               "100-199%                         ", 
+                               "200-399%                         ",
+                               "400+%                            ")) +
+    theme_void(base_size = 12) + 
+    expand_limits(fill=6.5) +
+    theme(legend.position = "inside", 
+          legend.direction = "horizontal", 
+          legend.key.width = unit(1, "in"),
+          panel.background = element_rect(fill = "white"),
+          legend.background = element_rect(fill="white"),
+          legend.position.inside = c(.5, .05)) +
+    coord_sf(xlim = c(-132, 185),  expand = FALSE)    ; drtbCareScldPlot 
+    # guides(pattern = guide_legend(override.aes = list(fill = c("#d0dfc8")))) +    
     
 
 ggsave(plot = drtbCareScldPlot, filename = here("output/figures/drtbCostMapMedInc.pdf"),width =13, height = 6)
@@ -1326,30 +1532,39 @@ summaryNotif <- notif %>%
 summaryEstUcrntyTbl <- samples %>% 
     left_join(covariatesAll, by="country.id.new") %>% 
     mutate(notif = ifelse(is.na(notif), 0, notif)) %>%
-    group_by(`.draw`, country.id.new) %>% 
-    mutate(wgtDME_PT   = weighted.mean(dstb_dme_prediag_cost_country, notif), 
-           wgtDNME_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
-           wgtIE_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
-           wgtDME_IT   = weighted.mean(dstb_dme_intsvtx_cost_country, notif), 
-           wgtDNME_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
-           wgtIE_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
-           wgtDME_CT   = weighted.mean(dstb_dme_contntx_cost_country, notif), 
-           wgtDNME_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
-           wgtIE_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
-           wgtPT = wgtDME_PT + wgtDNME_PT + wgtIE_PT,
-           wgtIT = wgtDME_IT + wgtDNME_IT + wgtIE_IT,
-           wgtCT = wgtDME_CT + wgtDNME_CT + wgtIE_CT,
-           wgtDME   = weighted.mean(dstb_dme_cost_country, notif), 
-           wgtDNME  = weighted.mean(dstb_dnme_cost_country, notif),
-           wgtIE    = weighted.mean(dstb_ie_cost_country, notif),
-           wgtTotal = weighted.mean(dstb_total_cost_country, notif)) %>% 
+    ungroup() %>% 
+    # group_by(`.draw`, country.id.new) %>%
+    summarise(wgtDME_PT   = weighted.mean(dstb_dme_prediag_cost_country, notif), 
+              wgtDNME_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
+              wgtIE_PT   = weighted.mean(dstb_ie_prediag_cost_country, notif), 
+              wgtDME_IT   = weighted.mean(dstb_dme_intsvtx_cost_country, notif), 
+              wgtDNME_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
+              wgtIE_IT   = weighted.mean(dstb_ie_intsvtx_cost_country, notif), 
+              wgtDME_CT   = weighted.mean(dstb_dme_contntx_cost_country, notif), 
+              wgtDNME_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
+              wgtIE_CT   = weighted.mean(dstb_ie_contntx_cost_country, notif), 
+              wgtPT = wgtDME_PT + wgtDNME_PT + wgtIE_PT,
+              wgtIT = wgtDME_IT + wgtDNME_IT + wgtIE_IT,
+              wgtCT = wgtDME_CT + wgtDNME_CT + wgtIE_CT,
+              
+              wgtDMEs = wgtDME_PT + wgtDME_IT + wgtDME_CT,
+              wgtDNMEs = wgtDNME_PT + wgtDNME_IT + wgtDNME_CT,
+              wgtIEs = wgtIE_PT + wgtIE_IT + wgtIE_CT,
+              
+              wgtDME   = weighted.mean(dstb_dme_cost_country, notif), 
+              wgtDNME  = weighted.mean(dstb_dnme_cost_country, notif),
+              wgtIE    = weighted.mean(dstb_ie_cost_country, notif),
+              wgtTotal = weighted.mean(dstb_total_cost_country, notif), 
+              .by=c(`.draw`)) %>% 
     ungroup() %>% 
     mean_qi(wgtDME_PT, wgtDNME_PT, wgtIE_PT,
-              wgtDME_IT, wgtDNME_IT, wgtIE_IT,
-              wgtDME_CT, wgtDNME_CT, wgtIE_CT,
-              wgtPT, wgtIT, wgtCT, 
-              wgtDME, wgtDNME, wgtIE, 
-              wgtTotal) %>% 
+            wgtDME_IT, wgtDNME_IT, wgtIE_IT,
+            wgtDME_CT, wgtDNME_CT, wgtIE_CT,
+            wgtPT, wgtIT, wgtCT, 
+            wgtDMEs, wgtDNMEs, wgtIEs, 
+            
+            wgtDME, wgtDNME, wgtIE, 
+            wgtTotal) %>% 
     select(!c(.width, .point, .interval)) %>% round() 
 
 colnames(summaryEstUcrntyTbl)[seq(1, ncol(summaryEstUcrntyTbl), 3)] <- paste(colnames(summaryEstUcrntyTbl)[seq(1, ncol(summaryEstUcrntyTbl), 3)], "est", sep=".")
@@ -1387,33 +1602,34 @@ regionCntry <- notif %>%
 regionEstUncrntyTbl <- samples %>% 
     left_join(covariatesAll, by="country.id.new") %>% 
     mutate(notif = ifelse(is.na(notif), 0, notif)) %>%
-    group_by(`.draw`, country.id.new) %>% 
-    mutate(wgtDME_PT   = weighted.mean(dstb_dme_prediag_cost_country, notif), 
-           wgtDNME_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
-           wgtIE_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
-           wgtDME_IT   = weighted.mean(dstb_dme_intsvtx_cost_country, notif), 
-           wgtDNME_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
-           wgtIE_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
-           wgtDME_CT   = weighted.mean(dstb_dme_contntx_cost_country, notif), 
-           wgtDNME_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
-           wgtIE_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
-           wgtPT = wgtDME_PT + wgtDNME_PT + wgtIE_PT,
-           wgtIT = wgtDME_IT + wgtDNME_IT + wgtIE_IT,
-           wgtCT = wgtDME_CT + wgtDNME_CT + wgtIE_CT,
-           wgtDME   = weighted.mean(dstb_dme_cost_country, notif), 
-           wgtDNME  = weighted.mean(dstb_dnme_cost_country, notif),
-           wgtIE    = weighted.mean(dstb_ie_cost_country, notif),
-           wgtTotal = weighted.mean(dstb_total_cost_country, notif)) %>% 
     ungroup() %>% 
+    # group_by(`.draw`, country.id.new) %>%
+    summarise(wgtDME_PT   = weighted.mean(dstb_dme_prediag_cost_country, notif), 
+              wgtDNME_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
+              wgtIE_PT   = weighted.mean(dstb_ie_prediag_cost_country, notif), 
+              wgtDME_IT   = weighted.mean(dstb_dme_intsvtx_cost_country, notif), 
+              wgtDNME_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
+              wgtIE_IT   = weighted.mean(dstb_ie_intsvtx_cost_country, notif), 
+              wgtDME_CT   = weighted.mean(dstb_dme_contntx_cost_country, notif), 
+              wgtDNME_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
+              wgtIE_CT   = weighted.mean(dstb_ie_contntx_cost_country, notif), 
+              wgtPT = wgtDME_PT + wgtDNME_PT + wgtIE_PT,
+              wgtIT = wgtDME_IT + wgtDNME_IT + wgtIE_IT,
+              wgtCT = wgtDME_CT + wgtDNME_CT + wgtIE_CT,
+              wgtDME   = weighted.mean(dstb_dme_cost_country, notif), 
+              wgtDNME  = weighted.mean(dstb_dnme_cost_country, notif),
+              wgtIE    = weighted.mean(dstb_ie_cost_country, notif),
+              wgtTotal = weighted.mean(dstb_total_cost_country, notif), 
+              .by=c(`.draw`, who.region)) %>% 
     group_by(who.region) %>% 
     mean_qi(wgtDME_PT, wgtDNME_PT, wgtIE_PT,
-              wgtDME_IT, wgtDNME_IT, wgtIE_IT,
-              wgtDME_CT, wgtDNME_CT, wgtIE_CT,
-              wgtPT, wgtIT, wgtCT, 
-              wgtDME, wgtDNME, wgtIE, 
-              wgtTotal) %>% 
-    select(!c(.width, .point, .interval))
-
+            wgtDME_IT, wgtDNME_IT, wgtIE_IT,
+            wgtDME_CT, wgtDNME_CT, wgtIE_CT,
+            wgtPT, wgtIT, wgtCT, 
+            wgtDME, wgtDNME, wgtIE, 
+            wgtTotal) %>% 
+    select(!c(.width, .point, .interval)) #%>% round() 
+regionEstUncrntyTbl[,2:49] <- round(regionEstUncrntyTbl[,2:49])
 colnames(regionEstUncrntyTbl)[seq(2, ncol(regionEstUncrntyTbl), 3)] <- paste(colnames(regionEstUncrntyTbl)[seq(2, ncol(regionEstUncrntyTbl), 3)], "est", sep=".")
 
 regionEstUncrntyTbl2 <- regionEstUncrntyTbl %>% 
@@ -1473,30 +1689,30 @@ top30notif <- notif %>% left_join(LMIC %>%
 
 
 
-
-
 top30EstUcrntyTbl <- samples %>% 
     left_join(covariatesAll, by="country.id.new") %>% 
     filter(study.country %in% top30) %>%
     mutate(notif = ifelse(is.na(notif), 0, notif)) %>%
-    group_by(`.draw`, country.id.new) %>% 
+    ungroup() %>% 
+    # group_by(`.draw`, country.id.new) %>% 
     mutate(wgtDME_PT   = weighted.mean(dstb_dme_prediag_cost_country, notif), 
            wgtDNME_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
-           wgtIE_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
+           wgtIE_PT   = weighted.mean(dstb_ie_prediag_cost_country, notif), 
            wgtDME_IT   = weighted.mean(dstb_dme_intsvtx_cost_country, notif), 
            wgtDNME_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
-           wgtIE_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
+           wgtIE_IT   = weighted.mean(dstb_ie_intsvtx_cost_country, notif), 
            wgtDME_CT   = weighted.mean(dstb_dme_contntx_cost_country, notif), 
            wgtDNME_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
-           wgtIE_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
+           wgtIE_CT   = weighted.mean(dstb_ie_contntx_cost_country, notif), 
            wgtPT = wgtDME_PT + wgtDNME_PT + wgtIE_PT,
            wgtIT = wgtDME_IT + wgtDNME_IT + wgtIE_IT,
            wgtCT = wgtDME_CT + wgtDNME_CT + wgtIE_CT,
            wgtDME   = weighted.mean(dstb_dme_cost_country, notif), 
            wgtDNME  = weighted.mean(dstb_dnme_cost_country, notif),
            wgtIE    = weighted.mean(dstb_ie_cost_country, notif),
-           wgtTotal = weighted.mean(dstb_total_cost_country, notif)) %>% 
-    ungroup() %>% 
+           wgtTotal = weighted.mean(dstb_total_cost_country, notif),
+           .by=c(`.draw`)) %>% 
+    # ungroup() %>% 
     mean_qi(wgtDME_PT, wgtDNME_PT, wgtIE_PT,
               wgtDME_IT, wgtDNME_IT, wgtIE_IT,
               wgtDME_CT, wgtDNME_CT, wgtIE_CT,
@@ -1534,26 +1750,28 @@ worldBankNotif <- notif %>%
 worldBankEstUncrntyTbl <- samples %>% 
     left_join(covariatesAll, by="country.id.new") %>% 
     mutate(notif = ifelse(is.na(notif), 0, notif)) %>%
-    group_by(`.draw`, country.id.new) %>% 
+    ungroup() %>% 
+    # group_by(`.draw`, country.id.new) %>% 
     mutate(wgtDME_PT   = weighted.mean(dstb_dme_prediag_cost_country, notif), 
            wgtDNME_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
-           wgtIE_PT   = weighted.mean(dstb_dnme_prediag_cost_country, notif), 
+           wgtIE_PT   = weighted.mean(dstb_ie_prediag_cost_country, notif), 
            wgtDME_IT   = weighted.mean(dstb_dme_intsvtx_cost_country, notif), 
            wgtDNME_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
-           wgtIE_IT   = weighted.mean(dstb_dnme_intsvtx_cost_country, notif), 
+           wgtIE_IT   = weighted.mean(dstb_ie_intsvtx_cost_country, notif), 
            wgtDME_CT   = weighted.mean(dstb_dme_contntx_cost_country, notif), 
            wgtDNME_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
-           wgtIE_CT   = weighted.mean(dstb_dnme_contntx_cost_country, notif), 
+           wgtIE_CT   = weighted.mean(dstb_ie_contntx_cost_country, notif), 
            wgtPT = wgtDME_PT + wgtDNME_PT + wgtIE_PT,
            wgtIT = wgtDME_IT + wgtDNME_IT + wgtIE_IT,
            wgtCT = wgtDME_CT + wgtDNME_CT + wgtIE_CT,
            wgtDME   = weighted.mean(dstb_dme_cost_country, notif), 
            wgtDNME  = weighted.mean(dstb_dnme_cost_country, notif),
            wgtIE    = weighted.mean(dstb_ie_cost_country, notif),
-           wgtTotal = weighted.mean(dstb_total_cost_country, notif)) %>% 
+           wgtTotal = weighted.mean(dstb_total_cost_country, notif),
+           .by=c(`.draw`, class25)) %>% 
     ungroup() %>% 
-    group_by(class25) %>% 
-    mean_qi(wgtDME_PT, wgtDNME_PT, wgtIE_PT,
+    group_by(class25) %>%
+    mean_qi(  wgtDME_PT, wgtDNME_PT, wgtIE_PT,
               wgtDME_IT, wgtDNME_IT, wgtIE_IT,
               wgtDME_CT, wgtDNME_CT, wgtIE_CT,
               wgtPT, wgtIT, wgtCT, 
@@ -1764,7 +1982,7 @@ ggplot(countryEstBurden, aes(x=dstb_total_cost_country,
 
 ggplot(countryEstBurden, aes(x=dstb_total_cost_country, 
                              y=drtb_total_cost_country, 
-                             color=median.income)) + geom_point(size=4)  + 
+                             color=median.income.hh)) + geom_point(size=4)  + 
     theme_minimal(base_size=24) + 
     ylab("Estimated DRTB care cost") + 
     xlab("Estimated DSTB care cost") + 
@@ -1808,6 +2026,24 @@ ggplot(countryEstBurden, aes(x=dstb_total_cost_country,
     ylab("Estimated DRTB care cost") + 
     xlab("Estimated DSTB care cost") + 
     labs(color = "Out-of-pocket costs as percentage\nof current health expenditures") +
+    theme(legend.position = "bottom") + 
+    scale_x_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  # labels = label_dollar(scale_cut = cut_short_scale())
+    ) +
+    scale_y_log10(breaks = 500 * 2^seq(0, 9, by = 1),
+                  # labels = label_dollar(scale_cut = cut_short_scale())
+    ) +
+    # scale_color_gradient(low="darkgreen", high="green1") +  
+    guides(color = guide_colourbar(barwidth = 30)) + 
+    ggtitle("Country-level household costs due to tuberculosis disease")
+
+ggplot(countryEstBurden, aes(x=dstb_total_cost_country, 
+                             y=drtb_total_cost_country, 
+                             color=cdr.trunc)) + geom_point(size=4)  + 
+    theme_minimal(base_size=24) + 
+    ylab("Estimated DRTB care cost") + 
+    xlab("Estimated DSTB care cost") + 
+    labs(color = "TB case detection rate") +
     theme(legend.position = "bottom") + 
     scale_x_log10(breaks = 500 * 2^seq(0, 9, by = 1),
                   # labels = label_dollar(scale_cut = cut_short_scale())
@@ -1936,7 +2172,7 @@ ggplot(countryEstBurden, aes(x=dstb_total_cost_country,
 allYearsCostAll <- data.frame()
 for (yr in 2009:2024){  
     left_join(covariatesTime %>% filter(study.end.year == yr), 
-              spread_draws(lmicSampsTime[[as.character(yr)]], 
+              spread_draws(lmicSampsAll[[as.character(yr)]], 
                            ### non-RR/MDR-TB
                            dstb_dme_prediag_cost_country[country.id.new],
                            dstb_dnme_prediag_cost_country[country.id.new],
@@ -1970,25 +2206,25 @@ for (yr in 2009:2024){
 }
 
 # Check the total costs unweighted 
-# tmp <- allYearsCostAll %>% 
-#        group_by(country.code, study.end.year) %>% 
-#        mean_qi(dstb_total_cost_country) %>% 
-#        left_join(regionWHO %>% rename(who.region = `World.regions.according.to.WHO`, 
-#                                       country.code = Code), by="country.code") %>% 
-#        left_join(covariatesTime) 
+# tmp <- allYearsCostAll %>%
+#        group_by(country.code, study.end.year) %>%
+#        mean_qi(dstb_total_cost_country) %>%
+#        left_join(regionWHO %>% rename(who.region = `World.regions.according.to.WHO`,
+#                                       country.code = Code), by="country.code") %>%
+#        left_join(covariatesTime)
 # 
-# ggplot(data=tmp %>% filter(grepl("Western", who.region))) +
+# ggplot(data=tmp %>% filter(grepl("Africa", who.region))) +
 #     geom_point(aes(x=study.end.year, y=dstb_total_cost_country)) +
 #     theme_minimal() +
 #     facet_wrap(facets=vars(country.code)) +
-#     expand_limits(y=0) + 
+#     expand_limits(y=0) +
 #     theme(legend.position = "bottom")
-#      
+
 # ggplot(data=tmp) +
 #        geom_point(aes(x=median.income.trunc, y=dstb_total_cost_country, color=study.end.year)) +
 #        theme_minimal() +
 #        facet_wrap(facets=vars(country.code)) +
-#        expand_limits(y=0) + 
+#        expand_limits(y=0) +
 #        theme(legend.position = "bottom")
 # 
 # ggplot(data=tmp) +
@@ -2026,38 +2262,6 @@ for (yr in 2009:2024){
 #        expand_limits(y=0) + 
 #        theme(legend.position = "bottom")
 
-### Read in notification data and format
-notif <- read.csv(here("data/TB_notifications_2025-12-19.csv")) %>% 
-    filter(year < 2025, year > 2008) %>%
-    select(country, iso3, g_whoregion, year, new_sp, new_sn, new_su, new_ep, new_oth, 
-           newrel_m014, newrel_m15plus, newrel_mu,
-           newrel_f014, newrel_f15plus, newrel_fu,
-           newrel_sexunk014, newrel_sexunk15plus, newrel_sexunkageunk) %>%
-    rowwise() %>% 
-    mutate(
-        oldCasesAll = ifelse(!is.na(new_sp) | !is.na(new_sn) | !is.na(new_su) | !is.na(new_ep) | !is.na(new_oth), 
-                             sum(new_sp, new_sn, new_su, new_ep, new_oth, na.rm = TRUE),
-                             NA), 
-        # oldCases = ifelse(!is.na(new_sp) | !is.na(new_sn) | !is.na(new_su), 
-        #                   sum(new_sp, new_sn, new_su, na.rm = TRUE),
-        #                   NA), 
-        newCases = ifelse(!is.na(newrel_m014) | !is.na(newrel_m15plus) | !is.na(newrel_mu) |
-                              !is.na(newrel_f014) | !is.na(newrel_f15plus) | !is.na(newrel_fu) | 
-                              !is.na(newrel_sexunk014) | !is.na(newrel_sexunk15plus) | !is.na(newrel_sexunkageunk),      
-                          sum(newrel_m014, newrel_m15plus, newrel_mu,
-                              newrel_f014, newrel_f15plus, newrel_fu,
-                              newrel_sexunk014, newrel_sexunk15plus, newrel_sexunkageunk, na.rm = TRUE),
-                          NA), 
-        # notifSmall = ifelse(is.na(newCases), 
-        #                oldCases, newCases),
-        notif = ifelse(is.na(newCases), 
-                       as.numeric(oldCasesAll), 
-                       as.numeric(newCases))) %>% 
-    select(iso3, g_whoregion, year, notif) %>%
-    rename(country.code = iso3, 
-           study.end.year = year, 
-           who.region=g_whoregion) %>% 
-    filter(country.code %in% allYearsCostAll$country.code) %>% ungroup()
 
 # Check the notifications
 # ggplot(data=notif %>% filter(country.code == "CHN")) +
@@ -2119,7 +2323,7 @@ allYearsCostAll2a <- left_join(allYearsCostAll, notif)  %>%
               dnme_contntx = weighted.mean(dstb_dnme_contntx_cost_country, notif, na.rm = TRUE),
               ie_contntx   = weighted.mean(dstb_ie_contntx_cost_country, notif, na.rm = TRUE),
               total_total  = weighted.mean(dstb_total_cost_country, notif, na.rm = TRUE), 
-              .by=c(`.draw`, study.end.year)) 
+              .by=c(`.draw`, study.end.year, study.country)) 
 
 allYearsCostAll2 <- allYearsCostAll2a %>%
     ungroup() %>% 
@@ -2246,7 +2450,7 @@ timeCatPlot <- ggplot(data = allYearsCostAll2b %>%
     expand_limits(y=c(0, 1500)) + 
     scale_y_continuous(breaks=c(0,250,500,750, 1000, 1250, 1500)) +
     scale_x_continuous(breaks=seq(plotEndYr,2024,3)) +
-    xlab("Year") + ylab("Costs (2024 USD)") +
+    xlab("Year") + ylab("Costs (2025 INTD)") +
     theme(axis.text.x = element_text(angle = 45, hjust=1),
           panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
           panel.spacing.x = unit(0.5, "lines"), 
@@ -2267,7 +2471,7 @@ timeTotPlot <- ggplot(data = allYearsCostAll2b %>% filter(Category == "Total cos
     expand_limits(y=c(0, 6000)) + 
     scale_x_continuous(breaks=seq(plotEndYr,2024,3)) +
     scale_y_continuous(breaks=c(0,1000,2000,3000,4000,5000,6000)) + 
-    xlab("Year") + ylab("Costs (2024 USD)") +
+    xlab("Year") + ylab("Costs (2025 INTD)") +
     theme(
         panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
         panel.spacing = unit(0.5, "lines"), 
@@ -2289,7 +2493,7 @@ timeTotPlot <- ggplot(data = allYearsCostAll2b %>% filter(Category == "Total cos
     expand_limits(y=c(0, 6000)) + 
     scale_x_continuous(breaks=seq(2009,2024,3)) + 
     scale_y_continuous(breaks=c(0,1000,2000,3000,4000,5000, 6000)) + 
-    xlab("Year") + ylab("Costs (2024 USD)") +
+    xlab("Year") + ylab("Costs (2025 INTD)") +
     theme(
         panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
         panel.spacing = unit(0.5, "lines"), 
@@ -2321,7 +2525,7 @@ timeCareCascadePlot <-
     expand_limits(y=c(0, 3500)) +
     # scale_y_continuous(breaks=c(0,250,500,750, 1000, 1250, 1500)) +
     scale_x_continuous(breaks=seq(plotEndYr,2024,3)) +
-    xlab("Year") + ylab("Costs (2024 USD)") +
+    xlab("Year") + ylab("Costs (2025 INTD)") +
     theme(axis.text.x = element_text(angle = 45, hjust=1),
           panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
           panel.spacing.x = unit(0.5, "lines"), 
@@ -2351,7 +2555,7 @@ timeCostCatPlot <-
     expand_limits(y=c(0, 300)) +
     # scale_y_continuous(breaks=c(0,250,500,750, 1000, 1250, 1500)) +
     scale_x_continuous(breaks=seq(plotEndYr,2024,3)) +
-    xlab("Year") + ylab("Costs (2024 USD)") +
+    xlab("Year") + ylab("Costs (2025 INTD)") +
     theme(axis.text.x = element_text(angle = 45, hjust=1),
           panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
           panel.spacing.x = unit(0.5, "lines"), 
@@ -2394,7 +2598,7 @@ allYearsCostRegion0 <- left_join(allYearsCostAll, notif) %>%
               ie_contntx  = weighted.mean(dstb_ie_contntx_cost_country, notif, na.rm = TRUE),
               total_total  = weighted.mean(dstb_total_cost_country, notif, na.rm = TRUE)) 
 
-allYearsCostRegion <- allYearsCostRegion0
+allYearsCostRegion <- allYearsCostRegion0 %>%
     ungroup() %>% 
     select(!`.draw`) %>% 
     group_by(study.end.year, who.region) %>% 
@@ -2430,7 +2634,7 @@ timeRegionPlot <- ggplot(data = allYearsCostRegion2 %>% filter(Category == "Tota
     expand_limits(y=c(0, 12000)) +
     scale_x_continuous(breaks=seq(plotEndYr,2024,3)) + 
     scale_y_continuous(breaks=c(0,2000,4000,6000,8000,10000,12000)) + 
-    xlab("Year") + ylab("Costs (2024 USD)") +
+    xlab("Year") + ylab("Costs (2025 INTD)") +
     theme(axis.text.x = element_text(angle = 45, hjust=1),
           panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
           panel.spacing = unit(0.5, "lines"), 
@@ -2540,7 +2744,7 @@ allYearsCostAll4a %>%
 #     expand_limits(y=c(0, 15000)) + 
 #     scale_x_continuous(breaks=seq(plotEndYr,2023,2)) + 
 #     scale_y_continuous(breaks=c(0,2000,4000,6000,8000,10000,12000, 14000, 16000)) + 
-#     xlab("Year") + ylab("Costs (2024 USD)") +
+#     xlab("Year") + ylab("Costs (2025 INTD)") +
 #     theme(axis.text.x = element_text(angle = 45, hjust=1),
 #           panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
 #           panel.spacing = unit(0.5, "lines")) + 
@@ -2597,7 +2801,7 @@ allYearsCostAll4a %>%
 #     # expand_limits(y=c(0, 1500)) + 
 #     # scale_y_continuous(breaks=c(0,250,500,750, 1000, 1250, 1500)) +
 #     scale_x_continuous(breaks=seq(plotEndYr,2023,2)) + 
-#     xlab("Year") + ylab("Costs (2024 USD)") +
+#     xlab("Year") + ylab("Costs (2025 INTD)") +
 #     theme(axis.text.x = element_text(angle = 45, hjust=1),
 #           panel.border = element_rect(colour = "black", fill=NA, linewidth=1),
 #           panel.spacing.x = unit(0.5, "lines"), 
@@ -2634,7 +2838,7 @@ rateMedIncome <- left_join(covariates,
                                         dstb_ie_contntx_cost_country[country.id.new],
                                         dstb_total_cost_country[country.id.new], 
                                         ndraws = 1000, seed = tbPtntCstSeed)) %>% 
-    mutate(ratioMedInc = dstb_total_cost_country / median.income) %>% 
+    mutate(ratioMedInc = dstb_total_cost_country / median.income.hh) %>% 
     group_by(study.country) %>% mean_qi(ratioMedInc) 
 
 
@@ -2647,18 +2851,18 @@ rateMedIncome %>% filter(ratioMedInc<1)
 round(quantile(rateMedIncome$ratioMedInc, seq(0,1,.05)), 2)
 
 
-rateMedIncome <- left_join(covariates, 
-                           spread_draws(lmicSamps, 
-                                        dstb_dme_prediag_cost_country[country.id.new],
-                                        dstb_dnme_prediag_cost_country[country.id.new],
-                                        dstb_ie_prediag_cost_country[country.id.new],
-                                        dstb_dme_intsvtx_cost_country[country.id.new],
-                                        dstb_dnme_intsvtx_cost_country[country.id.new],
-                                        dstb_ie_intsvtx_cost_country[country.id.new],
-                                        dstb_dme_contntx_cost_country[country.id.new],
-                                        dstb_dnme_contntx_cost_country[country.id.new],
-                                        dstb_ie_contntx_cost_country[country.id.new],
-                                        dstb_total_cost_country[country.id.new], 
-                                        ndraws = 1000, seed = tbPtntCstSeed)) %>% 
-    mutate(perc = dstb_total_cost_country) %>% 
-    group_by(study.country) %>% mean_qi(ratioMedInc) 
+# rateMedIncome <- left_join(covariates, 
+#                            spread_draws(lmicSamps, 
+#                                         dstb_dme_prediag_cost_country[country.id.new],
+#                                         dstb_dnme_prediag_cost_country[country.id.new],
+#                                         dstb_ie_prediag_cost_country[country.id.new],
+#                                         dstb_dme_intsvtx_cost_country[country.id.new],
+#                                         dstb_dnme_intsvtx_cost_country[country.id.new],
+#                                         dstb_ie_intsvtx_cost_country[country.id.new],
+#                                         dstb_dme_contntx_cost_country[country.id.new],
+#                                         dstb_dnme_contntx_cost_country[country.id.new],
+#                                         dstb_ie_contntx_cost_country[country.id.new],
+#                                         dstb_total_cost_country[country.id.new], 
+#                                         ndraws = 1000, seed = tbPtntCstSeed)) %>% 
+#     mutate(perc = dstb_total_cost_country) %>% 
+#     group_by(study.country) %>% mean_qi(ratioMedInc) 
