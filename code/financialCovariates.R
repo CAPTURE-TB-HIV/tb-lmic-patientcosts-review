@@ -424,9 +424,30 @@ medianIndividualIncomeDF0 <- medianIndividualIncomeDF3 %>%
                              rename(median.income.calc.usd.2015 = median.income.calc.usd,
                                     median.income.calc.intd.2021 = median.income.calc.intd,
                                     median.income.calc.intd.2025 = median.income.calc.intd.2025.approx,
-                                    intd21_25 = approx_scalar)
+                                    intd21_25 = approx_scalar) %>%
 
-View(medianIndividualIncomeDF0 %>% filter(is.na(median.income.calc.intd.2025)))
+##### Because of the new approach with conversion to 2025 INTD some of the GDP
+##### deflator estimates created a much too high estimate. We now assign the regional
+##### averages here after median income is calculated instead for these countries. 
+
+    ### set to NA so not included in the median calculation
+    mutate(median.income.calc.intd.2025.rev0 = ifelse(GNI.desc != "Regional", 
+                                                      median.income.calc.intd.2025, 
+                                                      NA)) %>% 
+    group_by(who.region, study.end.year) %>% 
+    mutate(
+        median.income.calc.intd.2025.regional = median(median.income.calc.intd.2025.rev0, na.rm=TRUE),
+        median.income.calc.intd.2025.rev = ifelse(GNI.desc != "Regional", 
+                                                  median.income.calc.intd.2025, 
+                                                  median.income.calc.intd.2025.regional)) %>%
+    ungroup()  %>% 
+    rename(median.income.calc.intd.2025.OLD = median.income.calc.intd.2025, 
+           median.income.calc.intd.2025 = median.income.calc.intd.2025.rev) %>% 
+    select(! c(median.income.calc.intd.2025.rev0,
+               median.income.calc.intd.2025.regional))
+
+
+# View(medianIndividualIncomeDF0 %>% filter(is.na(median.income.calc.intd.2025)))
 # rm(medianIndividualIncomeDF2)
 # rm(medianIndividualIncomeDF3)
 
