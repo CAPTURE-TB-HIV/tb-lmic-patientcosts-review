@@ -2,6 +2,9 @@ mk_frst_plot <- function(modelFit,
                          emprclData, 
                          filename) {
     library(forcats)
+    library(rstan)
+    library(dplyr)
+    library(ggplot2)
     ### Extract the mean model estimates from all chains as this is the 
     ### value we are going to plot 
     modelEstimates <- get_posterior_mean(modelFit)[,"mean-all chains"]

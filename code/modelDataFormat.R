@@ -148,7 +148,7 @@ weightedDF <- bind_rows(tmpDRWgts,
 modelDataMeans<- weightedDF %>% 
     select(covidence.id, 
            study.end.year,
-           pop.id, n.participants,
+           pop.id, n.participants,preferredSurvey,
            drtb, dstb, drtb.desc, drtb.wt, 
            whohb, urban, public, 
            ### MEANS
@@ -409,7 +409,7 @@ mutate(n.participants = as.numeric(n.participants),
 # filter(xor(drtb.ind==1, dstb.ind==1)) %>%
     dplyr::select(covidence.id, pop.id,
                   study.end.year,
-                  n.participants, cost, sd, se, 
+                  n.participants, preferredSurvey, cost, sd, se, 
                   dme.prediag, dnme.prediag, ie.prediag, 
                   dme.intsvtx, dnme.intsvtx, ie.intsvtx, 
                   dme.contntx, dnme.contntx, ie.contntx, 
@@ -438,6 +438,7 @@ modelDataMedians <- weightedDF %>%
            drtb, dstb, drtb.desc, drtb.wt, 
            whohb, urban, public,
            n.participants,
+           preferredSurvey,
            ### MEDIANS
            ### total tb care costs 
            de.tbcare.median, 
@@ -665,7 +666,9 @@ mutate(se = case_when(category=="de.tbcare.median" ~ as.numeric(cost)/2,
 # filter(xor(drtb.ind==1, dstb.ind==1)) %>%
     dplyr::select(covidence.id, pop.id, 
                   study.end.year,
-                  n.participants, cost, se,
+                  n.participants, 
+                  preferredSurvey,
+                  cost, se,
                   dme.prediag, dnme.prediag, ie.prediag, 
                   dme.intsvtx, dnme.intsvtx, ie.intsvtx, 
                   dme.contntx, dnme.contntx, ie.contntx, 
@@ -800,14 +803,14 @@ modelData <- left_join(modelData,
                            select(country.code, study.end.year, oop.perc.che))
 
 modelData <-left_join(modelData, medianIncome %>%
-                          rename(country.code = Country.Code) %>%
+                          # rename(country.code = Country.Code) %>%
                           mutate(study.end.year = as.numeric(study.end.year)) %>%
                           select(country.code, study.end.year, 
-                                 median.income.calc.intd,
-                                 median.income.calc.intd.hh), 
+                                 median.income.calc.intd.2025,
+                                 median.income.calc.intd.2025.hh), 
                       by = c("study.end.year", "country.code")) %>%
-            rename(median.income = median.income.calc.intd, 
-                   median.income.hh = median.income.calc.intd.hh) %>%
+            rename(median.income = median.income.calc.intd.2025, 
+                   median.income.hh = median.income.calc.intd.2025.hh) %>%
             mutate(oop.perc.che = as.numeric(oop.perc.che))
 
 
@@ -1070,7 +1073,8 @@ modelData <- modelData %>%
 ### Remove those without pop size 
 ##############################################################################|
 
-modelData <- modelData %>% filter(!is.na(n.participants))
+# modelData <- modelData %>% filter(!is.na(n.participants))
+# modelData <-modelData %>% filter(drtb.wt ==0| drtb.wt==1)
 
 ##############################################################################|
 ### Add study and country-level identifier into the model data              ###
@@ -1085,3 +1089,37 @@ modelData <- modelData %>%
     ### Force these weights to be 1 or 0
     mutate(drtb.wt = ifelse(pop.id == "DRTB", 1, 
                             ifelse(pop.id == "DSTB", 0, drtb.wt)))
+
+
+##############################################################################|
+### Two surveys excluded zeroes in their analysis but we can manually adjust###
+##############################################################################|
+### Study 9323 -- only 85 of 126 reported direct costs 
+### Note: indirect costs were calculated for all 126 and do not need updating. 
+ modelData9323 <- modelData %>% filter(covidence.id == 9323)
+ modelData9323$cost[1] <- (modelData9323$cost[1] * 85)  / 126
+ 
+### This study is more complicated; 
+ modelData8898 <- modelData %>% filter(covidence.id == 8898)
+########## Direct medical costs  #############################################
+### 40 total patients; 38 report 1.58; 36 report 17.70; 
+### 26 report 15.07; 15 report 45.20. 
+### Total unconverted cost is 37.44. 
+ modelData8898$cost[1] <- (((1.58*38)/40) + ((17.70*36)/40) + 
+                           ((15.07*26)/40) + ((45.20*15)/40)) * 
+                          (modelData8898$cost[1]/37.44)
+
+########## Direct non-medical costs  ##########################################
+ modelData8898$cost[2] <- (((35.41 * 38) / 40) + (12.84*39 / 40) + 
+                           (36.16/40) + (1.51*38/40)) * 
+                          (modelData8898$cost[2]/51.20)
+
+########## Indirect costs  #################################################### 
+ modelData8898$cost[3] <- (18*51.20 / 40) *  (modelData8898$cost[3]/51.20)
+ 
+##### Replace these costs in the main model data set
+ 
+ modelData[which(modelData$covidence.id == 9323)[1], "cost"] <- modelData9323$cost[1]
+ 
+ modelData[which(modelData$covidence.id == 8898), "cost"] <- modelData8898$cost
+ 

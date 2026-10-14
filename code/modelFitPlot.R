@@ -1,7 +1,9 @@
+
+
 modelEstimates <- tidybayes::spread_draws(lmicSamps,
                                     mu[cost.id],
                                     uncndtl_mu[cost.id], 
-                                    ndraws = 500, 
+                                    ndraws = 10000, 
                                     seed = tbPtntCstSeed) %>% 
                   group_by(cost.id) %>% 
     tidybayes::median_qi(mu, uncndtl_mu)
@@ -60,7 +62,22 @@ ggplot() + geom_point(data = allDataPlot2,
     theme(legend.position = "inside", legend.position.inside = c(.9, 0.1), 
           legend.background = element_rect(fill="white", color="black"))
 
-ggsave(plot=get_last_plot(), file=here("output/supplement/modelFitPlot-SA1.pdf"),
+ggplot() + geom_point(data = allDataPlot2, 
+                      aes(x=cost, y=uncndtl_mu), size=2, alpha=.5) + 
+    theme_minimal(base_size=18) + 
+    ggtitle("Comparison of observed costs and estimated unconditional costs") + 
+    geom_errorbar(data=allDataPlot2, aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper), alpha=.75) + 
+    scale_y_log10()  +  scale_x_log10() + 
+    geom_smooth(data = allDataPlot2, 
+                aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
+    labs(y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
+         caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
+         color="95% UI overlaps\nobserved costs") + 
+    theme(legend.position = "inside", legend.position.inside = c(.9, 0.1), 
+          legend.background = element_rect(fill="white", color="black"))
+
+
+ggsave(plot=get_last_plot(), file=here("output/supplement/modelFitPlot.pdf"),
        height = 8.5,  width= 11, units="in")
 
 ###how many overlap 
@@ -77,17 +94,19 @@ round(sum(allDataPlot2$overlapUnMu =="Yes") / nrow(allDataPlot2) *100)
  p1 <- ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                           filter(dme.prediag == 1 & 
                                      sum(dnme.prediag:ie.contntx)==0) , 
-                      aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                      aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                          ), size=2, alpha=.5) + 
     theme_minimal(base_size=8) + 
     ggtitle("Comparison of observed costs and estimated unconditional costs") +
     ggtitle("Pre-diagnostic direct medical costs") +
     geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                       filter(dme.prediag == 1 & 
-                                 sum(dnme.prediag:ie.contntx)==0) , aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                                 sum(dnme.prediag:ie.contntx)==0) , aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                                                                        ), alpha=.75) + 
     scale_y_log10()  +  scale_x_log10() + 
     geom_smooth(data = allDataPlot2, 
                 aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-    scale_color_manual(values=c("red", "black")) +
+    # scale_color_manual(values=c("red", "black")) +
     labs(y="Estimated costs (log10 scale)", 
          x="", #y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
          # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
@@ -98,18 +117,21 @@ round(sum(allDataPlot2$overlapUnMu =="Yes") / nrow(allDataPlot2) *100)
 p2 <- ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                           filter(dnme.prediag == 1 & 
                                      sum(dme.prediag, ie.prediag:ie.contntx)==0) , 
-                      aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                      aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                          ), size=2, alpha=.5) + 
     theme_minimal(base_size=8) + 
     ggtitle("Comparison of observed costs and estimated unconditional costs") +
     ggtitle("Pre-diagnostic direct non-medical costs") +
     geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                       filter(dnme.prediag == 1 & 
                                  sum(dme.prediag, ie.prediag:ie.contntx)==0), 
-                  aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                  aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper
+                      # , color=overlapUnMu
+                      ), alpha=.75) + 
     scale_y_log10()  +  scale_x_log10() + 
     geom_smooth(data = allDataPlot2, 
                 aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-    scale_color_manual(values=c("red", "black")) +
+    # scale_color_manual(values=c("red", "black")) +
     labs(x="", y="", 
         # y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
          # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
@@ -120,18 +142,20 @@ p2 <- ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
 p3<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(ie.prediag == 1 & 
                                      sum(dme.prediag, dnme.prediag, dme.intsvtx:ie.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Pre-diagnostic indirect costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(ie.prediag == 1 & 
                                      sum(dme.prediag, dnme.prediag, dme.intsvtx:ie.contntx)==0), 
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(x="", y="", 
             # y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
              # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
@@ -142,18 +166,20 @@ p3<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
 p4 <-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(dme.intsvtx== 1 & 
                                      sum(dme.prediag:ie.prediag, dnme.intsvtx:ie.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         # ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Intensive treatment direct medical costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(dme.intsvtx== 1 & 
                                      sum(dme.prediag:ie.prediag, dnme.intsvtx:ie.contntx)==0), 
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(y="Estimated costs (log10 scale)",  x="",
 
              # y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
@@ -165,18 +191,20 @@ p4 <-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
 p5<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(dnme.intsvtx== 1 & 
                                          sum(dme.prediag:ie.prediag, dme.intsvtx, ie.intsvtx:ie.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         # ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Intensive treatment direct non-medical costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(dnme.intsvtx== 1 & 
                                      sum(dme.prediag:ie.prediag, dme.intsvtx, ie.intsvtx:ie.contntx)==0), 
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(x="", y="", 
             # y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
              # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
@@ -187,18 +215,20 @@ p5<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
 p6<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(ie.intsvtx== 1 & 
                                          sum(dme.prediag:ie.prediag, dme.intsvtx:dnme.intsvtx, dme.contntx:ie.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         # ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Intensive treatment indirect costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(ie.intsvtx== 1 & 
                                       sum(dme.prediag:ie.prediag, dme.intsvtx:dnme.intsvtx, dme.contntx:ie.contntx)==0), 
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(x="", y="", 
             # y="Estimated unconditional costs (log10 scale)", x="Observed costs (log10 scale)", 
              # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
@@ -209,18 +239,20 @@ p6<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
  p7<-   ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(dme.contntx== 1 & 
                                          sum(dme.prediag:ie.intsvtx, dnme.contntx:ie.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         # ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Continuation treatment direct medical costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(dme.contntx== 1 & 
                                      sum(dme.prediag:ie.intsvtx, dnme.contntx:ie.contntx)==0),
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(
             y="Estimated costs (log10 scale)", 
              # y="Estimated unconditional costs (log10 scale)", 
@@ -233,18 +265,20 @@ p6<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
 p8<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(dnme.contntx== 1 & 
                                          sum(dme.prediag:ie.intsvtx, dme.contntx, ie.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         # ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Continuation treatment direct non-medical costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(dnme.contntx== 1 & 
                                      sum(dme.prediag:ie.intsvtx, dme.contntx, ie.contntx)==0), 
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(#y="Estimated unconditional costs (log10 scale)", 
              x="Observed costs (log10 scale)",  y="", 
              # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 
@@ -255,18 +289,20 @@ p8<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>%
 p9<-    ggplot() + geom_point(data = allDataPlot2 %>% rowwise() %>% 
                               filter(ie.contntx== 1 & 
                                          sum(dme.prediag:ie.intsvtx, dme.contntx, dnme.contntx)==0), 
-                          aes(x=cost, y=uncndtl_mu, color=overlapUnMu), size=2, alpha=.5) + 
+                          aes(x=cost, y=uncndtl_mu#, color=overlapUnMu
+                              ), size=2, alpha=.5) + 
         theme_minimal(base_size=8) + 
         # ggtitle("Comparison of observed costs and estimated unconditional costs") +
         ggtitle("Continuation treatment indirect costs") +
         geom_errorbar(data=allDataPlot2 %>% rowwise() %>% 
                           filter(ie.contntx== 1 & 
                           sum(dme.prediag:ie.intsvtx, dme.contntx, dnme.contntx)==0),
-                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper, color=overlapUnMu), alpha=.75) + 
+                      aes(x=cost, ymin=uncndtl_mu.lower, ymax=uncndtl_mu.upper#, color=overlapUnMu
+                          ), alpha=.75) + 
         scale_y_log10()  +  scale_x_log10() + 
         geom_smooth(data = allDataPlot2, 
                     aes(x=cost, y=cost), method = "lm", se = FALSE, col = "blue") +
-        scale_color_manual(values=c("red", "black")) +
+        # scale_color_manual(values=c("red", "black")) +
         labs(#y="Estimated unconditional costs (log10 scale)", 
             x="Observed costs (log10 scale)", y="", 
              # caption = "Error bars represent 95% uncertainty intervals.\nLine of equality depicted in blue.", 

@@ -40,3 +40,15 @@ convertToINTDFactors <- left_join(currencyInfo, convertToINTDFactors0) %>%
 
 saveRDS(convertToINTDFactors, file=here("data/monetaryConversion/toINTDconversionFactors.rds"), version=2)
 
+
+# intdFact<- data.frame(dataList[["descriptive"]], "ScalarTo2025INTD" = infFactor) %>% 
+#     mutate(label = paste(study.country, study.end.year))
+# 
+# ggplot(data = intdFact) + geom_point(aes(x=label, y=ScalarTo2025INTD)) + theme_minimal() + 
+#     coord_flip()
+# 
+# ggplot(data = intdFact %>% filter(ScalarTo2025INTD > 10)) + geom_point(aes(x=label, y=ScalarTo2025INTD)) + theme_minimal() + 
+#     coord_flip() + scale_y_log10()
+# 
+# ggplot(data = intdFact %>% filter(ScalarTo2025INTD > 100)) + geom_point(aes(x=label, y=ScalarTo2025INTD)) + theme_minimal() + 
+#     coord_flip() + scale_y_log10()

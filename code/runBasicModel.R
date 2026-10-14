@@ -197,8 +197,8 @@ betas %>%
                           exp(beta_ie_contntx + mult_drtb_ie_contntx)) * exp(mult_who)) %>% 
     mean_qi(totalDS, totalDSWHO, totalDR, totalDRWHO) %>% t()
 
-
-betas %>% mean_qi(mult_who) %>% select(! c(.width, .point, .interval)) %>% exp() %>% t()
+betas %>% mean_qi()  %>% select(! c(.width, .point, .interval)) %>% exp() %>% matrix(ncol=3, byrow = TRUE)
+# betas %>% mean_qi(mult_who) %>% select(! c(.width, .point, .interval)) %>% exp() %>% t()
 
 ##############################################################################|
 ##############################################################################|

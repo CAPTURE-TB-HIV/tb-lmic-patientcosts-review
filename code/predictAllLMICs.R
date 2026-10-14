@@ -251,9 +251,9 @@ for (t in sort(unique(covariatesTime$study.end.year))) {
     
 }
 # lmicSampsAll <- readRDS(here("output/allYears_07-30.rds"))
-saveRDS(lmicSampsTime, here("output/allYears_08-07.rds"), version=2)
+saveRDS(lmicSampsTime, here("output/allYears_10-13.rds"), version=2)
 
-################ RUN FOR ONLY 2024 ################ ################ 
+############### RUN FOR ONLY 2024 ################ ################
 
 covariateFilt24 <- covariatesTime %>% filter(study.end.year==2024) 
 
@@ -308,7 +308,7 @@ lmicSamps24 <- stan(file = "code/inst/model7.stan",
                     control=list(max_treedepth=14),
                     seed = tbPtntCstSeed)
 
-# saveRDS(lmicSamps24, file = here("output/mainEst2024_08-07-noTrunc.rds"))
+saveRDS(lmicSamps24, file = here("output/mainEst2024_10-13.rds"))
 # betas24<- tidybayes::spread_draws(lmicSamps24,
 #                                   beta_dme_prediag,
 #                                   beta_dnme_prediag,
