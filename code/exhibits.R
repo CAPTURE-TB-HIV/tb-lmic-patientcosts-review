@@ -616,7 +616,7 @@ allIncludedSurveys <- dataDesc %>% mutate(figure.id = paste0(study.country, " ("
 ##############################################################################|
 #### Risk of bias plot ####
 ##############################################################################|
-studyQualDF <- dataList$quality %>% 
+studyQualDF <- (dataList$quality[which(dataDesc$covidence.id %in% modelData$covidence.id),]) %>% 
     select(!study.quality.risk.of.bias) %>% 
     transmute("Is the study population\nclearly described?" = study.quality.population.detail, 
               "Is the sample population\nrepresentative of\nthe study population?" = study.quality.representativeness, 
@@ -640,7 +640,7 @@ qualPlot <- ggplot(data=studyQualDF %>%
          fill="") + 
     scale_fill_manual(values=c("forestgreen", "darkred", "darkgrey"))
 
-studyBiasDF <- dataList$quality %>% 
+studyBiasDF <- (dataList$quality[which(dataDesc$covidence.id %in% modelData$covidence.id),]) %>% 
     mutate("            Overall risk of bias" = gsub(" risk of bias", "", study.quality.risk.of.bias)) %>%
     pivot_longer(everything()) %>% 
     mutate(levels = factor(value, levels = c('Low', 'Medium', 'High', "Unknown", "Yes", "No")))
@@ -1424,13 +1424,14 @@ quantile(world_dstb$dstb_total_cost_country, na.rm=TRUE)
 dstbCarePlot <- ggplot() +
     geom_sf(data = world_dstb, mapping=aes(geometry=geometry, fill=dstb_total_cost_country)) + 
     scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
-                        na.value = "grey60", name = "Total household\ncost of TB\n(2025 INTD)", 
-                        breaks=c(2000, 3000, 4000, 6000, 9000), 
+                        na.value = "grey60", 
+                        name = "Total household\ncost of TB\n(2025 INTD)", 
+                        breaks=c(2000, 3000, 4000, 6000, 9100), 
                       label= c("0-1,999                        ", 
                                "2,000-2,999                       ", 
                                "3,000-3,999                       ", 
                                "4,000-5,999                      ",
-                               "6,000-9,000                      ")) +
+                               "6,000-9,099                      ")) +
     theme_void(base_size = 14) + 
     theme(legend.position = "inside", 
             legend.direction = "horizontal", 
@@ -1438,7 +1439,7 @@ dstbCarePlot <- ggplot() +
             panel.background = element_rect(fill = "white"),
             legend.background = element_rect(fill="white"),
             legend.position.inside = c(.5, .05)) +
-    expand_limits(fill=9000) + 
+    expand_limits(fill=9100) + 
     coord_sf(xlim = c(-132, 185),  expand = FALSE); dstbCarePlot
 
 
@@ -1479,12 +1480,12 @@ drtbCarePlot <- ggplot() +
     geom_sf(data = world_drtb, mapping=aes(geometry=geometry, fill=drtb_total_cost_country)) + 
         scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
                         na.value = "grey60", name = "Total household\ncost of TB\n(2025 INTD)", 
-                        breaks=c(10000, 20000, 30000, 40000, 51000),
+                        breaks=c(10000, 20000, 30000, 40000, 52000),
                         label= c("0-9,999                         ", 
                                  "10,000-19,999                          ", 
                                  "20,000-29,999                         ", 
                                  "30,000-39,999                         ",
-                                 "40,000-51,000                        ")) +
+                                 "40,000-51,999                        ")) +
     theme_void(base_size=12) + 
     theme(legend.position = "inside", 
             legend.direction = "horizontal", 
@@ -1493,7 +1494,7 @@ drtbCarePlot <- ggplot() +
             legend.background = element_rect(fill="white"),
             legend.position.inside = c(.5, .05)) +
     coord_sf(xlim = c(-132, 185),  expand = FALSE) +  
-    expand_limits(fill=51000) +
+    expand_limits(fill=52000) +
     guides(pattern = guide_legend(override.aes = list(fill = c("#d0dfc8")))); drtbCarePlot
 
 ggsave(plot = drtbCarePlot, filename = here("output/figures/drtbCostMap.pdf"), width =13, height = 6)
@@ -1586,6 +1587,7 @@ summaryEstUcrntyTbl0 <- samples %>%
               wgtTotal = weighted.mean(dstb_total_cost_country, notif), 
               .by=c(`.draw`)) 
 
+##### Mean treatment cost weighted by notifications for all LMICs 
 summaryEstUcrntyTx <- summaryEstUcrntyTbl0 %>% 
     ungroup() %>%
     mutate(txCost = wgtIT + wgtCT) %>% 
@@ -1593,7 +1595,7 @@ summaryEstUcrntyTx <- summaryEstUcrntyTbl0 %>%
     select(!c(.width, .point, .interval)) %>% round() ; summaryEstUcrntyTx
 
 
-summaryEstUcrntyTbl <- summaryEstUcrntyTbl0%>% 
+summaryEstUcrntyTbl <- summaryEstUcrntyTbl0 %>% 
     ungroup() %>% 
     mean_qi(wgtDME_PT, wgtDNME_PT, wgtIE_PT,
             wgtDME_IT, wgtDNME_IT, wgtIE_IT,
@@ -1648,6 +1650,8 @@ write.csv(here("output/tables/allLMICMeanCosts.csv"))
 
 
 apply(X=summaryEstUcrntyPercTbl0[,-1], MARGIN = 2, FUN=quantile)
+apply(X=summaryEstUcrntyTbl0[,-1], MARGIN = 2, FUN=quantile)
+
 
 ##############################################################################|
 ##### Table SX                                      ###########################
@@ -2286,6 +2290,18 @@ for (yr in 2009:2024){
                            dstb_dnme_contntx_cost_country[country.id.new],
                            dstb_ie_contntx_cost_country[country.id.new],
                            dstb_total_cost_country[country.id.new], 
+                           
+                           ### Marginal costs 
+                           dstb_prediag_cost_country[country.id.new], 
+                           dstb_intsvtx_cost_country[country.id.new], 
+                           dstb_contntx_cost_country[country.id.new], 
+                           
+                           dstb_dme_cost_country[country.id.new], 
+                           dstb_dnme_cost_country[country.id.new], 
+                           dstb_ie_cost_country[country.id.new], 
+                           
+                           
+                           
                            ### RR/MDR-TB
                            # drtb_dme_prediag_cost_country[country.id.new],
                            # drtb_dnme_prediag_cost_country[country.id.new],
@@ -2424,6 +2440,14 @@ allYearsCostAll2a <- left_join(allYearsCostAll, notif)  %>%
               dme_contntx  = weighted.mean(dstb_dme_contntx_cost_country, notif, na.rm = TRUE),
               dnme_contntx = weighted.mean(dstb_dnme_contntx_cost_country, notif, na.rm = TRUE),
               ie_contntx   = weighted.mean(dstb_ie_contntx_cost_country, notif, na.rm = TRUE),
+              
+              prediag_total  = weighted.mean(dstb_prediag_cost_country, notif, na.rm = TRUE),
+              intsvtx_total = weighted.mean(dstb_intsvtx_cost_country, notif, na.rm = TRUE),
+              contntx_total   = weighted.mean(dstb_contntx_cost_country, notif, na.rm = TRUE),
+              
+              dme_total  = weighted.mean(dstb_dme_cost_country, notif, na.rm = TRUE),
+              dnme_total = weighted.mean(dstb_dnme_cost_country, notif, na.rm = TRUE),
+              ie_total   = weighted.mean(dstb_ie_cost_country, notif, na.rm = TRUE),
               total_total  = weighted.mean(dstb_total_cost_country, notif, na.rm = TRUE), 
               .by=c(`.draw`, study.end.year)) 
 
@@ -2840,14 +2864,16 @@ allYearsCostAll3a %>%
     select(! c(.width, .point, .interval)) %>% round(digits = 2) %>% t()
 
 ### (Treatment phase)
-allYearsCostAll4a %>%
+allYearsCostAll4PC <- allYearsCostAll2a %>%
     group_by(.draw) %>% 
     filter(study.end.year %in% c(2009, 2024)) %>% 
     arrange(study.end.year, .by_group = TRUE) %>%
-    mutate(prediag_pct_change = (((prediag/lag(prediag))^(1/length(2009:2024)))-1)*100,
-           intsvtx_pct_change = (((intsvtx/lag(intsvtx))^(1/length(2009:2024)))-1)*100,
-           contntx_pct_change = (((contntx/lag(contntx))^(1/length(2009:2024)))-1)*100) %>%
-    na.omit() %>% 
+    mutate(prediag_pct_change = (((prediag_total/lag(prediag_total))^(1/length(2009:2024)))-1)*100,
+           intsvtx_pct_change = (((intsvtx_total/lag(intsvtx_total))^(1/length(2009:2024)))-1)*100,
+           contntx_pct_change = (((contntx_total/lag(contntx_total))^(1/length(2009:2024)))-1)*100) %>%
+    na.omit()
+
+allYearsCostAll4PC %>% 
     ungroup() %>%
     mean_qi(prediag_pct_change,
             intsvtx_pct_change,
