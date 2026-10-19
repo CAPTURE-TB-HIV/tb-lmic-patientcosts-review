@@ -424,6 +424,7 @@ model {
     beta_oop_perc_che_ie_contntx   ~ normal(0, 1);
     
     // UHC
+    // Removed for as model performed better without
     // beta_uhc_overall ~ normal(0, prior_sigma);
     // beta_uhc_dme_prediag  ~ normal(0, 1);
     // beta_uhc_dnme_prediag ~ normal(0, 1);
@@ -905,7 +906,7 @@ generated quantities {
                     // mult_uhc_dme_contntx * uhc_index_new[n] +
                     mult_cdr_dme_contntx * cdr_rate_new[n]) * 
             exp(mult_year_dme_contntx * pred_year) * 
-            (1-exp(beta_theta_ie_contntx));
+            (1-exp(beta_theta_dme_contntx));
         
         dstb_dnme_contntx_cost_country[n] =
             exp(beta_dnme_contntx + randeff_country_predC[n] +
@@ -914,7 +915,7 @@ generated quantities {
                     // mult_uhc_dnme_contntx * uhc_index_new[n] +
                     mult_cdr_dnme_contntx * cdr_rate_new[n]) * 
             exp(mult_year_dnme_contntx * pred_year) * 
-            (1-exp(beta_theta_ie_contntx));
+            (1-exp(beta_theta_dnme_contntx));
         
         dstb_ie_contntx_cost_country[n] =
             exp(beta_ie_contntx + randeff_country_predC[n] +
