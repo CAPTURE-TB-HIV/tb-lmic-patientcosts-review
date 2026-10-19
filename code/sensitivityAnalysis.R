@@ -164,6 +164,7 @@ covariatesTime <- arrange(covariatesTime, country.id.new)
 modelDataSA1 <- modelData %>% 
                 filter(covidence.id %in% 
                        ### These are the WHO patient costs surveys 
+                           ### Add 4 back!!!
                        c(1:4, 8688, 7799, 8781, 7682, 9330,
                          8270, 9620, 7443,7355, 7919, 9422,
                          8310, 9585, 8634, 8677, 9301)) %>%
@@ -227,7 +228,7 @@ SA1Data <- list(
     N_country_new = max(covariates24$country.id.new),
     review_ind = covariates24$in.review, 
     in_review_id = covariates24$in.review.id, # note that this is different from modelData country.id
-    pred_year = (t - mean(modelData$study.end.year)) / sd(modelData$study.end.year), 
+    pred_year = (2024 - mean(modelData$study.end.year)) / sd(modelData$study.end.year), 
     
     median_income_new = (covariates24$log.median.income.hh - mean(modelData$log.median.income.hh)) / sd(modelData$log.median.income.hh),
     oop_perc_che_new = (covariates24$oop.perc.che - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che), 
@@ -250,13 +251,25 @@ lmicSampsSA1 <- stan(file = here("code/inst/model7.stan"),
 saveRDS(lmicSampsSA1, here("output/sensAnalysis_1.rds"))
 
 
-tidybayes::spread_draws(lmicSampsSA1, 
+samplesSA1 <- tidybayes::spread_draws(lmicSampsSA1, 
                         dstb_total_cost_country[country.id.new], 
-                        ndraws = 10000, seed = tbPtntCstSeed) %>% 
-    group_by(country.id.new) %>%
-    # mean_qi(dstb_total_cost_country)  %>%
-    mean_qi(dstb_total_cost_country) 
+                        ndraws = 10000, seed = tbPtntCstSeed) 
 
+#### Uses covariatesAll made in exhibits.R
+summaryEstUcrntySA1<- samplesSA1 %>% 
+    left_join(covariatesAll, by="country.id.new") %>% 
+    mutate(notif = ifelse(is.na(notif), 0, notif)) %>%
+    ungroup() %>% 
+    # group_by(`.draw`, country.id.new) %>%
+    summarise(
+              wgtTotal = weighted.mean(dstb_total_cost_country, notif), 
+              .by=c(`.draw`)) 
+
+##### Mean treatment cost weighted by notifications for all LMICs 
+summaryEstUcrntySA1 %>% 
+    ungroup() %>%
+    mean_qi(wgtTotal) %>% 
+    select(!c(.width, .point, .interval)) %>% round()
 
 
 samplesSA1 <- spread_draws(lmicSampsSA1, 

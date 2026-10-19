@@ -46,7 +46,7 @@ covariates <- covariatesTime %>% filter(study.end.year == 2024)
 
 ### Load in the samples 
 # lmicSampsAll <- readRDS(here("output/allYears_08-07-noTrunc.rds"))
-lmicSampsAll <- readRDS(here("output/allYears_10-13.rds"))
+lmicSampsAll <- readRDS(here("output/allYears_10-19.rds"))
 lmicSamps <- lmicSampsAll[[16]]
 # lmicSamps <- readRDS(here("output/mainEst2024_08-07-noTrunc.rds"))
 
@@ -1135,7 +1135,10 @@ tmpCE <- countryEst %>% ungroup() %>%
                 "IND" = sum(dstb_ie_prediag_cost_country,
                             dstb_ie_intsvtx_cost_country, 
                             dstb_ie_contntx_cost_country),
-                .by=study.country)
+                .by=study.country) %>% 
+         rowwise() %>% 
+         mutate("IndMax" = ifelse(max(IND, DNM, DM) == IND, 1, 0))
+sum(tmpCE$IndMax) 
 
 ##### Recreate this plot for only the top 30 TB countries 
 top30countryCostCategoryPlot <- ggplot() + 
@@ -1426,12 +1429,12 @@ dstbCarePlot <- ggplot() +
     scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
                         na.value = "grey60", 
                         name = "Total household\ncost of TB\n(2025 INTD)", 
-                        breaks=c(2000, 3000, 4000, 6000, 9100), 
+                        breaks=c(2000, 3000, 4000, 6000, 9200), 
                       label= c("0-1,999                        ", 
                                "2,000-2,999                       ", 
                                "3,000-3,999                       ", 
                                "4,000-5,999                      ",
-                               "6,000-9,099                      ")) +
+                               "6,000-9,199                      ")) +
     theme_void(base_size = 14) + 
     theme(legend.position = "inside", 
             legend.direction = "horizontal", 
@@ -1439,7 +1442,7 @@ dstbCarePlot <- ggplot() +
             panel.background = element_rect(fill = "white"),
             legend.background = element_rect(fill="white"),
             legend.position.inside = c(.5, .05)) +
-    expand_limits(fill=9100) + 
+    expand_limits(fill=9200) + 
     coord_sf(xlim = c(-132, 185),  expand = FALSE); dstbCarePlot
 
 
@@ -1480,12 +1483,12 @@ drtbCarePlot <- ggplot() +
     geom_sf(data = world_drtb, mapping=aes(geometry=geometry, fill=drtb_total_cost_country)) + 
         scale_fill_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
                         na.value = "grey60", name = "Total household\ncost of TB\n(2025 INTD)", 
-                        breaks=c(10000, 20000, 30000, 40000, 52000),
+                        breaks=c(10000, 20000, 30000, 40000, 53000),
                         label= c("0-9,999                         ", 
                                  "10,000-19,999                          ", 
                                  "20,000-29,999                         ", 
                                  "30,000-39,999                         ",
-                                 "40,000-51,999                        ")) +
+                                 "40,000-52,999                        ")) +
     theme_void(base_size=12) + 
     theme(legend.position = "inside", 
             legend.direction = "horizontal", 
@@ -1494,7 +1497,7 @@ drtbCarePlot <- ggplot() +
             legend.background = element_rect(fill="white"),
             legend.position.inside = c(.5, .05)) +
     coord_sf(xlim = c(-132, 185),  expand = FALSE) +  
-    expand_limits(fill=52000) +
+    expand_limits(fill=53000) +
     guides(pattern = guide_legend(override.aes = list(fill = c("#d0dfc8")))); drtbCarePlot
 
 ggsave(plot = drtbCarePlot, filename = here("output/figures/drtbCostMap.pdf"), width =13, height = 6)
@@ -1611,7 +1614,7 @@ summaryEstUcrntyTbl <- summaryEstUcrntyTbl %>%
     pivot_longer(everything(), names_sep = "\\.", names_to = c("Category", "Type"), values_to = "Cost") %>% 
     pivot_wider(id_cols = Category, names_from = Type, values_from = Cost) %>% 
     mutate(across(est:upper, round), 
-           formatted = paste0(est, " (", 
+           formatted = paste0(est, "\n(", 
                               lower, ", ", 
                               upper, ")")) ; summaryEstUcrntyTbl
 
@@ -1640,7 +1643,7 @@ summaryEstUcrntyPercTbl <- summaryEstUcrntyPercTbl %>%
     pivot_longer(everything(), names_sep = "\\.", names_to = c("Category", "Type"), values_to = "Cost") %>% 
     pivot_wider(id_cols = Category, names_from = Type, values_from = Cost) %>% 
     mutate(across(est:upper, round), 
-           formatted = paste0(est, " (", 
+           formatted = paste0(est, "\n(", 
                               lower, ", ", 
                               upper, ")")) ; summaryEstUcrntyPercTbl
 
@@ -1708,7 +1711,7 @@ regionEstUncrntyTbl2 <- regionEstUncrntyTbl %>%
     pivot_longer(`wgtDME_PT.est`:`wgtTotal.upper`, names_sep = "\\.", names_to = c("Category", "Type"), values_to = "Cost") %>% 
     pivot_wider(id_cols = c(who.region, Category), names_from = Type, values_from = Cost) %>% 
     mutate(across(est:upper, round), 
-           formatted = paste0(est, " (", 
+           formatted = paste0(est, "\n(", 
                               lower, ", ", 
                               upper, ")")) 
 regionEstUncrntyTbl2 %>% 
@@ -1736,7 +1739,7 @@ regionEstUncrntyTbl2 %>%
 #     group_by(name, incQuant) %>% 
 #     mean_qi(value) %>% 
 #     mutate(across(value:.upper, round), 
-#            formatted = paste0(value, " (", 
+#            formatted = paste0(value, "\n(", 
 #                               .lower, ", ", 
 #                               .upper, ")")) %>% 
 #     select(!c(value, .lower, .upper)) %>%
@@ -1799,7 +1802,7 @@ top30EstUcrntyTbl <- top30EstUcrntyTbl %>%
     pivot_longer(everything(), names_sep = "\\.", names_to = c("Category", "Type"), values_to = "Cost") %>% 
     pivot_wider(id_cols = Category, names_from = Type, values_from = Cost) %>% 
     mutate(across(est:upper, round), 
-           formatted = paste0(est, " (", 
+           formatted = paste0(est, "\n(", 
                               lower, ", ", 
                               upper, ")")) ; top30EstUcrntyTbl
 
@@ -1857,7 +1860,7 @@ worldBankEstUncrntyTbl2 <- worldBankEstUncrntyTbl %>%
     pivot_longer(`wgtDME_PT.est`:`wgtTotal.upper`, names_sep = "\\.", names_to = c("Category", "Type"), values_to = "Cost") %>% 
     pivot_wider(id_cols = c(class25, Category), names_from = Type, values_from = Cost) %>% 
     mutate(across(est:upper, round), 
-           formatted = paste0(est, " (", 
+           formatted = paste0(est, "\n(", 
                               lower, ", ", 
                               upper, ")")) 
 worldBankEstUncrntyTbl2 %>% 
@@ -1898,37 +1901,37 @@ countryEstUcrntyTbl0 <- left_join(covariates,
 
 countryEstUcrntyTbl <- countryEstUcrntyTbl0   %>% 
     mutate(across(dstb_dme_prediag_cost_country:dstb_total_cost_country.upper, round)) %>%
-    mutate("DME pre-diagnosis" = paste0(dstb_dme_prediag_cost_country, " (", 
+    mutate("DME pre-diagnosis" = paste0(dstb_dme_prediag_cost_country, "\n(", 
                                         dstb_dme_prediag_cost_country.lower, ", ", 
                                         dstb_dme_prediag_cost_country.upper, ")"), 
-           "DNME pre-diagnosis" = paste0(dstb_dnme_prediag_cost_country, " (", 
+           "DNME pre-diagnosis" = paste0(dstb_dnme_prediag_cost_country, "\n(", 
                                          dstb_dnme_prediag_cost_country.lower, ", ", 
                                          dstb_dnme_prediag_cost_country.upper, ")"),
-           "Indirect pre-diagnosis" = paste0(dstb_ie_prediag_cost_country, " (", 
+           "Indirect pre-diagnosis" = paste0(dstb_ie_prediag_cost_country, "\n(", 
                                              dstb_ie_prediag_cost_country.lower, ", ", 
                                              dstb_ie_prediag_cost_country.upper, ")"),
-           "DME Intensive Tx" = paste0(dstb_dme_intsvtx_cost_country, " (", 
+           "DME Intensive Tx" = paste0(dstb_dme_intsvtx_cost_country, "\n(", 
                                        dstb_dme_intsvtx_cost_country.lower, ", ", 
                                        dstb_dme_intsvtx_cost_country.upper, ")"), 
-           "DNME Intensive Tx" = paste0(dstb_dnme_intsvtx_cost_country, " (", 
+           "DNME Intensive Tx" = paste0(dstb_dnme_intsvtx_cost_country, "\n(", 
                                         dstb_dnme_intsvtx_cost_country.lower, ", ", 
                                         dstb_dnme_intsvtx_cost_country.upper, ")"),
-           "Indirect Intensive Tx" = paste0(dstb_ie_intsvtx_cost_country, " (", 
+           "Indirect Intensive Tx" = paste0(dstb_ie_intsvtx_cost_country, "\n(", 
                                             dstb_ie_intsvtx_cost_country.lower, ", ", 
                                             dstb_ie_intsvtx_cost_country.upper, ")"), 
-           "DME Continuation Tx" = paste0(dstb_dme_contntx_cost_country, " (", 
+           "DME Continuation Tx" = paste0(dstb_dme_contntx_cost_country, "\n(", 
                                           dstb_dme_contntx_cost_country.lower, ", ", 
                                           dstb_dme_contntx_cost_country.upper, ")"), 
-           "DNME Continuation Tx" = paste0(dstb_dnme_contntx_cost_country, " (", 
+           "DNME Continuation Tx" = paste0(dstb_dnme_contntx_cost_country, "\n(", 
                                            dstb_dnme_contntx_cost_country.lower, ", ", 
                                            dstb_dnme_contntx_cost_country.upper, ")"),
-           "Indirect Continuation Tx" = paste0(dstb_ie_contntx_cost_country, " (", 
+           "Indirect Continuation Tx" = paste0(dstb_ie_contntx_cost_country, "\n(", 
                                                dstb_ie_contntx_cost_country.lower, ", ", 
                                                dstb_ie_contntx_cost_country.upper, ")"),
-           "Total TB care costs" = paste0(dstb_total_cost_country, " (", 
+           "Total TB care costs" = paste0(dstb_total_cost_country, "\n(", 
                                           dstb_total_cost_country.lower, ", ", 
                                           dstb_total_cost_country.upper, ")"),
-           "Percentage of median income" = paste0(round(percMedInc,2), " (", 
+           "Percentage of median income" = paste0(round(percMedInc,2), "\n(", 
                                                   round(percMedInc.lower,2), ", ", 
                                                   round(percMedInc.upper,2), ")")
     ) %>% select(study.country, in.review, 
@@ -1995,34 +1998,34 @@ countryEstDRTBUcrntyTbl0 <- left_join(covariates,
                                                drtb_total_cost_country), 
                                  join_by(country.id.new)) %>% 
     mutate(across(drtb_dme_prediag_cost_country:drtb_total_cost_country.upper, round)) %>%
-    mutate("DME pre-diagnosis" = paste0(drtb_dme_prediag_cost_country, " (", 
+    mutate("DME pre-diagnosis" = paste0(drtb_dme_prediag_cost_country, "\n(", 
                                         drtb_dme_prediag_cost_country.lower, ", ", 
                                         drtb_dme_prediag_cost_country.upper, ")"), 
-           "DNME pre-diagnosis" = paste0(drtb_dnme_prediag_cost_country, " (", 
+           "DNME pre-diagnosis" = paste0(drtb_dnme_prediag_cost_country, "\n(", 
                                          drtb_dnme_prediag_cost_country.lower, ", ", 
                                          drtb_dnme_prediag_cost_country.upper, ")"),
-           "Indirect pre-diagnosis" = paste0(drtb_ie_prediag_cost_country, " (", 
+           "Indirect pre-diagnosis" = paste0(drtb_ie_prediag_cost_country, "\n(", 
                                              drtb_ie_prediag_cost_country.lower, ", ", 
                                              drtb_ie_prediag_cost_country.upper, ")"),
-           "DME Intensive Tx" = paste0(drtb_dme_intsvtx_cost_country, " (", 
+           "DME Intensive Tx" = paste0(drtb_dme_intsvtx_cost_country, "\n(", 
                                        drtb_dme_intsvtx_cost_country.lower, ", ", 
                                        drtb_dme_intsvtx_cost_country.upper, ")"), 
-           "DNME Intensive Tx" = paste0(drtb_dnme_intsvtx_cost_country, " (", 
+           "DNME Intensive Tx" = paste0(drtb_dnme_intsvtx_cost_country, "\n(", 
                                         drtb_dnme_intsvtx_cost_country.lower, ", ", 
                                         drtb_dnme_intsvtx_cost_country.upper, ")"),
-           "Indirect Intensive Tx" = paste0(drtb_ie_intsvtx_cost_country, " (", 
+           "Indirect Intensive Tx" = paste0(drtb_ie_intsvtx_cost_country, "\n(", 
                                             drtb_ie_intsvtx_cost_country.lower, ", ", 
                                             drtb_ie_intsvtx_cost_country.upper, ")"), 
-           "DME Continuation Tx" = paste0(drtb_dme_contntx_cost_country, " (", 
+           "DME Continuation Tx" = paste0(drtb_dme_contntx_cost_country, "\n(", 
                                           drtb_dme_contntx_cost_country.lower, ", ", 
                                           drtb_dme_contntx_cost_country.upper, ")"), 
-           "DNME Continuation Tx" = paste0(drtb_dnme_contntx_cost_country, " (", 
+           "DNME Continuation Tx" = paste0(drtb_dnme_contntx_cost_country, "\n(", 
                                            drtb_dnme_contntx_cost_country.lower, ", ", 
                                            drtb_dnme_contntx_cost_country.upper, ")"),
-           "Indirect Continuation Tx" = paste0(drtb_ie_contntx_cost_country, " (", 
+           "Indirect Continuation Tx" = paste0(drtb_ie_contntx_cost_country, "\n(", 
                                                drtb_ie_contntx_cost_country.lower, ", ", 
                                                drtb_ie_contntx_cost_country.upper, ")"),
-           "Total TB care costs" = paste0(drtb_total_cost_country, " (", 
+           "Total TB care costs" = paste0(drtb_total_cost_country, "\n(", 
                                           drtb_total_cost_country.lower, ", ", 
                                           drtb_total_cost_country.upper, ")")
     ) %>% select(study.country, in.review, 
@@ -2047,7 +2050,7 @@ left_join(covariates,
           join_by(country.id.new)) %>% 
     select(study.country, country.code, drtb_ratio, .lower, .upper) %>% 
 mutate(across(drtb_ratio:.upper, \(x) round(x, digits=1)),
-       formatted = paste0(drtb_ratio, " (",
+       formatted = paste0(drtb_ratio, "\n(",
                           .lower, ", ",
                           .upper, ")"))
 
@@ -2064,7 +2067,7 @@ ungroup() %>%
 mean_qi(drtb_ratio) %>% 
 select(drtb_ratio, .lower, .upper) %>% 
 mutate(across(drtb_ratio:.upper, \(x) round(x, digits=1)),
-       formatted = paste0(drtb_ratio, " (",
+       formatted = paste0(drtb_ratio, "\n(",
                           .lower, ", ",
                           .upper, ")"))
 
@@ -2212,7 +2215,7 @@ ggplot(countryEstBurden, aes(x=dstb_total_cost_country,
 #     mean_qi() %>% 
 #     select(! c(.width, .point, .interval)) %>%
 #     mutate(across(Value:.upper, \(x) round(x, digits = 2)*100), 
-#            formatted = paste0(Value, " (", 
+#            formatted = paste0(Value, "\n(", 
 #                               .lower, ", ", 
 #                               .upper, ")")) 
 # 
@@ -2264,7 +2267,7 @@ ggplot(countryEstBurden, aes(x=dstb_total_cost_country,
 #     mean_qi() %>% 
 #     select(! c(.width, .point, .interval)) %>%
 #     mutate(across(Value:.upper, \(x) round(x, digits = 2)*100), 
-#            formatted = paste0(Value, " (", 
+#            formatted = paste0(Value, "\n(", 
 #                               .lower, ", ", 
 #                               .upper, ")")) 
 # 
@@ -2441,13 +2444,13 @@ allYearsCostAll2a <- left_join(allYearsCostAll, notif)  %>%
               dnme_contntx = weighted.mean(dstb_dnme_contntx_cost_country, notif, na.rm = TRUE),
               ie_contntx   = weighted.mean(dstb_ie_contntx_cost_country, notif, na.rm = TRUE),
               
-              prediag_total  = weighted.mean(dstb_prediag_cost_country, notif, na.rm = TRUE),
-              intsvtx_total = weighted.mean(dstb_intsvtx_cost_country, notif, na.rm = TRUE),
-              contntx_total   = weighted.mean(dstb_contntx_cost_country, notif, na.rm = TRUE),
-              
-              dme_total  = weighted.mean(dstb_dme_cost_country, notif, na.rm = TRUE),
-              dnme_total = weighted.mean(dstb_dnme_cost_country, notif, na.rm = TRUE),
-              ie_total   = weighted.mean(dstb_ie_cost_country, notif, na.rm = TRUE),
+              # prediag_total  = weighted.mean(dstb_prediag_cost_country, notif, na.rm = TRUE),
+              # intsvtx_total = weighted.mean(dstb_intsvtx_cost_country, notif, na.rm = TRUE),
+              # contntx_total   = weighted.mean(dstb_contntx_cost_country, notif, na.rm = TRUE),
+              # 
+              # dme_total  = weighted.mean(dstb_dme_cost_country, notif, na.rm = TRUE),
+              # dnme_total = weighted.mean(dstb_dnme_cost_country, notif, na.rm = TRUE),
+              # ie_total   = weighted.mean(dstb_ie_cost_country, notif, na.rm = TRUE),
               total_total  = weighted.mean(dstb_total_cost_country, notif, na.rm = TRUE), 
               .by=c(`.draw`, study.end.year)) 
 
@@ -2477,8 +2480,8 @@ allYearsCostAll2b <- allYearsCostAll2 %>%
     pivot_wider(names_from = Type, values_from = Cost)
 
 allYearsCostAll3a <- allYearsCostAll2a %>% mutate(dme = dme_prediag + dme_intsvtx + dme_contntx, 
-                           dnme = dnme_prediag + dnme_intsvtx + dnme_contntx, 
-                           ie = ie_prediag + ie_intsvtx + ie_contntx) 
+                                                  dnme = dnme_prediag + dnme_intsvtx + dnme_contntx, 
+                                                  ie = ie_prediag + ie_intsvtx + ie_contntx) 
 
 allYearsCostAll3 <- allYearsCostAll3a %>%
     ungroup() %>% 
@@ -2608,7 +2611,7 @@ timePlot <- ggpubr::ggarrange(timeTotPlot, timeCatPlot, ncol=1, nrow=2,
                               common.legend = FALSE, legend="none", heights=c(3,6))
 
 
-ggsave(timePlot, file=here("output/figures/timeTrendPlot06-09.pdf"), width = 8.5, height=11, units = "in")
+ggsave(timePlot, file=here("output/figures/timeTrendPlot.pdf"), width = 8.5, height=11, units = "in")
 
 timeTotPlot <- ggplot(data = allYearsCostAll2b %>% filter(Category == "Total cost", 
                                                           study.end.year >= plotEndYr)) + 
@@ -2625,7 +2628,7 @@ timeTotPlot <- ggplot(data = allYearsCostAll2b %>% filter(Category == "Total cos
         panel.spacing = unit(0.5, "lines"), 
         panel.grid.minor.x = element_blank()) + 
     facet_wrap(facets = ~ Category)
-ggsave(timeTotPlot, file=here("output/figures/timeTrendTotCostsPlot06-09.pdf"), 
+ggsave(timeTotPlot, file=here("output/figures/timeTrendTotCostsPlot.pdf"), 
        height = 8.5, width=11, units = "in")
 
 ###########################################################################
@@ -2777,7 +2780,7 @@ allYearsCostAll3 <- left_join(allYearsCostAll, notif)  %>%
     left_join(covariatesTime) %>%
     mutate(notif = ifelse(is.na(notif), 0, notif)) %>% 
     select(!who.region) %>% ungroup() %>% 
-    summarise(total  = weighted.mean(dstb_total_cost_country/median.income.trunc, 
+    summarise(total  = weighted.mean(dstb_total_cost_country/median.income.hh, 
                                      notif, na.rm = TRUE), 
               .by=c(`.draw`, study.end.year)) %>%
     ungroup() %>% 
@@ -2864,13 +2867,13 @@ allYearsCostAll3a %>%
     select(! c(.width, .point, .interval)) %>% round(digits = 2) %>% t()
 
 ### (Treatment phase)
-allYearsCostAll4PC <- allYearsCostAll2a %>%
+allYearsCostAll4PC <- allYearsCostAll4a %>%
     group_by(.draw) %>% 
     filter(study.end.year %in% c(2009, 2024)) %>% 
     arrange(study.end.year, .by_group = TRUE) %>%
-    mutate(prediag_pct_change = (((prediag_total/lag(prediag_total))^(1/length(2009:2024)))-1)*100,
-           intsvtx_pct_change = (((intsvtx_total/lag(intsvtx_total))^(1/length(2009:2024)))-1)*100,
-           contntx_pct_change = (((contntx_total/lag(contntx_total))^(1/length(2009:2024)))-1)*100) %>%
+    mutate(prediag_pct_change = (((prediag/lag(prediag))^(1/length(2009:2024)))-1)*100,
+           intsvtx_pct_change = (((intsvtx/lag(intsvtx))^(1/length(2009:2024)))-1)*100,
+           contntx_pct_change = (((contntx/lag(contntx))^(1/length(2009:2024)))-1)*100) %>%
     na.omit()
 
 allYearsCostAll4PC %>% 

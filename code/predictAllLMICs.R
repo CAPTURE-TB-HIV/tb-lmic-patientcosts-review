@@ -251,7 +251,7 @@ for (t in sort(unique(covariatesTime$study.end.year))) {
     
 }
 # lmicSampsAll <- readRDS(here("output/allYears_07-30.rds"))
-saveRDS(lmicSampsTime, here("output/allYears_10-13.rds"), version=2)
+saveRDS(lmicSampsTime, here("output/allYears_10-19.rds"), version=2)
 
 ############### RUN FOR ONLY 2024 ################ ################
 
@@ -283,13 +283,15 @@ predDataFilt24 <- list(
     prior_sigma = 2,
     prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData),
     natrep_id = modelData$whoSurv,
+    id_matrix = modelData %>% select(survey.id, country.id) %>% distinct(), 
+    
     # tau_scalar = 1 / sqrt(modelData$n.participants),
     tau_scalar = rep(1,nrow(modelData)),
-
+ 
     ### External covariateFilt
     median_income = ((modelData$log.median.income.hh - mean(modelData$log.median.income.hh)) / sd(modelData$log.median.income.hh)),
     oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che),
-    uhc_index =     (modelData$UHCindex - mean(modelData$UHCindex)) / sd(modelData$UHCindex),
+    cdr_rate = (modelData$cdr.rate - mean(modelData$cdr.rate)) / sd(modelData$cdr.rate), 
     ### Prediction data
     N_country_new = max(covariateFilt24$country.id.new),
     review_ind = covariateFilt24$in.review,
@@ -297,45 +299,81 @@ predDataFilt24 <- list(
     pred_year = (2024 - mean(modelData$study.end.year)) / sd(modelData$study.end.year),
     median_income_new = (covariateFilt24$log.median.income - mean(modelData$log.median.income.hh)) / sd(modelData$log.median.income.hh),
     oop_perc_che_new = (covariateFilt24$oop.perc.che - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che),
-    uhc_index_new = (covariateFilt24$uhc.index - mean(modelData$UHCindex)) / sd(modelData$UHCindex)
+    cdr_rate_new = (covariateFilt$cdr.rate - mean(modelData$cdr.rate)) / sd(modelData$cdr.rate)
 )
 
-
 lmicSamps24 <- stan(file = "code/inst/model7.stan",
-                    data = predDataFilt,
+                    data = predDataFilt24,
                     iter = tbPtntCstIter, chains = 3,
                     warmup = tbPtntCstWarmup,
                     control=list(max_treedepth=14),
                     seed = tbPtntCstSeed)
 
-saveRDS(lmicSamps24, file = here("output/mainEst2024_10-13.rds"))
-# betas24<- tidybayes::spread_draws(lmicSamps24,
-#                                   beta_dme_prediag,
-#                                   beta_dnme_prediag,
-#                                   beta_ie_prediag,
-#                                   beta_dme_intsvtx,
-#                                   beta_dnme_intsvtx,
-#                                   beta_ie_intsvtx,
-#                                   beta_dme_contntx,
-#                                   beta_dnme_contntx,
-#                                   beta_ie_contntx,
-#                                   mult_drtb_dme_prediag,
-#                                   mult_drtb_dnme_prediag,
-#                                   mult_drtb_ie_prediag,
-#                                   mult_drtb_dme_intsvtx,
-#                                   mult_drtb_dnme_intsvtx,
-#                                   mult_drtb_ie_intsvtx,
-#                                   mult_drtb_dme_contntx,
-#                                   mult_drtb_dnme_contntx,
-#                                   mult_drtb_ie_contntx,
-                                  # mult_natrep,
-                                  # ndraws = 1000, seed = tbPtntCstSeed)
+# saveRDS(lmicSamps24, file = here("output/mainEst2024_10-15-noTrunc.rds"))
 
-# betas24 %>% mean_qi()  %>% select(! c(.width, .point, .interval)) %>% exp() %>% matrix(ncol=3, byrow = TRUE)
+##############################################################################
+############### COMPARE TO TRUNCATED PARAMETERS ###############################
+###############################################################################
+
+predDataFilt24Trunc <- list(
+    N = length(modelData$cost),
+    cost = modelData$cost,
+    # se = rep(0, length(modelData$cost)),
+    se = as.numeric(modelData$se)+ 0.01,
+    dme_prediag = modelData$dme.prediag,
+    dnme_prediag =  modelData$dnme.prediag,
+    ie_prediag =  modelData$ie.prediag,
+    dme_intsvtx = modelData$dme.intsvtx,
+    dnme_intsvtx =  modelData$dnme.intsvtx,
+    ie_intsvtx =  modelData$ie.intsvtx,
+    dme_contntx = modelData$dme.contntx,
+    dnme_contntx =  modelData$dnme.contntx,
+    ie_contntx =  modelData$ie.contntx,
+    N_survey = max(modelData$survey.id),
+    survey_id = modelData$survey.id,
+    N_country = max(modelData$country.id),
+    country_id = modelData$country.id,
+    ### Internal covariate
+    drtb_ind= modelData$drtb.wt,
+    survey_year = ((modelData$study.end.year - mean(modelData$study.end.year)) / sd(modelData$study.end.year)),
+    id_matrix = modelData %>% select(survey.id, country.id) %>% distinct(), 
+    
+    prior_sigma = 2,
+    prob_cost_zero = sum(modelData$cost == 0) / nrow(modelData),
+    natrep_id = modelData$whoSurv,
+    # tau_scalar = 1 / sqrt(modelData$n.participants),
+    tau_scalar = rep(1,nrow(modelData)),
+    
+    ### External covariateFilt
+    median_income = ((modelData$log.median.income.hh - mean(modelData$log.median.income.hh)) / sd(modelData$log.median.income.hh)),
+    oop_perc_che =  (modelData$oop.perc.che - mean(modelData$oop.perc.che))/sd(modelData$oop.perc.che),
+    cdr_rate = (modelData$cdr.rate - mean(modelData$cdr.rate)) / sd(modelData$cdr.rate), 
+    ### Prediction data
+    N_country_new = max(covariateFilt24$country.id.new),
+    review_ind = covariateFilt24$in.review,
+    in_review_id = covariateFilt24$in.review.id, # note that this is different from modelData country.id
+    pred_year = (2024 - mean(modelData$study.end.year)) / sd(modelData$study.end.year),
+    median_income_new = (covariateFilt24$log.median.income.trunc - mean(modelData$log.median.income.hh)) / sd(modelData$log.median.income.hh),
+    oop_perc_che_new = (covariateFilt24$oop.perc.che.trunc - mean(modelData$oop.perc.che)) / sd(modelData$oop.perc.che),
+    cdr_rate_new = (covariateFilt$cdr.trunc - mean(modelData$cdr.rate)) / sd(modelData$cdr.rate)
+)
+
+lmicSamps24Trunc <- stan(file = "code/inst/model7.stan",
+                    data = predDataFilt24Trunc,
+                    iter = tbPtntCstIter, chains = 3,
+                    warmup = tbPtntCstWarmup,
+                    control=list(max_treedepth=14),
+                    seed = tbPtntCstSeed)
+
+# saveRDS(lmicSamps24Trunc, file = here("output/mainEst2024_10-15-Trunc.rds"))
 
 costCntry24 <- tidybayes::spread_draws(lmicSamps24,
                                           dstb_total_cost_country[country.id.new],
                                           ndraws = 1000, seed = tbPtntCstSeed);
+
+costCntry24Trunc <- tidybayes::spread_draws(lmicSamps24Trunc,
+                                       dstb_total_cost_country[country.id.new],
+                                       ndraws = 1000, seed = tbPtntCstSeed);
 
 costCntryEst24 <- left_join(costCntry24  %>%
                            group_by(country.id.new) %>%
@@ -345,9 +383,19 @@ costCntryEst24 <- left_join(costCntry24  %>%
     arrange(dstb_total_cost_country) %>% 
     mutate(study.country=factor(study.country, levels=study.country))
 
-ggplot(data=costCntryEst24) + 
-    geom_point(aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
-    geom_errorbar(aes(x=study.country, ymax=.upper, ymin=.lower, color=study.country)) + 
+costCntryEst24Trunc <- left_join(costCntry24Trunc  %>%
+                                group_by(country.id.new) %>%
+                                mean_qi(dstb_total_cost_country) %>%
+                                select(! c(.width, .point, .interval)),
+                            covariateFilt24 %>% select(study.country, country.id.new) %>% distinct()) %>% 
+    arrange(dstb_total_cost_country) %>% 
+    mutate(study.country=factor(study.country, levels=study.country))
+
+ggplot() + 
+    geom_point(data=costCntryEst24, aes(x=study.country, y=`dstb_total_cost_country`, color=study.country)) +
+    geom_errorbar(data=costCntryEst24, aes(x=study.country, ymax=.upper, ymin=.lower, color=study.country)) + 
+    geom_point(data=costCntryEst24Trunc, aes(x=study.country, y=`dstb_total_cost_country`)) +
+    geom_errorbar(data=costCntryEst24Trunc,aes(x=study.country, ymax=.upper, ymin=.lower)) + 
     theme_minimal() +
     coord_flip() + theme(legend.position = "none") + 
     ggtitle("Country-level estimates from model with international dollars") + 
