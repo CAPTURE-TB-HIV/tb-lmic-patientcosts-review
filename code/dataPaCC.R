@@ -6,6 +6,10 @@
 
 library(tidybayes) # spreadvars function 
 library(dplyr)
+library(here)
+library(tidyr)
+
+tbPtntCstSeed <- 513
 
 ##### Read in datafiles #######################################################
 
@@ -21,7 +25,9 @@ regionWHO <- read.csv(here("data/who-regions.csv")) %>%
     select(! c(World.regions.according.to.WHO, study.country))
 
 #### This is a list of each of the years' models 
-lmicSampsAll <- readRDS(here("output/allYears_08-07-noTrunc.rds"))
+lmicSampsAll <- readRDS(here("output/allYears_10-19.rds"))
+lmicSamps <- lmicSampsAll[["2024"]]
+
 
 ##### 1. Data frame of all covariates used in the model runs ##################
 ##### Number of rows = number of countries * number of years (129*16)
@@ -41,7 +47,18 @@ covariates24 <- covariatesTime0 %>%
                 mutate(who.region = ifelse(country.code == "VCT", 
                        "Americas", who.region))
 
-saveRDS(covariatesTime, "~/Desktop/nis100/PaCC/utilities/data/covariatesTime.rds")
+tb_covariates2 <- covariatesTime %>% select(country.code, 
+                                            study.country, 
+                                            study.end.year,
+                                            log.median.income.hh, 
+                                            median.income.hh, 
+                                            oop.perc.che, 
+                                            cdr.rate, 
+                                            who.region )
+
+saveRDS(tb_covariates2, "utilities/data/TB/covariatesTimeSmall.rds", version=2)
+
+# saveRDS(covariatesTime, "~/Desktop/nis100/PaCC/utilities/data/TB/covariatesTime.rds")
 
 
 ##### 2. Data frame of country random effects  ################################
@@ -50,7 +67,7 @@ saveRDS(covariatesTime, "~/Desktop/nis100/PaCC/utilities/data/covariatesTime.rds
 countryRE <- left_join(spread_draws(lmicSamps, 
                        randeff_country_predC[country.id.new],
                        ndraws = 10000, seed = tbPtntCstSeed) , 
-                       covariatesTime %>% filter(study.end.year ==2024) %>% 
+                       covariates24 %>% 
                            select(study.country, country.id.new)) %>% 
              mutate(draw = 1:10000) %>% 
              ungroup() %>% 
@@ -61,7 +78,7 @@ countryRE <- left_join(spread_draws(lmicSamps,
     select(!draw) %>% t() %>% as.data.frame()
     
 countryRE$Country <- rownames(countryRE)
-saveRDS(countryRE, "~/Desktop/nis100/PaCC/utilities/data/cntryRndEff.rds")
+saveRDS(countryRE, "~/Desktop/nis100/PaCC/utilities/data/TB/cntryRndEff.rds")
 
 ##### 3. Data frame of parameters #############################################
 ##### Number of rows = the number of samples (N=10000)
@@ -119,11 +136,21 @@ params <- spread_draws(lmicSamps,
              mult_cdr_dme_contntx, 
              mult_cdr_dnme_contntx, 
              mult_cdr_ie_contntx,
+             
+             beta_theta_dme_prediag,
+             beta_theta_dnme_prediag,
+             beta_theta_ie_prediag,
+             beta_theta_dme_intsvtx,
+             beta_theta_dnme_intsvtx,
+             beta_theta_ie_intsvtx,
+             beta_theta_dme_contntx,
+             beta_theta_dnme_contntx,
+             beta_theta_ie_contntx,
 
              ndraws = 10000, seed = tbPtntCstSeed) %>% 
              select(!c(.chain, .iteration, .draw))
 
-saveRDS(params, "~/Desktop/nis100/PaCC/utilities/data/parameters.rds")
+saveRDS(params, "~/Desktop/nis100/PaCC/utilities/data/TB/parameters.rds")
 
 
 ##### 4. Data frame of mean and sd for scaling  #########################
@@ -150,7 +177,7 @@ modelDataScaling <- data.frame(
                                sd = apply(modelDataFilt, 2, sd)) %>% t() %>% 
                     as.data.frame()
 
-saveRDS(modelDataScaling, "~/Desktop/nis100/PaCC/utilities/data/scalars.rds")
+saveRDS(modelDataScaling, "~/Desktop/nis100/PaCC/utilities/data/TB/scalars.rds")
 
 ##### 5. Data frame of regional and total mean estimates  #####################
 ##### Number of rows = number of regions + 1 = 7 
@@ -169,57 +196,58 @@ allLMICEst <- read.csv(here("output/tables/allLMICMeanCosts.csv")) %>%
 
 allCompEsts <- rbind(regionalEst, allLMICEst)
 
-saveRDS(allCompEsts, "~/Desktop/nis100/PaCC/utilities/data/compData.rds")
+saveRDS(allCompEsts, "~/Desktop/nis100/PaCC/utilities/data/TB/compData.rds")
 
 
 ##### Test a calculation #######################################################
 testCountry <- "China"
 testYear <- 2024
-covs <- covariates %>% 
-    filter(study.country == testCountry,
-           study.end.year == 2024) %>% 
-    mutate(scaled.med.inc = (log.median.income.hh.trunc - modelDataScaling["mean", "log.median.income.hh"]) / modelDataScaling["sd", "log.median.income.hh"], 
-           scaled.oop.che = (oop.perc.che.trunc - modelDataScaling["mean", "oop.perc.che"]) / modelDataScaling["sd", "oop.perc.che"], 
-           scaled.cdr =     (cdr.trunc - modelDataScaling["mean", "cdr.rate"]) / modelDataScaling["sd", "cdr.rate"])
+covs <- covariatesTime %>%
+    filter(study.country == testCountry, 
+           study.end.year == testYear) %>%
+    mutate(scaled.med.inc = (log.median.income.hh - modelDataScaling["mean", "log.median.income.hh"]) / modelDataScaling["sd", "log.median.income.hh"],
+           scaled.oop.che = (oop.perc.che - modelDataScaling["mean", "oop.perc.che"]) / modelDataScaling["sd", "oop.perc.che"],
+           scaled.cdr =     (cdr.rate- modelDataScaling["mean", "cdr.rate"]) / modelDataScaling["sd", "cdr.rate"])
 
 # covs$scaled.med.inc
 cntryRE2 <- countryRE %>% filter(Country == testCountry) %>% select(!Country) %>% as.numeric() #%>% t()
 scaledYear <- (testYear - modelDataScaling["mean", "study.end.year"]) / modelDataScaling["sd", "study.end.year"]
 
-estimate <- exp(params[,"beta_dme_prediag"] + cntryRE2 + 
-                   params[,"mult_med_income_dme_prediag"] * covs$scaled.med.inc +
-                   params[,"mult_oop_perc_che_dme_prediag"] * covs$scaled.oop.che +
-                   params[,"mult_cdr_dme_prediag"] * covs$scaled.cdr) *
-            exp(params[,"mult_year_dme_prediag"] * scaledYear)
+estimate <- exp(params[,"beta_dme_prediag"] + cntryRE2 +
+                params[,"mult_med_income_dme_prediag"] * covs$scaled.med.inc +
+                params[,"mult_oop_perc_che_dme_prediag"] * covs$scaled.oop.che +
+                params[,"mult_cdr_dme_prediag"] * covs$scaled.cdr) *
+            exp(params[,"mult_year_dme_prediag"] * scaledYear) * 
+            (1-exp(params[,"beta_theta_dme_prediag"]))
 
 mean(unlist(estimate))
-
-left_join(covariates,   
-          spread_draws(lmicSamps, 
-                       dstb_dme_prediag_cost_country[country.id.new],
-                       dstb_dnme_prediag_cost_country[country.id.new],
-                       dstb_ie_prediag_cost_country[country.id.new],
-                       dstb_dme_intsvtx_cost_country[country.id.new],
-                       dstb_dnme_intsvtx_cost_country[country.id.new],
-                       dstb_ie_intsvtx_cost_country[country.id.new],
-                       dstb_dme_contntx_cost_country[country.id.new],
-                       dstb_dnme_contntx_cost_country[country.id.new],
-                       dstb_ie_contntx_cost_country[country.id.new],
-                       dstb_total_cost_country[country.id.new],
-                       ndraws = 10000, seed = tbPtntCstSeed) %>% 
-              select(!c(.chain, .iteration, .draw)), 
-          join_by(country.id.new))  %>% 
-    filter(study.country == "China") %>% 
-    mean_qi(dstb_dme_prediag_cost_country, 
-            dstb_dnme_prediag_cost_country, 
-            dstb_ie_prediag_cost_country,
-            dstb_dme_intsvtx_cost_country, 
-            dstb_dnme_intsvtx_cost_country, 
-            dstb_ie_intsvtx_cost_country,
-            dstb_dme_contntx_cost_country, 
-            dstb_dnme_contntx_cost_country, 
-            dstb_ie_contntx_cost_country,
-            dstb_total_cost_country) %>% 
-    t()
-
-
+# 
+# left_join(covariates,   
+#           spread_draws(lmicSamps, 
+#                        dstb_dme_prediag_cost_country[country.id.new],
+#                        dstb_dnme_prediag_cost_country[country.id.new],
+#                        dstb_ie_prediag_cost_country[country.id.new],
+#                        dstb_dme_intsvtx_cost_country[country.id.new],
+#                        dstb_dnme_intsvtx_cost_country[country.id.new],
+#                        dstb_ie_intsvtx_cost_country[country.id.new],
+#                        dstb_dme_contntx_cost_country[country.id.new],
+#                        dstb_dnme_contntx_cost_country[country.id.new],
+#                        dstb_ie_contntx_cost_country[country.id.new],
+#                        dstb_total_cost_country[country.id.new],
+#                        ndraws = 10000, seed = tbPtntCstSeed) %>% 
+#               select(!c(.chain, .iteration, .draw)), 
+#           join_by(country.id.new))  %>% 
+#     filter(study.country == "China") %>% 
+#     mean_qi(dstb_dme_prediag_cost_country, 
+#             dstb_dnme_prediag_cost_country, 
+#             dstb_ie_prediag_cost_country,
+#             dstb_dme_intsvtx_cost_country, 
+#             dstb_dnme_intsvtx_cost_country, 
+#             dstb_ie_intsvtx_cost_country,
+#             dstb_dme_contntx_cost_country, 
+#             dstb_dnme_contntx_cost_country, 
+#             dstb_ie_contntx_cost_country,
+#             dstb_total_cost_country) %>% 
+#     t()
+# 
+# 
