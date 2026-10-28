@@ -1960,13 +1960,59 @@ ggplot(data=countryEstComp %>% filter(grepl("Africa",who.region))) +
     # facet_wrap(facets=vars(who.region), scales = "free_y", ncol=1)
 
 ggplot(data=countryEstComp) + 
-    geom_linerange(aes(x=reorder(study.country, difference), ymin=wgtTotal.est, ymax = dstb_total_cost_country,  color = as.factor(difference)), size=3) + 
+    geom_linerange(aes(x=reorder(study.country, difference), ymin=wgtTotal.est, ymax = dstb_total_cost_country,  color = dstb_total_cost_country), size=3) + 
     geom_point(aes(x=reorder(study.country, difference), y=wgtTotal.est, shape = as.factor(in.review)), size=2) +
     
     coord_flip() +
     theme_minimal() + 
     theme(legend.position = "none") + 
-    facet_wrap(facets=vars(who.region), scales = "free_y", ncol=1)
+    facet_wrap(facets=vars(who.region), scales = "free_y", ncol=2) + ylab("TB household cost (2025 INTD)") + xlab("") + 
+    scale_color_binned(palette = c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C"),
+                      na.value = "grey60", 
+                      # name = "Total household\ncost of TB\n(2025 INTD)", 
+                      breaks=c(2000, 3000, 4000, 6000, 9200), 
+                      label= c("0-1,999                        ", 
+                               "2,000-2,999                       ", 
+                               "3,000-3,999                       ", 
+                               "4,000-5,999                      ",
+                               "6,000-9,199                      ")) 
+
+allEstComp <- regionEstUncrntyTbl %>% select(who.region, wgtTotal.est) %>% 
+              rename(Group = who.region)
+
+allEstComp[7,1] <- c("All"); allEstComp[7,2] <- summaryEstUcrntyTbl[16, 2]
+
+
+allEstComp[8:10,]  <-        
+    worldBankEstUncrntyTbl %>% rename(Group = class25) %>% select(Group, wgtTotal.est) %>% 
+    mutate(Group = ifelse(Group == "L", "Lower income",
+                          ifelse(Group == "LM", "Lower middle income",
+                                 "Middle income"))) 
+
+allEstComp <- allEstComp %>% mutate(comparator = 3295,
+                       difference = comparator - wgtTotal.est, 
+                       percDifference = (comparator - wgtTotal.est)/comparator * 100*-1,
+                       Type = c(rep("WHO region", 6), "All", rep("Income-level", 3)))
+
+ggplot(data=allEstComp %>% filter(Group != "All")) + 
+    geom_linerange(aes(x=reorder(Group, difference), ymin=3295, ymax = wgtTotal.est,  color = percDifference), size=10) + 
+    geom_point(aes(x=reorder(Group, difference), y=wgtTotal.est), size=2) +
+    geom_hline(aes(yintercept=3295)) + 
+    coord_flip() +
+    theme_minimal(base_size = 20) + 
+    theme(legend.position = "bottom",  legend.key.width = unit(1.5, 'cm')) + 
+    expand_limits(y=0) + 
+    facet_wrap(facets=vars(Type), scales = "free_y", ncol=1) + ylab("TB household cost (2025 INTD)") + xlab("") +
+    scale_color_binned(palette = (c("#D0DFC8","#99A994", "#637460", "#475946", "#2C3E2C")),
+                       na.value = "grey60",limits = c(-50,50),
+                       name = "Percentage difference\nfrom global mean cost   ",
+                       breaks=c(-50, -25, 0, 25, 50),
+                       label= c("-50%", 
+                                "-25%", 
+                                "0%", 
+                                "25%",
+                                "50%")) 
+
 ##############################################################################|
 ##### Table SX                                      ###########################
 ##### Country level DRTB with uncertainty intervals ###########################
